@@ -9,16 +9,15 @@ import { BrowserRouter as Router,
 
 import { ethers } from "ethers";
 
-import TokenArtifact from "../../contracts/Token.json";
-import contractAddress from "../../contracts/contract-address.json";
+// import TokenArtifact from "../../contracts/Token.json";
+// import contractAddress from "../../contracts/contract-address.json";
 
 import Navigation from '../Navigation/Navigation';
 import LandingPage from '../LandingPage/LandingPage';
 import ProjectBrowser from '../ProjectBrowser/ProjectBrowser';
 
 const HARDHAT_NETWORK_ID = '31337';
-const ROPSTEN_NETWORK_ID = '3';
-const RINKEBY_NETWORK_ID = '4';
+const KOVAN_NETWORK_ID = '42'
 
 // This is an error code that indicates that the user canceled a transaction
 const ERROR_CODE_TX_REJECTED_BY_USER = 4001;
@@ -81,7 +80,6 @@ export default class Dapp extends React.Component {
 
     // We reinitialize it whenever the user changes their account.
     window.ethereum.on("accountsChanged", ([newAddress]) => {
-      this._stopPollingData();
       // `accountsChanged` event can be triggered with an undefined newAddress.
       // This happens when the user removes the Dapp from the "Connected
       // list of sites allowed access to your addresses" (Metamask > Settings > Connections)
@@ -95,7 +93,6 @@ export default class Dapp extends React.Component {
     
     // We reset the dapp state if the network is changed
     window.ethereum.on("networkChanged", ([networkId]) => {
-      this._stopPollingData();
       this._resetState();
     });
   }
@@ -135,14 +132,14 @@ export default class Dapp extends React.Component {
     this.setState(this.initialState);
   }
 
-  // This method checks if Metamask selected network is Localhost:8545 
+  // This method checks if Metamask selected network is Localhost:8545 / Kovan Testnet
   _checkNetwork() {
-    if (window.ethereum.networkVersion === HARDHAT_NETWORK_ID) {
+    if ([HARDHAT_NETWORK_ID, KOVAN_NETWORK_ID].includes(window.ethereum.networkVersion)) {
       return true;
     }
 
     this.setState({ 
-      networkError: 'Please connect Metamask to Localhost:8545'
+      networkError: 'Please connect Metamask to Localhost:8545 or Kovan Testnet'
     });
 
     return false;

@@ -34,10 +34,6 @@ const WalletInfo = ({selectedAddress}) => {
 
 }
 
-const ConnectWalletButton = () => (
-    <div>Connect Wallet</div>
-)
-
 const Navigation = ({ selectedAddress, connectWallet }) => {
     
     return (
@@ -47,6 +43,7 @@ const Navigation = ({ selectedAddress, connectWallet }) => {
                 <h2>FREEFUND</h2>
                 <div className={classes.RightNav}>
                     <Link to = {ROUTES.PROJECTS} className={classes.NavItem}>Browse Projects</Link>
+                    <Link to = {ROUTES.CREATE} className={classes.NavItem}>Create Project</Link>
                     {!selectedAddress ? <div onClick={() => connectWallet()}
                                               className = {classes.ConnectWalletButton}
                                               >Connect Wallet</div> :
