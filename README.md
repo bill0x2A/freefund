@@ -1,3 +1,20 @@
+## freefund - a decentralized crowdfunding platform that accepts crypto donations (ETH/ DAI)
+
+```
+   ___                        ___                     __     
+ /'___\                     /'___\                   /\ \    
+/\ \__/  _ __    __     __ /\ \__/  __  __    ___    \_\ \   
+\ \ ,__\/\`'__\/'__`\ /'__`\ \ ,__\/\ \/\ \ /' _ `\  /'_` \  
+ \ \ \_/\ \ \//\  __//\  __/\ \ \_/\ \ \_\ \/\ \/\ \/\ \L\ \ 
+  \ \_\  \ \_\\ \____\ \____\\ \_\  \ \____/\ \_\ \_\ \___,_\
+   \/_/   \/_/ \/____/\/____/ \/_/   \/___/  \/_/\/_/\/__,_ /
+```
+
+Network: Kovan
+DAI: https://kovan.etherscan.io/token/0x4f96fe3b7a6cf9725f59d353f723c1bdb64ca6aa
+
+################################################################################
+
 # Hardhat Hackathon Boilerplate
 
 This repository contains a sample project that you can use as the starting point
