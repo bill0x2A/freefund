@@ -1,16 +1,14 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import { Dapp } from "./components/Dapp";
-
-// We import bootstrap here, but you can remove if you want
-import "bootstrap/dist/css/bootstrap.css";
-
-// This is the entry point of your application, but it just renders the Dapp
-// react component. All of the logic is contained in it.
+import React from 'react';
+import ReactDOM from 'react-dom';
+import './index.css';
+import Dapp from './components/Dapp/Dapp';
+import {BrowserRouter as Router} from 'react-router-dom';
 
 ReactDOM.render(
   <React.StrictMode>
-    <Dapp />
+    <Router>
+      <Dapp />
+    </Router>
   </React.StrictMode>,
-  document.getElementById("root")
+  document.getElementById('root')
 );

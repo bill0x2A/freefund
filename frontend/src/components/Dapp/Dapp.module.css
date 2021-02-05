@@ -1,0 +1,9 @@
+.Layout {
+    display: grid;
+    grid-template-columns: 7vw 1fr 7vw;
+}
+
+.Main {
+    grid-column-start: 2;
+    grid-column-end: 3;
+}

@@ -1,7 +1,5 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-src/contracts
-
 # dependencies
 /node_modules
 /.pnp
@@ -12,6 +10,7 @@ src/contracts
 
 # production
 /build
+/src/contracts
 
 # misc
 .DS_Store
