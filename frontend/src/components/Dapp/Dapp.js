@@ -15,6 +15,7 @@ import { ethers } from "ethers";
 import Navigation from '../Navigation/Navigation';
 import LandingPage from '../LandingPage/LandingPage';
 import ProjectBrowser from '../ProjectBrowser/ProjectBrowser';
+import CreateProject from "../CreateProject/CreateProject";
 
 const HARDHAT_NETWORK_ID = '31337';
 const KOVAN_NETWORK_ID = '42'
@@ -53,10 +54,15 @@ export default class Dapp extends React.Component {
           selectedAddress={this.state.selectedAddress}
           connectWallet = {this._connectWallet}
             />
-        <Switch>
-          <Route exact path={ROUTES.LANDING} component={LandingPage}/>
-          <Route path={ROUTES.PROJECTS} component={ProjectBrowser}/>
-        </Switch>
+        <div className={classes.Layout}>
+          <div className={classes.Main}>
+            <Switch>
+              <Route exact path={ROUTES.LANDING} component={LandingPage}/>
+              <Route path={ROUTES.PROJECTS} component={ProjectBrowser}/>
+              <Route path={ROUTES.CREATE} component={CreateProject}/>
+            </Switch>
+          </div>
+        </div>
       </div>
     );
   }

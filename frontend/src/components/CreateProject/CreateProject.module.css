@@ -1,0 +1,70 @@
+textarea {
+    width: 100%;
+    resize : vertical;
+    min-height: 300px;
+}
+
+.CreateProject {
+    margin-top : 30px;
+    margin-bottom : 30px;
+}
+
+.Box{
+    padding: 10px 30px;
+    background: white;
+    border-top: 1px dashed var(--bold);
+    border-left: 1px dashed var(--bold);
+    box-shadow: 4px 4px var(--bold);
+    margin-bottom : 15px;
+}
+
+.Box h2 {
+    color: var(--bold);
+    font-weight: 700;
+}
+
+.Box h3 {
+    margin: 5px 0;
+    color: var(--bold);
+}
+
+.Box input {
+    height: 50px;
+}
+
+.Box input, .Box textarea {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.Tiers {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.Tier {
+    border: 2px solid var(--bold);
+    width: 32%;
+    padding: 10px 20px;
+}
+
+.Tier h4 {
+    color: var(--bold);
+    margin: 0;
+}
+
+.SubmitContainer {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.SubmitButton {
+    background: var(--bold);
+    color: white;
+    user-select: none;
+    cursor: pointer;
+    padding: 10px 20px;
+}
