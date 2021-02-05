@@ -1,5 +1,5 @@
-## 🆓 freefund
-# a decentralized crowdfunding platform that accepts crypto donations (ETH/ DAI)
+# 🆓 freefund
+## a decentralized crowdfunding platform that accepts crypto donations (ETH/ DAI)
 
 ```
    ___                        ___                     __     
