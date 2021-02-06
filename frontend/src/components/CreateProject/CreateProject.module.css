@@ -11,11 +11,9 @@ textarea {
 
 .Box{
     padding: 10px 30px;
-    background: white;
-    border-top: 1px dashed var(--bold);
-    border-left: 1px dashed var(--bold);
-    box-shadow: 4px 4px var(--bold);
-    margin-bottom : 15px;
+    background: #eaeaea;
+    box-shadow: var(--bold) 1px 1px, var(--bold) 2px 2px, var(--bold) 3px 3px, var(--bold) 4px 4px, var(--bold) 5px 5px ;
+    margin-bottom : 25px;
 }
 
 .Box h2 {
@@ -23,18 +21,30 @@ textarea {
     font-weight: 700;
 }
 
+.Box h2 span {
+    font-size : 30px;
+    font-weight: 800;
+}
+
 .Box h3 {
-    margin: 5px 0;
+    margin: 0;
+    margin-top: 5px;
+    margin-bottom : 15px; 
     color: var(--bold);
 }
 
-.Box input {
+.Box input[type=text] {
     height: 50px;
 }
 
-.Box input, .Box textarea {
+.Box input[type=text], .Box textarea {
     width: 100%;
     margin-bottom: 10px;
+    border : 3px solid var(--bold);
+    color: black;
+    padding : 10px 10px;
+    font-size: 16px;
+    font-weight: 600;
 }
 
 .Tiers {
@@ -53,6 +63,41 @@ textarea {
     color: var(--bold);
     margin: 0;
 }
+
+.Box input[type=file] {
+    position: absolute;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    outline: none;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.ImageUpload {
+    position: relative;
+    height: 150px;
+    border: 4px dashed var(--bold);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    transition: all 300ms;
+
+}
+
+.ImageUpload:hover {
+    background: rgba(0,0,0,0.1);
+}
+
+.ImageUpload p{
+    margin: 0;
+    color: var(--bold);
+    font-weight: 700;
+    user-select: none;
+}
+
 
 .SubmitContainer {
     width: 100%;

@@ -43,7 +43,7 @@
 }
 
 .NoWallet {
-    color: var(--bold);
+    color: white;
     background: red;
     text-align: center;
     padding: 5px;

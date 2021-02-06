@@ -20,11 +20,24 @@ class CreateProject extends React.Component {
     }
     
     onSubmit = () => {
+        // FORMAT DATA CORRECTLY AND UPLOAD TO MONGO
+
+        //Format tags as an array of lowercase strings, removing 
+        let tags = this.state.tags.split(',')
+        //note make this recursive
+        tags = tags.map(tag => {
+            if(tag[0] === ' '){
+                tag = tag.substring(1);
+            }
+            if(tag[tag.length-1] === ' '){
+                tag = tag.slice(0, -1);
+            }
+            return tag.toLowerCase();
+        })
         console.log(this.state);
     }
 
     captureFile = (e) => {
-        console.log("CAPTURING FILE")
         e.preventDefault();
         const file = e.target.files[0];
         const reader = new window.FileReader();
@@ -34,10 +47,7 @@ class CreateProject extends React.Component {
         reader.onloadend = () => {
             let imgBuffers = this.state.imgBuffers;
             imgBuffers.push(Buffer(reader.result))
-            this.setState({imgBuffers}, () => {
-                console.log(this.state.imgBuffers)
-                this.uploadImages();
-            })
+            this.setState({imgBuffers});
         };
     }
     
@@ -61,7 +71,7 @@ class CreateProject extends React.Component {
         return (
             <div className={classes.CreateProject}>
                 <div className={classes.Box}>
-                    <h2>[ Create New Project ]</h2>
+                    <h2><span>[</span> Create New Project <span>]</span></h2>
                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin eu eros est. Aliquam et odio efficitur, sodales mi id, pretium nisl. Donec suscipit ultrices ligula, in volutpat est pulvinar in. Praesent eu rhoncus felis. Cras odio nibh, faucibus eu sapien vel, faucibus placerat felis. Nullam ultrices faucibus lobortis. Vestibulum a iaculis diam, et tempor augue. Vestibulum fermentum feugiat dui, blandit fringilla risus feugiat a. Cras sed nisi accumsan, rutrum risus nec, porttitor velit. Proin ultricies ornare dui eget mollis.</p>
                 </div>
                 <div className={classes.Box}>
@@ -130,7 +140,15 @@ class CreateProject extends React.Component {
                 </div>
                 <div className={classes.Box}>
                     <h3>Upload Some Images</h3>
-                    <input type='file' accept=".jpg, .jpeg, .png, .bmp, .gif" onChange={this.captureFile} />
+                    <div className={classes.ImageUpload}>
+                        <input
+                            type='file'
+                            multiple
+                            accept=".jpg, .jpeg, .png, .bmp, .gif"
+                            onChange={this.captureFile}
+                        />
+                        <p>Drag Files here</p>
+                    </div>
                 </div>
                 <div className={classes.Box}>
                     <h3>Add Some Tags</h3>
