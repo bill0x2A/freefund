@@ -1,0 +1,85 @@
+.ProjectCard {
+    position: relative;
+    padding: 10px 20px;
+    background: #eaeaea;
+    box-shadow: var(--bold) 1px 1px, var(--bold) 2px 2px, var(--bold) 3px 3px;
+    margin : 25px 0;
+    border: 1px solid lightgray;
+    width: 50%;
+    max-height: 300px;
+    overflow: hidden;
+}
+
+.FadeOut {
+    position: absolute;
+    z-index: 100;
+    bottom : 0;
+    left : 0;
+    height: 30%;
+    width: 100%;
+    background: #eaeaea;
+    background: linear-gradient(0deg, rgba(236,236,236,1) 0%, rgba(236,236,236,0.19931722689075626) 100%);
+}
+
+.ProjectCard h3 {
+    color: var(--bold);
+}
+
+.ProgressBar {
+    height: 10px;
+    width: calc(100% - 160px);
+    border-radius: 100px;
+    overflow: hidden;
+    background: #606060;
+}
+
+.FundingInfo {
+    display: inline-flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: right;
+    background: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+}
+
+.FundingInfo img {
+    height: 20px;
+    width: 20px;
+    margin-left: 10px;
+}
+
+.ProjectCard p {
+    max-width: calc(100% - 140px);
+}
+
+.CreatorInfo{
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 90px;
+    width: 140px;
+    font-weight: bold;
+}
+
+.CreatorInfo img {
+    width: 140px;
+    height: 140px;
+}
+
+.SeeMore {
+    position: absolute;
+    z-index: 101;
+    bottom : 5px;
+    right : 5px;
+    background: var(--bold);
+    padding: 5px 10px;
+    width: 100px;
+    color: white;
+    text-decoration: none;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}

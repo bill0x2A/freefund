@@ -1,0 +1,64 @@
+.ProjectBrowser {
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.Box{
+    padding: 10px 30px;
+    background: #eaeaea;
+    box-shadow: var(--bold) 1px 1px, var(--bold) 2px 2px, var(--bold) 3px 3px, var(--bold) 4px 4px, var(--bold) 5px 5px ;
+    margin-bottom : 25px;
+}
+
+.Box h2 {
+    color: var(--bold);
+    font-weight: 700;
+}
+
+.Box h2 span {
+    font-size : 30px;
+    font-weight: 800;
+}
+
+.SearchContainer {
+    display: flex;
+    border : 1px solid lightgray;
+    box-shadow: var(--bold) 1px 1px, var(--bold) 2px 2px, var(--bold) 3px 3px, var(--bold) 4px 4px, var(--bold) 5px 5px ;
+    height: 50px;
+    margin-bottom: 30px;
+}
+
+.SearchContainer input{
+    width: calc(100% - 80px);
+    color: black;
+    border: none;
+    outline: none;
+    padding-left: 10px;
+    height: 100%;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.SearchButton {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content:center ;
+    border : 1px solid lightgray;
+    height:52px;
+    right: 0px;
+    bottom: 4px;
+    width: 80px;
+    background: var(--bold);
+    color:white;
+    cursor: pointer;
+    box-shadow: var(--bold) 1px 1px, var(--bold) 2px 2px, var(--bold) 3px 3px, var(--bold) 4px 4px, var(--bold) 5px 5px;
+}
+
+.SearchButton:hover {
+    right : -1px;
+    bottom : 2px;
+    border-bottom : 2px solid lightgray;
+    border-right : 2px solid lightgray;
+    box-shadow: none;
+}

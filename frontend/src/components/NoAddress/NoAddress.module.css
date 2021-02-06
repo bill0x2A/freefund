@@ -1,0 +1,10 @@
+.Box{
+    padding: 10px 30px;
+    background: #eaeaea;
+    box-shadow: var(--bold) 1px 1px, var(--bold) 2px 2px, var(--bold) 3px 3px, var(--bold) 4px 4px, var(--bold) 5px 5px ;
+    margin-bottom : 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
