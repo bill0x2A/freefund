@@ -4,7 +4,7 @@ textarea {
     min-height: 300px;
 }
 
-.CreateProject {
+.AccountPage {
     margin-top : 30px;
     margin-bottom : 30px;
 }
@@ -47,23 +47,6 @@ textarea {
     font-weight: 600;
 }
 
-.Tiers {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-}
-
-.Tier {
-    border: 2px solid var(--bold);
-    width: 32%;
-    padding: 10px 20px;
-}
-
-.Tier h4 {
-    color: var(--bold);
-    margin: 0;
-}
-
 .Box input[type=file] {
     position: absolute;
     margin: 0;
@@ -98,12 +81,12 @@ textarea {
     user-select: none;
 }
 
-
 .SubmitContainer {
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: flex-end;
+    margin-bottom : 40px;
 }
 
 .SubmitButton {
