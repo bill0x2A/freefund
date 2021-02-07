@@ -1,9 +1,12 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import {Link} from 'react-router-dom';
 import classes from './Navigation.module.css';
 import * as ROUTES from '../../constants/routes';
-import blockies from 'ethereum-blockies';
+import jazzicon from '@metamask/jazzicon';
+import identicon from 'identicon';
 import circle from '../../assets/circle.png';
+import cheating from '../../assets/cheating.png';
 
 const NoWalletDetected = () => (
     <div className = {classes.NoWallet}>
@@ -21,10 +24,11 @@ const NoWalletDetected = () => (
 )
 
 const WalletInfo = ({selectedAddress}) => {
-    const icon = blockies.create({
-        seed : selectedAddress
-    }).toDataURL()
-
+    let icon = new Image();
+    identicon.generate({ id: 'ajido', size: 150 }, function(err, buffer) {
+        if (err) throw err;
+        icon.src = buffer;
+    });
     const displayAddress = selectedAddress.substring(0, 4) + '...' + selectedAddress.substring( 35, selectedAddress.length-1)
     return(
         <Link
@@ -32,7 +36,7 @@ const WalletInfo = ({selectedAddress}) => {
             to={ROUTES.ACCOUNT}
         >
             <p>{displayAddress}</p>
-            <img src ={icon}/>
+            <img src={cheating}/>
         </Link>
     )
 
