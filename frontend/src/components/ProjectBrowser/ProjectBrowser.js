@@ -1,6 +1,7 @@
 import React from 'react';
 import classes from './ProjectBrowser.module.css';
 import ProjectCard from '../ProjectCard/ProjectCard';
+import {test1, test2, test3, test4} from '../../constants/testProjects';
 
 class ProjectBrowser extends React.Component {
     constructor(props){
@@ -39,7 +40,12 @@ class ProjectBrowser extends React.Component {
                 </div>
                 <div className={classes.Box}>
                     <h2>Popular Projects</h2>
-                    <ProjectCard/>
+                    <div className={classes.Projects}>
+                        <ProjectCard project={test1}/>
+                        <ProjectCard project={test2}/>
+                        <ProjectCard project={test3}/>
+                        <ProjectCard project={test4}/>
+                    </div>
                 </div>
             </div>
         )

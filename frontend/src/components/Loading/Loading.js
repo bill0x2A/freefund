@@ -1,6 +1,6 @@
 import React from "react";
 
-export function Loading() {
+export default function Loading() {
   return (
     <div
       style={{
