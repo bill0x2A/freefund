@@ -39,7 +39,12 @@ class ProjectBrowser extends React.Component {
                 </div>
                 <div className={classes.Box}>
                     <h2>Popular Projects</h2>
-                    <ProjectCard/>
+                    <div className={classes.Projects}>
+                        <ProjectCard/>
+                        <ProjectCard/>
+                        <ProjectCard/>
+                        <ProjectCard/>
+                    </div>
                 </div>
             </div>
         )

@@ -25,7 +25,7 @@ const ProgressBar = (props) =>{
             <div style={{
                 height: "100%",
                 width : progress + "%",
-                background: "green",
+                background: "#5CDB95",
                 borderRight : "2px solid white"
             }}/>
         </div>
@@ -35,19 +35,21 @@ const ProgressBar = (props) =>{
 const ProjectCard = (props) => {
     return(
         <div className={classes.ProjectCard}>
+            <div className = {classes.FundingInfo}>
+                <span style ={{color:"#5CDB95"}}>{testProps.funded}</span>
+                <span style ={{color:"#606060"}}>/{testProps.fundingLimit}</span>
+                <img src = {DAI}/>
+            </div>
             <div className ={classes.Topline}>
                 <h3>{testProps.title}</h3>
                 <ProgressBar funded = {testProps.funded} fundingLimit={testProps.fundingLimit}/>
-                <div className = {classes.FundingInfo}>
-                    {testProps.funded}
-                     / 
-                    {testProps.fundingLimit}
-                    <img src = {DAI}/>
-                </div>
             </div>
             <div className={classes.CreatorInfo}>
                 <img src={testProps.creatorImage} alt = "Creator Profile Image"/>
-                <span>{testProps.creatorName}<Flag countryCode={testProps.creatorCountryCode} svg/></span>
+                <div className={classes.CreatorName}>
+                    <span>{testProps.creatorName}</span>
+                    <Flag countryCode={testProps.creatorCountryCode} svg/>
+                </div>
             </div>
             <p>{testProps.description}</p>
             <div className = {classes.FadeOut}/>

@@ -17,6 +17,7 @@ import LandingPage from '../LandingPage/LandingPage';
 import ProjectBrowser from '../ProjectBrowser/ProjectBrowser';
 import CreateProject from '../CreateProject/CreateProject';
 import AccountPage from '../AccountPage/AccountPage';
+import ProjectPage from '../ProjectPage/ProjectPage';
 
 const HARDHAT_NETWORK_ID = '31337';
 const KOVAN_NETWORK_ID = '42'
@@ -60,6 +61,7 @@ export default class Dapp extends React.Component {
             <Switch>
               <Route exact path={ROUTES.LANDING} component={LandingPage}/>
               <Route exact path={ROUTES.PROJECTS} component={ProjectBrowser}/>
+              <Route path={ROUTES.PROJECT} component={ProjectPage}/>
               <Route path={ROUTES.CREATE} render = {() => <CreateProject selectedAddress={this.state.selectedAddress}/>}/>
               <Route path={ROUTES.ACCOUNT} render = {() => <AccountPage selectedAddress={this.state.selectedAddress}/>}/>
             </Switch>
