@@ -3,6 +3,7 @@ import {Link} from 'react-router-dom';
 import classes from './Navigation.module.css';
 import * as ROUTES from '../../constants/routes';
 import blockies from 'ethereum-blockies';
+import circle from '../../assets/circle.png';
 
 const NoWalletDetected = () => (
     <div className = {classes.NoWallet}>
@@ -26,10 +27,13 @@ const WalletInfo = ({selectedAddress}) => {
 
     const displayAddress = selectedAddress.substring(0, 4) + '...' + selectedAddress.substring( 35, selectedAddress.length-1)
     return(
-        <div className={classes.WalletInfo}>
+        <Link
+            className={classes.WalletInfo}
+            to={ROUTES.ACCOUNT}
+        >
             <p>{displayAddress}</p>
             <img src ={icon}/>
-        </div>
+        </Link>
     )
 
 }
@@ -40,13 +44,19 @@ const Navigation = ({ selectedAddress, connectWallet }) => {
         <div className={classes.Navigation}>
             {window.ethereum === undefined && <NoWalletDetected/>}
             <div className ={classes.Navbar}>
-                <h2>FREEFUND</h2>
+                <Link
+                    className={classes.Logo}
+                    to={ROUTES.LANDING}
+                >
+                    <img src = {circle}/>
+                    <h2>FREEFUND</h2>
+                </Link>
                 <div className={classes.RightNav}>
                     <Link to = {ROUTES.PROJECTS} className={classes.NavItem}>Browse Projects</Link>
                     {selectedAddress &&
                         <Link to = {ROUTES.CREATE} className={classes.NavItem}>Create Project</Link>}
                     {!selectedAddress ? <div onClick={() => connectWallet()}
-                                              className = {classes.NavItem}
+                                              className = {classes.ConnectWallet}
                                               >Connect Wallet</div> :
                                         <WalletInfo selectedAddress={selectedAddress}/>
                                         }
