@@ -21,6 +21,7 @@ import ProjectPage from '../ProjectPage/ProjectPage';
 
 const HARDHAT_NETWORK_ID = '31337';
 const KOVAN_NETWORK_ID = '42'
+const RINKEBY_NETWORK_ID = '4'
 
 // This is an error code that indicates that the user canceled a transaction
 const ERROR_CODE_TX_REJECTED_BY_USER = 4001;
@@ -144,12 +145,12 @@ export default class Dapp extends React.Component {
 
   // This method checks if Metamask selected network is Localhost:8545 / Kovan Testnet
   _checkNetwork() {
-    if ([HARDHAT_NETWORK_ID, KOVAN_NETWORK_ID].includes(window.ethereum.networkVersion)) {
+    if ([HARDHAT_NETWORK_ID, KOVAN_NETWORK_ID, RINKEBY_NETWORK_ID].includes(window.ethereum.networkVersion)) {
       return true;
     }
 
     this.setState({ 
-      networkError: 'Please connect Metamask to Localhost:8545 or Kovan Testnet'
+      networkError: 'Please connect Metamask to Localhost:8545, Kovan Testnet or Rinkeby Testnet'
     });
 
     return false;

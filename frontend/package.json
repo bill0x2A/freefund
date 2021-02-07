@@ -10,6 +10,7 @@
     "ethereum-blockies": "^0.1.1",
     "ethers": "^5.0.29",
     "ipfs-http-client": "^49.0.1",
+    "pure-react-carousel": "^1.27.6",
     "react": "^17.0.1",
     "react-country-flag": "^2.3.0",
     "react-dom": "^17.0.1",
