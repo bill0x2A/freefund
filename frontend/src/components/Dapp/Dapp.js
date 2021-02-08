@@ -108,7 +108,8 @@ class Dapp extends React.Component {
       // list of sites allowed access to your addresses" (Metamask > Settings > Connections)
       // To avoid errors, we reset the dapp state 
       if (newAddress === undefined) {
-        return this._resetState();
+        this.props.disconnectWallet();
+        return;
       }
       
       this._initialize(newAddress);
@@ -116,7 +117,7 @@ class Dapp extends React.Component {
     
     // We reset the dapp state if the network is changed
     window.ethereum.on("networkChanged", ([networkId]) => {
-      this._resetState();
+      this.props.resetState();
     });
   }
 
@@ -179,7 +180,9 @@ const mapStateToProps = null;
 const mapDispatchToProps = dispatch => ({
   connectProvider     : provider        => dispatch({type : actionTypes.connectProvider, provider : provider}),
   connectWallet       : selectedAddress => dispatch({type : actionTypes.connectWallet, selectedAddress : selectedAddress}),
-  connectDaiContract  : contract        => dispatch({type : actionTypes.connectDaiContract, contract : contract})
+  connectDaiContract  : contract        => dispatch({type : actionTypes.connectDaiContract, contract : contract}),
+  disconnectWallet    : ()              => dispatch({type : actionTypes.disconnectWallet}),
+  resetState          : ()              => dispatch({type : actionTypes.resetState}),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dapp);
