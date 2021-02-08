@@ -1,6 +1,7 @@
 import React from 'react';
 import classes from './CreateProject.module.css';
 import NoAddress from '../NoAddress/NoAddress';
+import { connect } from 'react-redux';
 
 import ipfsClient from 'ipfs-http-client';
 const ipfs = ipfsClient({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
@@ -178,4 +179,8 @@ class CreateProject extends React.Component {
     
 }
 
-export default CreateProject;
+const mapStateToProps = state => ({
+    selectedAddress : state.selectedAddress,
+})
+
+export default connect(mapStateToProps, null)(CreateProject);

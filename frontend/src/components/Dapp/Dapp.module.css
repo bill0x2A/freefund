@@ -7,3 +7,10 @@
     grid-column-start: 2;
     grid-column-end: 3;
 }
+
+@media only screen and (min-width: 2325px){
+    .Layout {
+        display: grid;
+        grid-template-columns: 1fr 2000px 1fr;
+    }
+}

@@ -1,6 +1,9 @@
 import React from "react";
+import { css } from "@emotion/core";
+import MoonLoader from "react-spinners/ClipLoader";
+import { propTypes } from "react-country-flag";
 
-export default function Loading() {
+export function Loading() {
   return (
     <div
       style={{
@@ -32,4 +35,21 @@ export default function Loading() {
       </div>
     </div>
   );
+}
+
+const override = css`
+  display: block;
+  margin: 0 auto;
+`;
+
+export default function CustomSpinner (props) {
+  return(
+    <div style={props.style}>
+      <MoonLoader
+        color="var(--accent)"
+        loading={true} css={override}
+        size={props.size ? props.size : 40}
+      />
+    </div>
+  )
 }
