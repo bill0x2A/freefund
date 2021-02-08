@@ -24,6 +24,11 @@ class Fund extends React.Component {
     }
 
     async _transferTokens(to, amount) {
+        if(!(amount > 1)){
+            this.setState({txError : "Please enter your pledge amount"})
+            return;
+        }
+
         const dai = ethers.utils.parseUnits(amount, 18);
 
         try {
@@ -96,6 +101,12 @@ class Fund extends React.Component {
                         <p>{txError}</p>
                     </div>
             )
+        } else if(!this.props.selectedAddress){
+            txInfo = (
+                <div className={classes.TxMessage} style={{color : "orange", border : "3px dashed orange"}}>
+                    <p>Please connect your wallet first</p>
+                </div>
+        )
         } else if (txBeingSent){
             // Spinner and transaction information
             txInfo = (
@@ -144,6 +155,7 @@ class Fund extends React.Component {
 
 const mapStateToProps = state => ({
     daiContract : state.daiContract,
+    selectedAddress : state.selectedAddress,
 })
 
 const mapDispatchToProps = null;

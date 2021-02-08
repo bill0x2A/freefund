@@ -177,9 +177,9 @@ class Dapp extends React.Component {
 const mapStateToProps = null;
 
 const mapDispatchToProps = dispatch => ({
-  connectProvider : provider        => dispatch({type : actionTypes.connectProvider, provider : provider}),
-  connectWallet   : selectedAddress => dispatch({type : actionTypes.connectWallet, selectedAddress : selectedAddress}),
-  connectDaiContract : contract => dispatch({type : actionTypes.connectDaiContract, contract : contract})
+  connectProvider     : provider        => dispatch({type : actionTypes.connectProvider, provider : provider}),
+  connectWallet       : selectedAddress => dispatch({type : actionTypes.connectWallet, selectedAddress : selectedAddress}),
+  connectDaiContract  : contract        => dispatch({type : actionTypes.connectDaiContract, contract : contract})
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dapp);
