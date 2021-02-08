@@ -1,11 +1,15 @@
 import React from 'react';
-import classes from './ProjectPage.module.css';
-import 'pure-react-carousel/dist/react-carousel.es.css';
 import {withRouter} from 'react-router-dom';
 import { CarouselProvider, Slider, Slide, ButtonBack, ButtonNext, Image } from 'pure-react-carousel';
+import classes from './ProjectPage.module.css';
+import 'pure-react-carousel/dist/react-carousel.es.css';
+
+
 import Loading from '../Loading/Loading';
 import {test1, test2, test3, test4} from '../../constants/testProjects';
 import DAI from '../../assets/DAI.png'
+import ModalContainer from '../hoc/ModalContainer/ModalContainer';
+import Fund from '../Fund/Fund';
 
 const Carousel = ({images}) => {
     return(
@@ -56,6 +60,7 @@ class ProjectPage extends React.Component {
         super(props)
         this.state ={
             loading : true,
+            pledging : false,
         }
     }  
 
@@ -67,6 +72,19 @@ class ProjectPage extends React.Component {
     loadData = () => {
         //load project data to state with id : this.props.match.params.projectID
         // then this.setState({loading : false})
+    }
+
+    pledgeHandler = () => {
+        // This is not very React but it works for now
+        document.body.style.height = "100vh";
+        document.body.style.overflow = "hidden";
+        this.setState({pledging:true});
+    }
+
+    dismissPledgeHandler = () => {
+        document.body.style.height = "100%";
+        document.body.style.overflow = "auto";
+        this.setState({pledging:false});
     }
 
     testDataLoader = () => {
@@ -92,11 +110,14 @@ class ProjectPage extends React.Component {
     }
 
     render(){
-        const { project, loading } = this.state;
+        const { project, loading, pledging } = this.state;
         return(
             <div className={classes.ProjectPage}>
                 {loading ? <Loading/> :
                     <React.Fragment>
+
+                        {pledging && <ModalContainer><Fund project={project} dismiss={this.dismissPledgeHandler}/></ModalContainer>}
+
                         <h2>{project.title}</h2>
                         <div className={classes.Main}>
                             <Carousel images = {project.images}/>
@@ -124,12 +145,13 @@ class ProjectPage extends React.Component {
                                     <ProgressBar funded={project.funded} fundingLimit={project.fundingLimit}/>
                                 </div>
                                 <div className={classes.PledgeContainer}>
-                                    <div className={classes.PledgeButton}>Pledge</div>
+                                    <div
+                                        className={classes.PledgeButton}
+                                        onClick={this.pledgeHandler}
+                                    >Fund</div>
                                 </div>
                             </div>
                             <div className={classes.Description}>
-                                <p>{project.description}</p>
-                                <p>{project.description}</p>
                                 <p>{project.description}</p>
                                 <p>This should definitely support markup - I'll look into a React text editor component...</p>
                             </div>

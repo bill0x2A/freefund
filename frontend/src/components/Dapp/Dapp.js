@@ -26,9 +26,6 @@ const HARDHAT_NETWORK_ID = '31337';
 const KOVAN_NETWORK_ID = '42'
 const RINKEBY_NETWORK_ID = '4'
 
-// This is an error code that indicates that the user canceled a transaction
-const ERROR_CODE_TX_REJECTED_BY_USER = 4001;
-
 // This component is in charge of doing these things:
 //   1. It connects to the user's wallet
 //   2. Initializes ethers and the Token contract
@@ -151,6 +148,8 @@ export default class Dapp extends React.Component {
   _resetState() {
     this.setState(this.initialState);
   }
+
+  
 
   // This method checks if Metamask selected network is Localhost:8545 / Kovan Testnet
   _checkNetwork() {
