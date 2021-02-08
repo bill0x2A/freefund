@@ -1,0 +1,45 @@
+.MobileMessage{
+    position: absolute;
+    top : 0;
+    left : 0;
+    width: 100vw;
+    height: 100vh;   
+}
+
+.Message {
+    height: calc(100vh - 150px);
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.Logo {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 150px;
+    height: 55px;
+    text-decoration: none;
+}
+
+.Logo img {
+    height: 55px;
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+.Logo h2 {
+    padding: 0;
+    margin: 0;
+    color: var(--bold);
+    font-weight: 800;
+    font-size: 22px;
+    margin-left: 10px;
+    user-select: none;
+}
+
+
+.Message p {
+    text-align: center;
+}

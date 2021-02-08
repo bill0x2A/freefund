@@ -18,6 +18,9 @@ import ProjectBrowser from '../ProjectBrowser/ProjectBrowser';
 import CreateProject from '../CreateProject/CreateProject';
 import AccountPage from '../AccountPage/AccountPage';
 import ProjectPage from '../ProjectPage/ProjectPage';
+import MobileMessage from '../MobileMessage/MobileMessage';
+
+import onMobile from '../../util/detectMobile';
 
 const HARDHAT_NETWORK_ID = '31337';
 const KOVAN_NETWORK_ID = '42'
@@ -43,6 +46,7 @@ export default class Dapp extends React.Component {
       // The user's address and balance
       selectedAddress: undefined,
       balance: undefined,
+      mobile: false,
       // The ID about transactions being sent, and any possible error with them
     };
 
@@ -50,26 +54,34 @@ export default class Dapp extends React.Component {
   }
 
   render() {
-    // If everything is loaded, we render the application.
+    const { mobile } = this.state;
     return (
-      <div className={classes.Dapp}>
-        <Navigation
-          selectedAddress={this.state.selectedAddress}
-          connectWallet = {this._connectWallet}
-            />
-        <div className={classes.Layout}>
-          <div className={classes.Main}>
-            <Switch>
-              <Route exact path={ROUTES.LANDING} component={LandingPage}/>
-              <Route exact path={ROUTES.PROJECTS} component={ProjectBrowser}/>
-              <Route path={ROUTES.PROJECT} component={ProjectPage}/>
-              <Route path={ROUTES.CREATE} render = {() => <CreateProject selectedAddress={this.state.selectedAddress}/>}/>
-              <Route path={ROUTES.ACCOUNT} render = {() => <AccountPage selectedAddress={this.state.selectedAddress}/>}/>
-            </Switch>
+      <React.Fragment>
+        { mobile ? <MobileMessage/> :
+          <div className={classes.Dapp}>
+            <Navigation
+              selectedAddress={this.state.selectedAddress}
+              connectWallet = {this._connectWallet}
+                />
+            <div className={classes.Layout}>
+              <div className={classes.Main}>
+                <Switch>
+                  <Route exact path={ROUTES.LANDING} component={LandingPage}/>
+                  <Route exact path={ROUTES.PROJECTS} component={ProjectBrowser}/>
+                  <Route path={ROUTES.PROJECT} component={ProjectPage}/>
+                  <Route path={ROUTES.CREATE} render = {() => <CreateProject selectedAddress={this.state.selectedAddress}/>}/>
+                  <Route path={ROUTES.ACCOUNT} render = {() => <AccountPage selectedAddress={this.state.selectedAddress}/>}/>
+                </Switch>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+        }
+      </React.Fragment>
     );
+  }
+
+  componentDidMount(){
+    this.setState({mobile : onMobile()});
   }
 
   _connectWallet =  async () => {
@@ -79,7 +91,6 @@ export default class Dapp extends React.Component {
     // To connect to the user's wallet, we have to run this method.
     // It returns a promise that will resolve to the user's address.
     const [selectedAddress] = await window.ethereum.enable();
-    console.log(selectedAddress)
     // Once we have the address, we can initialize the application.
 
     // First we check the network
@@ -109,8 +120,6 @@ export default class Dapp extends React.Component {
   }
 
   _initialize(userAddress) {
-
-    console.log(userAddress)
 
     this.setState({
       selectedAddress: userAddress,
