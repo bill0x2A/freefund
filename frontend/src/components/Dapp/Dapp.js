@@ -1,6 +1,8 @@
 import React from "react";
 import classes from './Dapp.module.css';
 import * as ROUTES from '../../constants/routes';
+import * as actionTypes from '../../store/actionTypes';
+import { connect } from 'react-redux';
 
 import { BrowserRouter as Router,
   Route,
@@ -22,6 +24,8 @@ import MobileMessage from '../MobileMessage/MobileMessage';
 
 import onMobile from '../../util/detectMobile';
 
+import { daiAbi, rinkebyDaiAddress } from '../../constants/tokenData';
+
 const HARDHAT_NETWORK_ID = '31337';
 const KOVAN_NETWORK_ID = '42'
 const RINKEBY_NETWORK_ID = '4'
@@ -36,7 +40,7 @@ const RINKEBY_NETWORK_ID = '4'
 // Note that (3) and (4) are specific of this sample application, but they show
 // you how to keep your Dapp and contract's state in sync,  and how to send a
 // transaction.
-export default class Dapp extends React.Component {
+class Dapp extends React.Component {
   constructor(props) {
     super(props);
     this.initialState = {
@@ -118,9 +122,7 @@ export default class Dapp extends React.Component {
 
   _initialize(userAddress) {
 
-    this.setState({
-      selectedAddress: userAddress,
-    });
+    this.props.connectWallet(userAddress);
 
     // FETCH USER INFORMATION HERE
 
@@ -129,7 +131,12 @@ export default class Dapp extends React.Component {
 
   async _intializeEthers() {
     // We first initialize ethers by creating a provider using window.ethereum
-    this._provider = new ethers.providers.Web3Provider(window.ethereum);
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    this.props.connectProvider(provider);
+
+    const rinkebyDai = new ethers.Contract(rinkebyDaiAddress, daiAbi, provider);
+    const rinkebyDaiWithSigner = rinkebyDai.connect(provider.getSigner());
+    this.props.connectDaiContract(rinkebyDaiWithSigner);
 
     // INITIALISE CONTRACTS HERE
   }
@@ -164,3 +171,15 @@ export default class Dapp extends React.Component {
     return false;
   }
 }
+
+
+// Redux connection
+const mapStateToProps = null;
+
+const mapDispatchToProps = dispatch => ({
+  connectProvider : provider        => dispatch({type : actionTypes.connectProvider, provider : provider}),
+  connectWallet   : selectedAddress => dispatch({type : actionTypes.connectWallet, selectedAddress : selectedAddress}),
+  connectDaiContract : contract => dispatch({type : actionTypes.connectDaiContract, contract : contract})
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Dapp);

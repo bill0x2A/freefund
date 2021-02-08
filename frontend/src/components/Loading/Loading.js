@@ -44,7 +44,7 @@ const override = css`
 
 export default function CustomSpinner (props) {
   return(
-    <div>
+    <div style={props.style}>
       <MoonLoader
         color="var(--accent)"
         loading={true} css={override}

@@ -8,6 +8,11 @@
     box-shadow: var(--bold) 1px 1px, var(--bold) 2px 2px, var(--bold) 3px 3px, var(--bold) 4px 4px, var(--bold) 5px 5px ;
 }
 
+.Fund h3 {
+    color: var(--bold);
+    margin-top : 5px;
+}
+
 .Close {
     position: absolute;
     top: 0;
@@ -66,6 +71,7 @@
     width: 100%;
     display: flex;
     justify-content: flex-end;
+    align-items: center;
     padding: 10px 5px;
 }
 
@@ -108,8 +114,22 @@
     border: 3px dashed var(--accent);
     color: var(--accent);
     background : #eaeaea;
+    position: relative;
 }
 
 .TxMessage p {
     margin-top : 0;
+}
+
+.TxMessage a {
+    position: relative;
+    text-decoration: none;
+    font-weight: bold;
+    color : var(--accent)
+}
+
+.TxMessage a:hover {
+    background: rgba(0,0,0,0.1);
+    left: -2px;
+    padding: 2px 5px;
 }

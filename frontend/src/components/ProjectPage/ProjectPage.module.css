@@ -121,6 +121,8 @@
 }
 
 .Description {
+    display: flex;
+    flex-direction: column;
     grid-row: 3 / span 1;
     grid-column: 1 / span 1;
     background: #eaeaea;

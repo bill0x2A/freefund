@@ -2,7 +2,7 @@ import React from 'react'
 import classes from './AccountPage.module.css';
 import NoAddress from '../NoAddress/NoAddress';
 import ReactFlagsSelect from 'react-flags-select';
-
+import { connect } from 'react-redux';
 import ipfsClient from 'ipfs-http-client';
 const ipfs = ipfsClient({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
 
@@ -116,4 +116,8 @@ class AccountPage extends React.Component {
     }
 }
 
-export default AccountPage;
+const mapStateToProps = state => ({
+    selectedAddress : state.selectedAddress,
+})
+
+export default connect(mapStateToProps, null)(AccountPage);

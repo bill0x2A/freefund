@@ -5,8 +5,10 @@ import classes from './Navigation.module.css';
 import * as ROUTES from '../../constants/routes';
 import jazzicon from '@metamask/jazzicon';
 import identicon from 'identicon';
+import { connect } from 'react-redux';
 import circle from '../../assets/circle.png';
 import cheating from '../../assets/cheating.png';
+
 
 const NoWalletDetected = () => (
     <div className = {classes.NoWallet}>
@@ -42,8 +44,9 @@ const WalletInfo = ({selectedAddress}) => {
 
 }
 
-const Navigation = ({ selectedAddress, connectWallet }) => {
-    
+const Navigation = props => {
+    const {selectedAddress, connectWallet} = props;
+    console.log(selectedAddress, connectWallet)
     return (
         <div className={classes.Navigation}>
             {window.ethereum === undefined && <NoWalletDetected/>}
@@ -70,5 +73,12 @@ const Navigation = ({ selectedAddress, connectWallet }) => {
     )
 }
    
+const mapStateToProps = state => ({
+    selectedAddress : state.selectedAddress,
+})
 
-  export default Navigation;
+const mapDispatchToProps = dispatch => ({
+
+})
+
+  export default connect(mapStateToProps, mapDispatchToProps)(Navigation);
