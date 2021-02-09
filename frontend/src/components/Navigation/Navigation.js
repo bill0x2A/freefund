@@ -88,7 +88,7 @@ const Navigation = props => {
     return (
         <div className={classes.Navigation}>
             {window.ethereum === undefined && <NoWalletDetected/>}
-            <NetworkAlert networkID={window.ethereum.networkVersion}/>
+            <NetworkAlert networkID={this.props.window}/>
             <div className ={classes.Navbar}>
                 <Link
                     className={classes.Logo}
@@ -114,6 +114,7 @@ const Navigation = props => {
    
 const mapStateToProps = state => ({
     selectedAddress : state.selectedAddress,
+    networkID       : state.networkID,
 })
 
 const mapDispatchToProps = dispatch => ({
