@@ -30,25 +30,12 @@ const HARDHAT_NETWORK_ID = '31337';
 const KOVAN_NETWORK_ID = '42'
 const RINKEBY_NETWORK_ID = '4'
 
-// This component is in charge of doing these things:
-//   1. It connects to the user's wallet
-//   2. Initializes ethers and the Token contract
-//   3. Polls the user balance to keep it updated.
-//   4. Transfers tokens by sending transactions
-//   5. Renders the whole application
-//
-// Note that (3) and (4) are specific of this sample application, but they show
-// you how to keep your Dapp and contract's state in sync,  and how to send a
-// transaction.
 class Dapp extends React.Component {
   constructor(props) {
     super(props);
     this.initialState = {
-      // The user's address and balance
       selectedAddress: undefined,
-      balance: undefined,
       mobile: false,
-      // The ID about transactions being sent, and any possible error with them
     };
 
     this.state = this.initialState;
@@ -118,6 +105,7 @@ class Dapp extends React.Component {
     // We reset the dapp state if the network is changed
     window.ethereum.on("networkChanged", ([networkId]) => {
       this.props.resetState();
+      this.props.setNetworkID(networkId);
     });
   }
 
@@ -152,21 +140,14 @@ class Dapp extends React.Component {
     return error.message;
   }
 
-  // This method resets the state
-  _resetState() {
-    this.setState(this.initialState);
-  }
-
-  
-
   // This method checks if Metamask selected network is Localhost:8545 / Kovan Testnet
   _checkNetwork() {
-    if ([HARDHAT_NETWORK_ID, KOVAN_NETWORK_ID, RINKEBY_NETWORK_ID].includes(window.ethereum.networkVersion)) {
+    if ([HARDHAT_NETWORK_ID, RINKEBY_NETWORK_ID].includes(window.ethereum.networkVersion)) {
       return true;
     }
 
     this.setState({ 
-      networkError: 'Please connect Metamask to Localhost:8545, Kovan Testnet or Rinkeby Testnet'
+      networkError: 'Please connect Metamask to Localhost:8545, or Rinkeby Testnet'
     });
 
     return false;
@@ -183,6 +164,7 @@ const mapDispatchToProps = dispatch => ({
   connectDaiContract  : contract        => dispatch({type : actionTypes.connectDaiContract, contract : contract}),
   disconnectWallet    : ()              => dispatch({type : actionTypes.disconnectWallet}),
   resetState          : ()              => dispatch({type : actionTypes.resetState}),
+  setNetworkID        : networkId              => dispatch({type : actionTypes.setNetworkID, id : networkId}),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dapp);

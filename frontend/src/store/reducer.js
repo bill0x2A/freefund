@@ -32,6 +32,15 @@ const reducer = ( state = initialState, action ) => {
             }
         case actionTypes.resetState:
             return initialState;
+        case actionTypes.setNetworkID:
+            console.log("NETWORK SWITCH DETECTED")
+            if(!window.ethereum.networkVersion){
+                return state;
+            }
+            return {
+                ...state,
+                networkID : action.id,
+            }
         default:
             return state
     }
