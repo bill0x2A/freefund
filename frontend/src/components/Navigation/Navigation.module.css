@@ -70,7 +70,7 @@
     color: white;
 }
 
-.NoWallet {
+.Alert {
     color: white;
     background: red;
     text-align: center;
@@ -78,13 +78,13 @@
     font-weight: 500;
 }
 
-.NoWallet a {
+.Alert a {
     text-decoration: none;
     color: white;
     border-bottom: 2px solid white;
 }
 
-.NoWallet a:hover {
+.Alert a:hover {
     color: lightgray;
     border-bottom: 2px solid lightgray;
 }

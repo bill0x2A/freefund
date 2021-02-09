@@ -2,7 +2,7 @@ import React from 'react';
 import classes from './CreateProject.module.css';
 import NoAddress from '../NoAddress/NoAddress';
 import { connect } from 'react-redux';
-
+import DAI from '../../assets/DAI.png';
 import ipfsClient from 'ipfs-http-client';
 const ipfs = ipfsClient({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
 
@@ -77,7 +77,7 @@ class CreateProject extends React.Component {
                 {!this.props.selectedAddress ? <NoAddress/> : 
                     <React.Fragment>
                         <div className={classes.Box}>
-                            <h2><span>[</span> Create New Project <span>]</span></h2>
+                            <h2> Create New Project </h2>
                             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin eu eros est. Aliquam et odio efficitur, sodales mi id, pretium nisl. Donec suscipit ultrices ligula, in volutpat est pulvinar in. Praesent eu rhoncus felis. Cras odio nibh, faucibus eu sapien vel, faucibus placerat felis. Nullam ultrices faucibus lobortis. Vestibulum a iaculis diam, et tempor augue. Vestibulum fermentum feugiat dui, blandit fringilla risus feugiat a. Cras sed nisi accumsan, rutrum risus nec, porttitor velit. Proin ultricies ornare dui eget mollis.</p>
                         </div>
                         <div className={classes.Box}>
@@ -107,12 +107,15 @@ class CreateProject extends React.Component {
                                             name="t1rewards"
                                             onChange={this.onChange}
                                         />
-                                        <input
-                                            type='number'
+                                    <div className={classes.Payment}>
+                                        <input 
+                                            type="number"
+                                            name="t1rewards"
                                             placeholder="Minimum funding"
-                                            name="t1funding"
                                             onChange={this.onChange}
                                         />
+                                        <span>DAI <img src={DAI}/></span>
+                                    </div>
                                     </div>
                                     <div className={classes.Tier}>
                                         <h4>Tier 2</h4>
@@ -121,12 +124,15 @@ class CreateProject extends React.Component {
                                             name="t2rewards"
                                             onChange={this.onChange}
                                         />
-                                        <input
-                                            type='number'
+                                     <div className={classes.Payment}>
+                                        <input 
+                                            type="number"
+                                            name="t1rewards"
                                             placeholder="Minimum funding"
-                                            name="t2funding"
                                             onChange={this.onChange}
                                         />
+                                        <span>DAI <img src={DAI}/></span>
+                                    </div>
                                     </div>
                                     <div className={classes.Tier}>
                                         <h4>Tier 3</h4>
@@ -135,12 +141,15 @@ class CreateProject extends React.Component {
                                             name="t3rewards"
                                             onChange={this.onChange}
                                         />
-                                        <input
-                                            type='number'
+                                    <div className={classes.Payment}>
+                                        <input 
+                                            type="number"
+                                            name="t1rewards"
                                             placeholder="Minimum funding"
-                                            name="t3funding"
                                             onChange={this.onChange}
                                         />
+                                        <span>DAI <img src={DAI}/></span>
+                                    </div>
                                     </div>
                                 </div>
                             </div>

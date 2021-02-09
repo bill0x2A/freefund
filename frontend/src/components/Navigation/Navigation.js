@@ -11,7 +11,7 @@ import cheating from '../../assets/cheating.png';
 
 
 const NoWalletDetected = () => (
-    <div className = {classes.NoWallet}>
+    <div className = {classes.Alert}>
             No Ethereum wallet was detected.
             Please install{" "}
             <a
@@ -25,6 +25,44 @@ const NoWalletDetected = () => (
     </div>
 )
 
+const NetworkAlert = ({networkID}) => {
+
+    let alertText;
+
+    if(!networkID){
+        return null;
+    }
+
+    switch(networkID){
+        case "1":
+            alertText = "WARNING : Connected to Ethereum Mainnet, please switch to Rinkeby Testnet";
+            break;
+        case "3":
+            alertText = "Connected to Ropsten Testnet, please switch to Rinkeby Testnet";
+            break;
+        case "5":
+            alertText = "Connected to Goerli Testnet, please switch to Rinkeby Testnet";
+            break;       
+        case "4":
+            return null; 
+        case "2018":
+            alertText = "Connected to Dev Testnet, please switch to Rinkeby Testnet";
+            break;
+        case "42":
+            alertText = "Connected to Kovan Testnet, please switch to Rinkeby Testnet";
+            break;
+        default:
+            alertText = `Connected to network with ID : ${networkID}`;
+            break;                
+    }
+    return(
+        <div className={classes.Alert}>
+            {alertText}
+        </div>
+    )
+
+}
+ 
 const WalletInfo = ({selectedAddress}) => {
     let icon = new Image();
     identicon.generate({ id: 'ajido', size: 150 }, function(err, buffer) {
@@ -50,6 +88,7 @@ const Navigation = props => {
     return (
         <div className={classes.Navigation}>
             {window.ethereum === undefined && <NoWalletDetected/>}
+            <NetworkAlert networkID={window.ethereum.networkVersion}/>
             <div className ={classes.Navbar}>
                 <Link
                     className={classes.Logo}

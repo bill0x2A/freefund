@@ -2,6 +2,10 @@ import React, {useState} from 'react';
 import classes from './Fund.module.css';
 
 import { connect } from 'react-redux';
+import ReactTooltip from 'react-tooltip';
+import { Icon, InlineIcon } from '@iconify/react';
+import walletIcon from '@iconify-icons/simple-line-icons/wallet';
+
 
 import DAI from '../../assets/DAI.png';
 import { ethers } from 'ethers';
@@ -19,7 +23,19 @@ class Fund extends React.Component {
             txError : undefined,
             txSuccess : false,
             txBeingSent : undefined,
+            userDaiBalance : 0,
+        }
+    }
 
+    componentDidMount(){
+        const {selectedAddress, daiContract, pledge} = this.props;
+
+        if(selectedAddress){
+            this.updateUserBalance();
+        }
+
+        if(pledge){
+            this.setState({pledge});
         }
     }
 
@@ -55,6 +71,7 @@ class Fund extends React.Component {
     
           // TX SUCCESSFUL, UPDATE STATE ACCORDINGLY
           this.setState({ txSuccess : true, sentTx : tx.hash })
+          this.updateUserBalance();
           
         } catch (error) {
           // We check the error code to see if this error was produced because the
@@ -80,8 +97,16 @@ class Fund extends React.Component {
         this.setState({[e.target.name] : e.target.value});
     }
 
+    updateUserBalance = async () => {
+        const {daiContract, selectedAddress} = this.props;
+        console.log(daiContract.interface.functions)
+        const balance = await daiContract.balanceOf(selectedAddress);
+
+        this.setState({balance : ethers.utils.formatUnits(balance, 18)});
+    }
+
     render(){
-        let { pledge, txError, txBeingSent, txSuccess, sentTx } = this.state;
+        let { pledge, txError, txBeingSent, txSuccess, sentTx, balance } = this.state;
         let { dismiss } = this.props;
 
         // Conditional rendering based on transaction status
@@ -103,7 +128,7 @@ class Fund extends React.Component {
             )
         } else if(!this.props.selectedAddress){
             txInfo = (
-                <div className={classes.TxMessage} style={{color : "orange", border : "3px dashed orange"}}>
+                <div className={classes.TxMessage} style={{color : "orange", border : "3px dashed orange", alignItems: "center", justifyContent: "center"}}>
                     <p>Please connect your wallet first</p>
                 </div>
         )
@@ -138,6 +163,15 @@ class Fund extends React.Component {
                     />
                     <span>DAI <img src={DAI}/></span>
                 </div>
+                <div className={classes.Balance}>
+                    <span
+                        data-tip={" ! This value may not update immediately, this is a bug in MetaMask !"}
+                    >
+                        <InlineIcon icon={walletIcon}/>
+                        {balance ? parseFloat(balance).toFixed(2) : "-" }
+                        <img src={DAI}/>
+                    </span>
+                </div>
                 <div className={classes.SubmitContainer}>
                     {/* Conditional rendering function for transaction state */}
                     {txInfo}
@@ -148,6 +182,7 @@ class Fund extends React.Component {
                                 >Fund</div>
                     }
                 </div>
+            <ReactTooltip/>
             </div>
         )
     }

@@ -60,12 +60,31 @@
     border : 3px solid var(--bold);
     border-left : none;
     color: white;
+    user-select: none;
 }
 
-.Payment img {
-    height: 20px;
+.Payment img, .Balance img {
+    height: 18px;
     margin-left: 5px;
 }
+
+.Balance svg {
+    margin-right : 5px!important;
+}
+
+.Balance span{
+    display: inline-flex;
+    width: auto;
+    min-width: 130px;
+    background: var(--bold);
+    justify-content: space-around;
+    color: white;
+    padding: 5px 10px;
+    margin-top : -2px;
+    align-items: center;
+    user-select: none;
+}
+
 
 .SubmitContainer {
     width: 100%;
