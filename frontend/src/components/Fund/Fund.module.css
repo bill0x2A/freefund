@@ -60,6 +60,7 @@
     border : 3px solid var(--bold);
     border-left : none;
     color: white;
+    user-select: none;
 }
 
 .Payment img, .Balance img {
@@ -81,6 +82,7 @@
     padding: 5px 10px;
     margin-top : -2px;
     align-items: center;
+    user-select: none;
 }
 
 

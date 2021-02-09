@@ -3,10 +3,16 @@
 }
 
 .Main {
-    display: grid;
-    grid-template-columns: 60% auto;
-    grid-template-rows: 400px 150px auto ;
-    grid-gap : 2rem;
+    display: flex;
+    flex-direction: column;
+    --gap : 30px;
+}
+
+.Test {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    background: #eaeaea;
 }
 
 .ProjectPage h2 {
@@ -15,7 +21,7 @@
 }
 
 .ImageCarouselContainer{
-    grid-row: 1 / span 1;
+    grid-row: 2 / span 1;
     grid-column: 1 / span 1;
     width: 100%;
     max-height: 100%;
@@ -28,17 +34,19 @@
 
 .CreatorInfo{
     position: relative;
-    grid-row: 1 / span 1;
+    height: auto;
+    grid-row: 2 / span 1;
     grid-column: 2 / span 1;
     width: 100%;
     background: #eaeaea;
     padding: 20px 20px;
+    margin-bottom : var(--gap);
     overflow: hidden;
     box-shadow: var(--bold) 1px 1px, var(--bold) 2px 2px, var(--bold) 3px 3px, var(--bold) 4px 4px, var(--bold) 5px 5px ;
 }
 
-.CreatorText {
-    max-width: calc(100% - 180px);
+.CreatorText p{
+    text-align: justify;
 }
 
 .CreatorInfo h4 {
@@ -48,11 +56,10 @@
 }
 
 .CreatorInfo img {
-    position: absolute;
-    top: 0;
-    right: 0;
+    float: right;
     width: 180px;
     height: 180px;
+    padding : 0 0 10px 10px;
 }
 
 .FundingTopline {
@@ -62,11 +69,18 @@
 
 .Funding {
     display: flex;
+    justify-content: space-between;
+    align-items: center;
     grid-row : 2 / span 1;
     grid-column: 1 / span 2;
     background: #eaeaea;
     box-shadow: var(--bold) 1px 1px, var(--bold) 2px 2px, var(--bold) 3px 3px, var(--bold) 4px 4px, var(--bold) 5px 5px ;
     padding: 20px 20px;
+    padding-right : 40px;
+    margin-bottom : var(--gap);
+}
+.FundingLeft{
+    width: calc(100% - 150px);
 }
 
 .FundingInfo {
@@ -86,11 +100,9 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 300px;
-    
 }
 
-.PledgeButton {
+.PledgeButton, .RewardFund {
     position: relative;
     display: flex;
     justify-content: center;
@@ -105,11 +117,21 @@
     transition: all 300ms;
 }
 
-.PledgeButton:hover {
+.PledgeButton:hover, .RewardFund:Hover {
     filter: contrast(120%);
     bottom: -2px;
     right: -2px;
     box-shadow: #606060 3px 3px, #606060 4px 4px, #606060 5px 5px ;
+}
+
+.RewardFundContainer {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.RewardFund {
+    font-size: 20px;
+    padding: 5px 10px;
 }
 
 .ProgressBar {
@@ -125,10 +147,11 @@
     flex-direction: column;
     grid-row: 3 / span 1;
     grid-column: 1 / span 1;
+    min-height: 700px;
     background: #eaeaea;
-    height: 700px;
     box-shadow: var(--bold) 1px 1px, var(--bold) 2px 2px, var(--bold) 3px 3px, var(--bold) 4px 4px, var(--bold) 5px 5px ;
-    padding: 20px 20px;;
+    padding: 20px 20px;
+    margin-top : var(--gap);
 }
 
 .RewardTiers {

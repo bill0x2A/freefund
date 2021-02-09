@@ -28,10 +28,14 @@ class Fund extends React.Component {
     }
 
     componentDidMount(){
-        const {selectedAddress, daiContract} = this.props;
+        const {selectedAddress, daiContract, pledge} = this.props;
 
         if(selectedAddress){
             this.updateUserBalance();
+        }
+
+        if(pledge){
+            this.setState({pledge});
         }
     }
 
@@ -124,7 +128,7 @@ class Fund extends React.Component {
             )
         } else if(!this.props.selectedAddress){
             txInfo = (
-                <div className={classes.TxMessage} style={{color : "orange", border : "3px dashed orange"}}>
+                <div className={classes.TxMessage} style={{color : "orange", border : "3px dashed orange", alignItems: "center", justifyContent: "center"}}>
                     <p>Please connect your wallet first</p>
                 </div>
         )
@@ -162,7 +166,11 @@ class Fund extends React.Component {
                 <div className={classes.Balance}>
                     <span
                         data-tip={" ! This value may not update immediately, this is a bug in MetaMask !"}
-                    ><InlineIcon icon={walletIcon}/>{parseFloat(balance).toFixed(2)} <img src={DAI}/></span>
+                    >
+                        <InlineIcon icon={walletIcon}/>
+                        {balance ? parseFloat(balance).toFixed(2) : "-" }
+                        <img src={DAI}/>
+                    </span>
                 </div>
                 <div className={classes.SubmitContainer}>
                     {/* Conditional rendering function for transaction state */}
