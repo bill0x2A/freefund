@@ -56,7 +56,7 @@ class AccountPage extends React.Component {
                 {!this.props.selectedAddress ? <NoAddress/> :
                     <React.Fragment>
                         <div className={classes.Box}>
-                            <h2><span>[</span> Account Information <span>]</span></h2>
+                            <h2> Account Information </h2>
                             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin eu eros est. Aliquam et odio efficitur, sodales mi id, pretium nisl. Donec suscipit ultrices ligula, in volutpat est pulvinar in. Praesent eu rhoncus felis. Cras odio nibh, faucibus eu sapien vel, faucibus placerat felis. Nullam ultrices faucibus lobortis. Vestibulum a iaculis diam, et tempor augue. Vestibulum fermentum feugiat dui, blandit fringilla risus feugiat a. Cras sed nisi accumsan, rutrum risus nec, porttitor velit. Proin ultricies ornare dui eget mollis.</p>
                         </div>
                         <div className={classes.Box}>
@@ -102,7 +102,7 @@ class AccountPage extends React.Component {
                             >Submit Changes</div>
                         </div>
                         <div className={classes.Box}>
-                            <h2><span>[</span> My Projects <span>]</span></h2>
+                            <h2> My Projects </h2>
                             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin eu eros est. Aliquam et odio efficitur, sodales mi id, pretium nisl. Donec suscipit ultrices ligula, in volutpat est pulvinar in. Praesent eu rhoncus felis. Cras odio nibh, faucibus eu sapien vel, faucibus placerat felis. Nullam ultrices faucibus lobortis. Vestibulum a iaculis diam, et tempor augue. Vestibulum fermentum feugiat dui, blandit fringilla risus feugiat a. Cras sed nisi accumsan, rutrum risus nec, porttitor velit. Proin ultricies ornare dui eget mollis.</p>
                         </div>
                         <div className={classes.Box}>
