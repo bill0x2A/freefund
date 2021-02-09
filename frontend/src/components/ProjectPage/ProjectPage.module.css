@@ -2,6 +2,10 @@
     margin-bottom : 40px;
 }
 
+.ProjectPage p {
+    font-size: 18px;
+}
+
 .Main {
     display: flex;
     flex-direction: column;

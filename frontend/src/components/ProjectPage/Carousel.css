@@ -18,8 +18,8 @@ ul {
   -ms-transition: all 0.25s ease-in;
   -o-transition: all 0.25s ease-in;
   transition: all 0.25s ease-in;
-  opacity: 0.4;
-  filter: alpha(opacity=40);
+  opacity: 1;
+  filter: alpha(opacity=100);
   position: absolute;
   z-index: 2;
   top: 20px;
@@ -44,11 +44,11 @@ ul {
   .carousel .control-prev.control-arrow {
     left: 0; }
     .carousel .control-prev.control-arrow:before {
-      border-right: 8px solid #fff; }
+      border-right: 8px solid var(--accent); }
   .carousel .control-next.control-arrow {
     right: 0; }
     .carousel .control-next.control-arrow:before {
-      border-left: 8px solid #fff; }
+      border-left: 8px solid var(--accent); }
 
 .carousel-root {
   outline: none;
@@ -121,13 +121,13 @@ ul {
     overflow: hidden; }
     .carousel.carousel-slider .control-arrow {
       top: 0;
-      color: #fff;
+      color: var(--accent);
       font-size: 26px;
       bottom: 0;
       margin-top: 0;
       padding: 5px; }
       .carousel.carousel-slider .control-arrow:hover {
-        background: rgba(0, 0, 0, 0.2); }
+        background: none; }
   .carousel .slider-wrapper {
     overflow: hidden;
     margin: auto;
