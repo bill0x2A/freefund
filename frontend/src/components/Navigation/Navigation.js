@@ -88,7 +88,7 @@ const Navigation = props => {
     return (
         <div className={classes.Navigation}>
             {window.ethereum === undefined && <NoWalletDetected/>}
-            <NetworkAlert networkID={this.props.window}/>
+            <NetworkAlert networkID={"4"}/>
             <div className ={classes.Navbar}>
                 <Link
                     className={classes.Logo}
