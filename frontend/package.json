@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@iconify-icons/simple-line-icons": "^1.1.0",
+    "@iconify/react": "^1.1.4",
     "@metamask/jazzicon": "^2.0.0",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
@@ -22,6 +24,7 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.2",
     "react-spinners": "^0.10.4",
+    "react-tooltip": "^4.2.13",
     "redux": "^4.0.5",
     "web-vitals": "^1.1.0"
   },

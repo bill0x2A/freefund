@@ -7,34 +7,37 @@ import {createStore} from 'redux';
 import { Provider } from 'react-redux';
 import reducer from './store/reducer';
 
-const loadState = () => {
-  try {
-    const serializedState = localStorage.getItem('state');
-    if(serializedState === null) {
-      return undefined;
-    }
-    return JSON.parse(serializedState);
-  } catch (e) {
-    return undefined;
-  }
-};
 
-const saveState = (state) => {
-  try {
-    const serializedState = JSON.stringify(state);
-    localStorage.setItem('state', serializedState);
-  } catch (e) {
+// This breaks so much stuff I'm removing it for now
 
-  }
-};
+// const loadState = () => {
+//   try {
+//     const serializedState = localStorage.getItem('state');
+//     if(serializedState === null) {
+//       return undefined;
+//     }
+//     return JSON.parse(serializedState);
+//   } catch (e) {
+//     return undefined;
+//   }
+// };
+
+// const saveState = (state) => {
+//   try {
+//     const serializedState = JSON.stringify(state);
+//     localStorage.setItem('state', serializedState);
+//   } catch (e) {
+
+//   }
+// };
 
 const debug = window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__();
-const peristedState = loadState();
-const store = createStore(reducer, peristedState, debug);
+// const peristedState = loadState();
+const store = createStore(reducer);
 
-store.subscribe(() => {
-  saveState(store.getState());
-});
+// store.subscribe(() => {
+//   saveState(store.getState());
+// });
 
 
 ReactDOM.render(

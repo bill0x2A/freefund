@@ -4,7 +4,6 @@ import { CarouselProvider, Slider, Slide, ButtonBack, ButtonNext, Image } from '
 import classes from './ProjectPage.module.css';
 import 'pure-react-carousel/dist/react-carousel.es.css';
 
-
 import Loading from '../Loading/Loading';
 import {test1, test2, test3, test4} from '../../constants/testProjects';
 import DAI from '../../assets/DAI.png'
@@ -42,7 +41,6 @@ const Carousel = ({images}) => {
 
 const ProgressBar = (props) =>{
     const progress = props.funded / props.fundingLimit * 100
-    console.log(progress);
     return (
         <div className={classes.ProgressBar}>
             <div style={{
