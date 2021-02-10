@@ -5,8 +5,12 @@ const routes = require('./functions/routes')
 const app = express()
 
 
-mongodb.connect(process.env.DB, (err, client)=>{
-    const db = client('Cluster0')
+mongodb.connect(process.env.DB, { useUnifiedTopology: true }, (err, client)=>{
+    if(err){
+         console.log(err)
+         return
+    }
+    const db = client.db('Cluster0')
     routes(app, db)
     app.listen(5000, ()=>{
         console.log("app listening at port 5000")
