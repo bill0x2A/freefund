@@ -2,7 +2,10 @@ import React from 'react'
 import classes from './AccountPage.module.css';
 import NoAddress from '../NoAddress/NoAddress';
 import ReactFlagsSelect from 'react-flags-select';
+import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import { connect } from 'react-redux';
+import { withFirebase } from '../../firebase/index';
+import {withRouter} from 'react-router-dom';
 import ipfsClient from 'ipfs-http-client';
 const ipfs = ipfsClient({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
 
@@ -12,6 +15,15 @@ class AccountPage extends React.Component {
         this.state = {
 
         }
+    }
+
+    loadUserData = () => {
+        this.props.firebase.user(this.props.selectedAddress)
+        .once("value", data => {
+            const accountData = data.val();
+            console.log(accountData)
+            this.setState({...accountData});
+        })
     }
 
     onChange = (e) => {
@@ -41,13 +53,22 @@ class AccountPage extends React.Component {
                     })
     }
 
-
     componentDidMount = () => {
-        // Load prexisting user data from Mongo to state
+        this.loadUserData();
     }
     
-    onSubmit = () => {
-        // Save changes from state to Mongo
+    onSubmit = async () => {
+        await this.uploadImage();
+        const userData = {
+            email : this.state.email,
+            firstName  : this.state.firstName,
+            lastName : this.state.lastName,
+            bio   : this.state.bio,
+            country : this.state.country,
+            profileHash : this.state.imgHash,
+        }
+        this.props.firebase.user(this.props.selectedAddress).set(userData);
+        this.props.history.push('/')
     }
 
     render = () => {
@@ -55,9 +76,10 @@ class AccountPage extends React.Component {
             <div className ={classes.AccountPage}>
                 {!this.props.selectedAddress ? <NoAddress/> :
                     <React.Fragment>
+                        {this.state.errorMessage && <ErrorMessage message={this.state.errorMessage}/>}
                         <div className={classes.Box}>
                             <h2> Account Information </h2>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin eu eros est. Aliquam et odio efficitur, sodales mi id, pretium nisl. Donec suscipit ultrices ligula, in volutpat est pulvinar in. Praesent eu rhoncus felis. Cras odio nibh, faucibus eu sapien vel, faucibus placerat felis. Nullam ultrices faucibus lobortis. Vestibulum a iaculis diam, et tempor augue. Vestibulum fermentum feugiat dui, blandit fringilla risus feugiat a. Cras sed nisi accumsan, rutrum risus nec, porttitor velit. Proin ultricies ornare dui eget mollis.</p>
+                            <p>Before you are able to fund or create projects, we need to know a little bit about you first. Please fill in the form below.</p>
                         </div>
                         <div className={classes.Box}>
                             <h3>Email</h3>
@@ -66,15 +88,37 @@ class AccountPage extends React.Component {
                                 placeholder="Your email address"
                                 name="email"
                                 onChange={this.onChange}
+                                value={this.state.email}
                             />
                         </div>
                         <div className={classes.Box}>
                             <h3>Name</h3>
-                            <input
+                            <div style={{width: "100%", display: "flex"}}>
+                                <input
+                                    type='text'
+                                    placeholder="First name"
+                                    name="firstName"
+                                    onChange={this.onChange}
+                                    value={this.state.firstName}
+                                    style={{borderRight: "none"}}
+                                />
+                                                            <input
+                                    type='text'
+                                    placeholder="Last name"
+                                    name="lastName"
+                                    onChange={this.onChange}
+                                    value={this.state.lastName}
+                                />
+                            </div>
+                        </div>
+                        <div className={classes.Box}>
+                            <h3>Bio</h3>
+                            <textarea
                                 type='text'
-                                placeholder="Your full name"
-                                name="name"
+                                placeholder="A short description of yourself"
+                                name="bio"
                                 onChange={this.onChange}
+                                value={this.state.bio}
                             />
                         </div>
                         <div className={classes.Box}>
@@ -120,4 +164,4 @@ const mapStateToProps = state => ({
     selectedAddress : state.selectedAddress,
 })
 
-export default connect(mapStateToProps, null)(AccountPage);
+export default connect(mapStateToProps, null)(withFirebase(withRouter(AccountPage)));

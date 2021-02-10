@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import ReactTooltip from 'react-tooltip';
 import { Icon, InlineIcon } from '@iconify/react';
 import walletIcon from '@iconify-icons/simple-line-icons/wallet';
+import {withFirebase} from '../../firebase/index';
 
 
 import DAI from '../../assets/DAI.png';
@@ -37,10 +38,19 @@ class Fund extends React.Component {
         if(pledge){
             this.setState({pledge});
         }
+
+        this.loadProjectData();
+    }
+
+    loadProjectData = () => {
+        this.props.firebase.project(this.props.projectID)
+            .once("value", data => {
+                this.setState({funded : data.val().funded});
+            })
     }
 
     async _transferTokens(to, amount) {
-        if(!(amount > 1)){
+        if(!(amount > 0)){
             this.setState({txError : "Please enter your pledge amount"})
             return;
         }
@@ -71,6 +81,9 @@ class Fund extends React.Component {
     
           // TX SUCCESSFUL, UPDATE STATE ACCORDINGLY
           this.setState({ txSuccess : true, sentTx : tx.hash })
+          console.log("FUNDING: ",this.state.funded)
+          const newFunded = parseFloat(this.state.funded) + parseFloat(amount);
+          this.props.firebase.project(this.props.projectID).child('funded').set(newFunded);
           this.updateUserBalance();
           
         } catch (error) {
@@ -99,7 +112,6 @@ class Fund extends React.Component {
 
     updateUserBalance = async () => {
         const {daiContract, selectedAddress} = this.props;
-        console.log(daiContract.interface.functions)
         const balance = await daiContract.balanceOf(selectedAddress);
 
         this.setState({balance : ethers.utils.formatUnits(balance, 18)});
@@ -195,4 +207,4 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = null;
 
-export default connect(mapStateToProps, mapDispatchToProps)(Fund)
+export default connect(mapStateToProps, mapDispatchToProps)(withFirebase(Fund));

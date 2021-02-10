@@ -3,6 +3,7 @@ import classes from './Dapp.module.css';
 import * as ROUTES from '../../constants/routes';
 import * as actionTypes from '../../store/actionTypes';
 import { connect } from 'react-redux';
+import { withFirebase } from '../../firebase/index';
 
 import { BrowserRouter as Router,
   Route,
@@ -167,4 +168,4 @@ const mapDispatchToProps = dispatch => ({
   setNetworkID        : networkId              => dispatch({type : actionTypes.setNetworkID, id : networkId}),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Dapp);
+export default connect(mapStateToProps, mapDispatchToProps)(withFirebase(Dapp));

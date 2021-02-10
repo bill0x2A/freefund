@@ -1,17 +1,34 @@
 import React from 'react';
 import classes from './CreateProject.module.css';
 import NoAddress from '../NoAddress/NoAddress';
+import MarkdownEditor from './MarkdownEditor/MarkdownEditor';
 import { connect } from 'react-redux';
+import { withFirebase } from '../../firebase/index';
+import { withRouter } from 'react-router-dom';
 import DAI from '../../assets/DAI.png';
+import {test1} from '../../constants/testProjects';
+import testpp from '../../assets/testpp.png'
 import ipfsClient from 'ipfs-http-client';
 const ipfs = ipfsClient({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
+
+let projectTemplate = {
+    title : "Test title",
+    description : "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam interdum, enim vel vulputate tempor, libero erat rhoncus dolor, rutrum scelerisque ex lectus vitae est. Donec a porttitor nisi. Nam ac urna eget mi venenatis interdum nec quis lacus. Nulla molestie dapibus nisl eget tincidunt. Vivamus finibus ultricies viverra. Ut mauris urna, tincidunt a tristique in, sollicitudin at est. Aliquam in ullamcorper leo. Nulla facilisi. Aenean pretium nunc ut metus vehicula efficitur sed eget nulla. Mauris pulvinar dignissim turpis, et posuere lacus lacinia vel. Phasellus id leo ultrices, lobortis felis in, malesuada diam. Donec auctor massa sit amet dui pharetra pulvinar vitae quis metus. Donec id turpis massa. Proin ut tempus lacus, at sagittis augue. Nam interdum odio vel quam finibus euismod. Pellentesque quis facilisis urna.",
+    creatorImage : testpp,
+    creatorName : "Bert Brown",
+    creatorCountryCode : "BR",
+    creatorBio : "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam interdum, enim vel vulputate tempor, libero erat rhoncus dolor, rutrum scelerisque ex lectus vitae est. Donec a porttitor nisi. Nam ac urna eget mi venenatis interdum nec quis lacus. Nulla molestie dapibus nisl eget tincidunt. Vivamus finibus ultricies viverra. Ut mauris urna, tincidunt a tristique in, sollicitudin at est. Aliquam in ullamcorper leo. Nulla facilisi. Aenean pretium nunc ut metus vehicula efficitur sed eget nulla. Mauris pulvinar dignissim turpis, et posuere lacus lacinia vel. Phasellus id leo ultrices, lobortis felis in.",
+    funded : 0,
+    fundingLimit : 7000,
+    imageHashes : [],
+}
 
 class CreateProject extends React.Component {
 
     constructor(props){
         super(props);
         this.state = {
-            tags : [],
+            project : projectTemplate,
             imageHashes: [],
             imgBuffers: [],
         }
@@ -21,22 +38,48 @@ class CreateProject extends React.Component {
         this.setState({[e.target.name] : e.target.value});
     }
     
-    onSubmit = () => {
-        // FORMAT DATA CORRECTLY AND UPLOAD TO MONGO
+    onSubmit = async () => {
 
         //Format tags as an array of lowercase strings, removing 
-        let tags = this.state.tags.split(',')
-        //note make this recursive
-        tags = tags.map(tag => {
-            if(tag[0] === ' '){
-                tag = tag.substring(1);
-            }
-            if(tag[tag.length-1] === ' '){
-                tag = tag.slice(0, -1);
-            }
-            return tag.toLowerCase();
-        })
-        console.log(this.state);
+        await this.uploadImages();
+
+        const projectID = Math.random().toString(36).substr(2, 9);
+        const { title, description, t1desc, t2desc, t3desc, t1funding, t2funding, t3funding, tags, imgHashes, fundingLimit} = this.state;
+        
+        const project = {
+            ...this.state.project,
+            title : title,
+            description : description,
+            t1desc : t1desc,
+            t2desc : t2desc,
+            t3desc : t3desc,
+            t1funding : t1funding,
+            t2funding : t2funding,
+            t3funding : t3funding,
+            creatorAddress : this.props.selectedAddress,
+            imgHashes : imgHashes,
+            funded : 0,
+        }
+
+        // if(this.state.tags.length > 0){
+        //     let tags = this.state.tags.split(',')
+        //     //note make this recursive
+        //     tags = tags.map(tag => {
+        //         if(tag[0] === ' '){
+        //             tag = tag.substring(1);
+        //         }
+        //         if(tag[tag.length-1] === ' '){
+        //             tag = tag.slice(0, -1);
+        //         }
+        //         return tag.toLowerCase();
+        //     })
+        // }
+
+        
+        this.props.firebase.project(projectID).set(project);
+        this.props.firebase.user(this.props.selectedAddress).child('projects').child(projectID).set(projectID);
+        this.props.history.push(`/projects/${projectID}`);
+
     }
 
     captureFile = (e) => {
@@ -70,6 +113,14 @@ class CreateProject extends React.Component {
     }
 
     // CHECK THE USER HAS ACCOUNT INFORMATION 
+
+    handleEditorChange = ({html, text}) => { 
+        const markdown = {
+            html : html,
+            text : text,
+        }
+        this.setState({description : markdown});
+      }
     
     render(){
         return (
@@ -91,11 +142,7 @@ class CreateProject extends React.Component {
                             </div>
                             <div className={classes.Box}>
                                 <h3>Description</h3>
-                                <textarea
-                                    placeholder = "Project Description"
-                                    name = "description"
-                                    onChange={this.onChange}
-                                />
+                                <MarkdownEditor handleEditorChange={(html, text) => this.handleEditorChange(html, text)}/>
                             </div>
                             <div className={classes.Box}>
                                 <h3>Contribution Tiers</h3>
@@ -104,13 +151,13 @@ class CreateProject extends React.Component {
                                         <h4>Tier 1</h4>
                                         <textarea
                                             placeholder="Tier Rewards Description"
-                                            name="t1rewards"
+                                            name="t1desc"
                                             onChange={this.onChange}
                                         />
                                     <div className={classes.Payment}>
                                         <input 
                                             type="number"
-                                            name="t1rewards"
+                                            name="t1funding"
                                             placeholder="Minimum funding"
                                             onChange={this.onChange}
                                         />
@@ -121,13 +168,13 @@ class CreateProject extends React.Component {
                                         <h4>Tier 2</h4>
                                         <textarea
                                             placeholder="Tier Rewards Description"
-                                            name="t2rewards"
+                                            name="t2desc"
                                             onChange={this.onChange}
                                         />
                                      <div className={classes.Payment}>
                                         <input 
                                             type="number"
-                                            name="t1rewards"
+                                            name="t2funding"
                                             placeholder="Minimum funding"
                                             onChange={this.onChange}
                                         />
@@ -138,13 +185,13 @@ class CreateProject extends React.Component {
                                         <h4>Tier 3</h4>
                                         <textarea
                                             placeholder="Tier Rewards Description"
-                                            name="t3rewards"
+                                            name="t3desc"
                                             onChange={this.onChange}
                                         />
                                     <div className={classes.Payment}>
                                         <input 
                                             type="number"
-                                            name="t1rewards"
+                                            name="t3funding"
                                             placeholder="Minimum funding"
                                             onChange={this.onChange}
                                         />
@@ -192,4 +239,4 @@ const mapStateToProps = state => ({
     selectedAddress : state.selectedAddress,
 })
 
-export default connect(mapStateToProps, null)(CreateProject);
+export default connect(mapStateToProps, null)(withFirebase(withRouter(CreateProject)));

@@ -6,6 +6,7 @@ import * as ROUTES from '../../constants/routes';
 import jazzicon from '@metamask/jazzicon';
 import identicon from 'identicon';
 import { connect } from 'react-redux';
+import { withFirebase } from '../../firebase/index';
 import circle from '../../assets/circle.png';
 import cheating from '../../assets/cheating.png';
 
@@ -64,19 +65,20 @@ const NetworkAlert = ({networkID}) => {
 }
  
 const WalletInfo = ({selectedAddress}) => {
-    let icon = new Image();
-    identicon.generate({ id: 'ajido', size: 150 }, function(err, buffer) {
-        if (err) throw err;
-        icon.src = buffer;
-    });
+    // let icon = new Image();
+    // identicon.generate({ id: 'ajido', size: 150 }, function(err, buffer) {
+    //     if (err) throw err;
+    //     icon.src = buffer;
+    // });
     const displayAddress = selectedAddress.substring(0, 4) + '...' + selectedAddress.substring( 35, selectedAddress.length-1)
+    let image = cheating;
     return(
         <Link
             className={classes.WalletInfo}
             to={ROUTES.ACCOUNT}
         >
             <p>{displayAddress}</p>
-            <img src={cheating}/>
+            <img src={image}/>
         </Link>
     )
 
@@ -121,4 +123,4 @@ const mapDispatchToProps = dispatch => ({
 
 })
 
-  export default connect(mapStateToProps, mapDispatchToProps)(Navigation);
+  export default connect(mapStateToProps, mapDispatchToProps)(withFirebase(Navigation));
