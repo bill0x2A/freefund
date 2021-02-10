@@ -12,7 +12,7 @@ function verify(req, res, next){
 }
 
 module.exports = function (app, dbe){
-    const db= db.collection('Crowdfund')
+    const db= dbe.collection('Crowdfund')
 
     app.post('/login', (req, res)=>{
         const address = req.body.address
@@ -44,11 +44,11 @@ module.exports = function (app, dbe){
     })
 
     app.post('/addProject',verify, (req, res)=>{
-        const {name, pictures, description, reason, goal, tier1, tier2, tier3 } = req.body
+        const {name, pictures, description, reason, goal, tier1, tier2, tier3, time } = req.body
         if(name && pictures && description && reason && goal){
             const id = shortId.generate()
-            const address //generate address
-            db.insertOne({name, user: req.user, pictures, description, reason, tier1, tier2, tier3, goal, current:0}, (err,doc)=>{
+            const address = null //generate address
+            db.insertOne({name, user: req.user, pictures, time, description, reason, tier1, tier2, tier3, goal, current:0}, (err,doc)=>{
                 res.json({message:"Project created successfully",name, id, address })
             })
         }else{
