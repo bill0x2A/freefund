@@ -3,6 +3,7 @@ const express = require('express')
 const mongodb = require('mongodb')
 const routes = require('./functions/routes')
 const app = express()
+app.use(express.json())
 
 
 mongodb.connect(process.env.DB, { useUnifiedTopology: true }, (err, client)=>{
