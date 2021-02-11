@@ -26,14 +26,13 @@ class CreateProject extends React.Component {
     onChange = (e) => {
         const name = e.target.name;
         const value = e.target.value;
-        console.log({name , value});
         this.setState({[e.target.name] : e.target.value});
     }
 
     dateTimeChangeHandler = (value) => {
         const date = new Date(value);
-        console.log(date);
-        this.setState({endTime : date}, () => console.log(this.state.endTime));
+        const utc = date.toUTCString();
+        this.setState({endTime : utc});
     }
     
     handleEditorChange = ({html, text}) => { 
@@ -86,6 +85,7 @@ class CreateProject extends React.Component {
         //     })
         // }
 
+        console.log(project);
         
         this.props.firebase.project(projectID).set(project);
         this.props.firebase.user(this.props.selectedAddress).child('projects').child(projectID).set(projectID);
@@ -93,19 +93,19 @@ class CreateProject extends React.Component {
 
     }
 
-    captureFile = (e) => {
+    captureFile = async (e) => {
         e.preventDefault();
-        const file = e.target.files[0];
-        const reader = new window.FileReader();
-    
-        reader.readAsArrayBuffer(file)
-    
-        reader.onloadend = () => {
-            let imgBuffers = this.state.imgBuffers;
-            imgBuffers.push(Buffer(reader.result))
-            this.setState({imgBuffers});
-        };
-    }
+        const files = e.target.files;
+        for (const file of files){
+            const reader = new window.FileReader();
+            reader.readAsArrayBuffer(file)
+            reader.onloadend = () => {
+                let imgBuffers = this.state.imgBuffers;
+                imgBuffers.push(Buffer(reader.result))
+                this.setState({imgBuffers}, () => console.log(this.state.imgBuffers))
+            };
+        }
+    };
     
     uploadImages = async () => {
         // Takes all image buffers in state and uploads them to to ipfs, storing the hashes in state.
@@ -120,7 +120,7 @@ class CreateProject extends React.Component {
                         }
                     })
         }
-        this.setState({imgHashes});
+        this.setState({imgHashes}, () => console.log(this.state.imgHashes));
     }
 
     checkUser = () => {
@@ -156,7 +156,7 @@ class CreateProject extends React.Component {
                     <React.Fragment>
                         <div className={classes.Box}>
                             <h2> Create New Project </h2>
-                            <p>This is how you're going to sell your idea to the world! Make sure to include a comprehensive, well formatted description and add some great images to get your potential funders excited about your project.</p>
+                            <p>This is how you're going to sell your idea to the world! Make sure to include a comprehensive, well formatted description and add some great images to get your funders excited.</p>
                         </div>
                         <div className={classes.Box}>
                             <h3>Title</h3>
@@ -255,7 +255,7 @@ class CreateProject extends React.Component {
                                 <h3>End of funding period</h3>
                                 <DateTimePicker
                                     onChange = {this.dateTimeChangeHandler}
-                                    value = {this.state.endTime}
+                                    value = {this.state.endTime && new Date(this.state.endTime)}
                                     className={classes.DateTime}
                                 />
                             </div>

@@ -41,7 +41,7 @@ class ProjectBrowser extends React.Component {
     render(){
         return(
             <React.Fragment>
-            {this.state.loading ? <p>LOADING</p> : 
+            {this.state.loading ? <Loading/> : 
                 <div className={classes.ProjectBrowser}>
                 <div className={classes.SearchContainer}>
                     <input 

@@ -124,10 +124,12 @@
     width: 42px;
     height: 42px;
     border-radius: 50%;
-    border-top : 2px solid var(--bold);
-    border-left : 2px solid var(--bold);
+    border : 2px solid var(--bold);
+    border-right:none;
+    background : var(--bold);
     user-select: none;
     -webkit-user-drag: none;
+    -moz-user-select: none;
 }
 
 .WalletInfo p {

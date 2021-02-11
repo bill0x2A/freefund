@@ -4,6 +4,7 @@ import DAI from '../../assets/DAI.png';
 import Flag from 'react-country-flag';
 import {Link} from 'react-router-dom';
 import Loading from '../Loading/Loading';
+import timeLeft from '../../util/timeDifferece';
 import { withFirebase } from '../../firebase/index';
 import MarkdownIt from 'markdown-it';
 import ReactHtmlParser, { processNodes, convertNodeToElement, htmlparser2 } from 'react-html-parser';
@@ -12,7 +13,6 @@ const md = new MarkdownIt();
 
 const ProgressBar = (props) =>{
     const progress = props.funded / props.fundingLimit * 100
-    console.log(progress);
     return (
         <div className={classes.ProgressBar}>
             <div style={{
@@ -46,7 +46,6 @@ class ProjectCard extends React.Component {
         this.props.firebase.user(creatorAddress)
             .once("value", data => {
                 const creatorInfo = data.val();
-                console.log("CREATOR: ", creatorInfo)
                 this.setState({creatorInfo : creatorInfo, loading:false});
             })
     }
@@ -57,8 +56,6 @@ class ProjectCard extends React.Component {
 
     render(){
         const {project, creatorInfo} = this.state
-        console.log(project)
-        console.log(creatorInfo)
         return(
             <React.Fragment>
                 {this.state.loading ? <Loading/> : 
@@ -80,6 +77,9 @@ class ProjectCard extends React.Component {
                             </div>
                         </div>
                         <p>{ReactHtmlParser(md.render(project.description.text))}</p>
+                        <div className={classes.TimeLeft}>
+                            <span>{timeLeft(project.endTime)}</span>
+                        </div>
                         <div className = {classes.FadeOut}/>
                         <Link 
                             className={classes.SeeMore}

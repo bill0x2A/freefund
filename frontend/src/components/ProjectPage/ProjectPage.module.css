@@ -149,7 +149,7 @@
     flex-direction: column;
     grid-row: 3 / span 1;
     grid-column: 1 / span 1;
-    min-height: 700px;
+    min-height: 300px;
     background: #eaeaea;
     box-shadow: var(--bold) 1px 1px, var(--bold) 2px 2px, var(--bold) 3px 3px, var(--bold) 4px 4px, var(--bold) 5px 5px ;
     padding: 20px 20px;
@@ -192,4 +192,14 @@
 .RewardTier img {
     height: 25px;
     margin: 0 5px;
+}
+
+.TimeLeft {
+    font-weight: 600;
+    display: inline-block;
+    padding: 8px 12px;
+    background: #eaeaea;
+    color: var(--accent);
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
 }

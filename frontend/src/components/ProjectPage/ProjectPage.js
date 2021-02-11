@@ -5,6 +5,7 @@ import styles from './Carousel.css';
 import { Carousel } from 'react-responsive-carousel';
 import { withFirebase } from '../../firebase/index';
 import MarkdownIt from 'markdown-it';
+import timeLeft from '../../util/timeDifferece';
 import ReactHtmlParser, { processNodes, convertNodeToElement, htmlparser2 } from 'react-html-parser';
 
 import Loading from '../Loading/Loading';
@@ -22,8 +23,8 @@ const CarouselDisplay = ({imageHashes}) => {
     // Fetch images from ipfs
 
     const images = imageHashes?.map(imgHash => (
-        <div className={classes.Test}>
-            <img src = {`https://ipfs.infura.io/ipfs/${imgHash}`}/>
+        <div className={classes.Test} key={imgHash}>
+            <img src = {`https://ipfs.infura.io/ipfs/${imgHash}`} alt={`IPFS image : ${imgHash}`}/>
         </div>
     ));
 
@@ -37,6 +38,8 @@ const CarouselDisplay = ({imageHashes}) => {
             </Carousel>
     )
 }
+
+
 
 const ProgressBar = (props) =>{
     const progress = props.funded / props.fundingLimit * 100
@@ -155,6 +158,7 @@ class ProjectPage extends React.Component {
                                      </ModalContainer>}
 
                         <h2>{project.title}</h2>
+                        <div className={classes.TimeLeft}>{timeLeft(project.endTime)}</div>
 
                         <div className={classes.Main}>
 

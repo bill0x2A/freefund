@@ -51,10 +51,10 @@
 }
 
 .ProgressBar {
-    height: 10px;
+    height: 13px;
     width: calc(100% - 160px);
     border-radius: 100px;
-    border: 1px solid white;
+    border: 2px solid white;
     overflow: hidden;
     background: #606060;
 }
@@ -104,4 +104,18 @@
 
 .SeeMore:hover {
     filter: contrast(120%);
+}
+
+.TimeLeft {
+    position: absolute;
+    z-index: 200;
+    padding: 5px 10px;
+    bottom : 0;
+    left: 0;
+    background: #eaeaea;
+    border-top-right-radius: 4px;
+    font-weight: 600;
+    border-right: 1px solid var(--bold);
+    border-top:  1px solid var(--bold);
+    color : var(--accent);
 }
