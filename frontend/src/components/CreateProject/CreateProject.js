@@ -19,6 +19,7 @@ class CreateProject extends React.Component {
             project : {},
             imageHashes: [],
             imgBuffers: [],
+            fileNames : [],
         }
     }
 
@@ -96,13 +97,16 @@ class CreateProject extends React.Component {
     captureFile = async (e) => {
         e.preventDefault();
         const files = e.target.files;
+        console.dir(files)
         for (const file of files){
             const reader = new window.FileReader();
             reader.readAsArrayBuffer(file)
             reader.onloadend = () => {
                 let imgBuffers = this.state.imgBuffers;
+                let fileNames = this.state.fileNames;
                 imgBuffers.push(Buffer(reader.result))
-                this.setState({imgBuffers}, () => console.log(this.state.imgBuffers))
+                fileNames.push(file.name);
+                this.setState({imgBuffers : imgBuffers, fileNames : fileNames}, () => console.log(this.state.fileNames));
             };
         }
     };
@@ -145,11 +149,14 @@ class CreateProject extends React.Component {
     
     render(){
         let disabled = false;
-        const { title, description, t1desc, t2desc, t3desc, t1funding, t2funding, t3funding, tags, imgHashes, fundingLimit, endTime} = this.state;
+        const { title, description, t1desc, t2desc, t3desc, t1funding, t2funding, t3funding, tags, imgHashes, fundingLimit, endTime, fileNames} = this.state;
         if(!title || !description || !t1desc || !t2desc || !t3desc || !t1funding || !t2funding || !t3funding || !tags || !fundingLimit, !endTime){
             disabled = true;
         }
-        
+        let imageMessage = <span>Drag images here</span>;
+        if(fileNames.length > 0){
+            imageMessage = <React.Fragment>{fileNames.map(fileName => <p>{fileName}</p>)}</React.Fragment>
+        }
         return (
             <div className={classes.CreateProject}>
                 {!this.props.selectedAddress ? <NoAddress/> : 
@@ -248,11 +255,11 @@ class CreateProject extends React.Component {
                                         accept=".jpg, .jpeg, .png, .bmp, .gif"
                                         onChange={this.captureFile}
                                     />
-                                    <p>Drag Files here</p>
+                                    {imageMessage}
                                 </div>
                             </div>
                             <div className={classes.Box}>
-                                <h3>End of funding period</h3>
+                                <h3>End of funding period</h3>  
                                 <DateTimePicker
                                     onChange = {this.dateTimeChangeHandler}
                                     value = {this.state.endTime && new Date(this.state.endTime)}
