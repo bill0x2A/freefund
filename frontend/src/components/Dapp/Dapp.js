@@ -22,6 +22,7 @@ import CreateProject from '../CreateProject/CreateProject';
 import AccountPage from '../AccountPage/AccountPage';
 import ProjectPage from '../ProjectPage/ProjectPage';
 import MobileMessage from '../MobileMessage/MobileMessage';
+import FundingDao from '../FundingDao/FundingDao';
 
 import onMobile from '../../util/detectMobile';
 
@@ -58,6 +59,7 @@ class Dapp extends React.Component {
                   <Route exact path={ROUTES.LANDING} component={LandingPage}/>
                   <Route exact path={ROUTES.PROJECTS} component={ProjectBrowser}/>
                   <Route path={ROUTES.PROJECT} component={ProjectPage}/>
+                  <Route path={ROUTES.FUNDING_DAO} component={FundingDao}/>
                   <Route path={ROUTES.CREATE} render = {() => <CreateProject selectedAddress={this.state.selectedAddress}/>}/>
                   <Route path={ROUTES.ACCOUNT} render = {() => <AccountPage selectedAddress={this.state.selectedAddress}/>}/>
                 </Switch>

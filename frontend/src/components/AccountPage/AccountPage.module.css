@@ -111,4 +111,9 @@ textarea {
     user-select: none;
     cursor: pointer;
     padding: 10px 20px;
+    transition: all 300ms;
+}
+
+.SubmitButton:hover {
+    filter : contrast(130%);
 }

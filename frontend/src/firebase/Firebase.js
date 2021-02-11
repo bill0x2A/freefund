@@ -25,6 +25,8 @@ class Firebase {
   project = projectID => this.db.ref(`projects/${projectID}`);
   projects = () => this.db.ref('projects');
 
+  proposal = proposalID => this.db.ref(`proposals/${proposalID}`);
+  proposals = () => this.db.ref('proposals');
 }
 
 export default Firebase;
