@@ -75,9 +75,15 @@ class WalletInfo extends React.Component {
     }
 
     componentDidMount(){
-        this.setProfilePicture()
+        this.setProfilePicture();
     }
-    
+
+    componentDidUpdate(prevProps) {
+        if (this.props.selectedAddress !== prevProps.selectedAddress) {
+            this.setProfilePicture();
+        }
+    }
+
     setProfilePicture = () => {
         const selectedAddress = this.props.selectedAddress;
         const displayAddress = selectedAddress.substring(0, 4) + '...' + selectedAddress.substring( 35, selectedAddress.length-1)

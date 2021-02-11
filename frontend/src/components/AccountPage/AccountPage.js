@@ -32,7 +32,7 @@ class AccountPage extends React.Component {
             const data = snap.val();
             const accountData = {
                 ...data,
-                projects : (data?.project ? [...Object.keys(data?.projects)] : null),
+                projects : (data.projects ? [...Object.keys(data.projects)] : null),
             }
             console.log(accountData);
             this.setState({...accountData});
