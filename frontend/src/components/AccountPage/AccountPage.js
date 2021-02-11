@@ -3,6 +3,7 @@ import classes from './AccountPage.module.css';
 import NoAddress from '../NoAddress/NoAddress';
 import ReactFlagsSelect from 'react-flags-select';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
+import ProjectCard from '../ProjectCard/ProjectCard';
 import { connect } from 'react-redux';
 import { withFirebase } from '../../firebase/index';
 import {withRouter} from 'react-router-dom';
@@ -19,10 +20,13 @@ class AccountPage extends React.Component {
 
     loadUserData = () => {
         this.props.firebase.user(this.props.selectedAddress)
-        .once("value", data => {
-            const accountData = data.val();
-            console.log(accountData)
-            this.setState({...accountData});
+        .once("value", snap => {
+            const data = snap.val();
+            const accountData = {
+                ...data,
+                projects : [...Object.keys(data.projects)],
+            }
+            this.setState({...accountData}, () => console.log(this.state));
         })
     }
 
@@ -147,12 +151,10 @@ class AccountPage extends React.Component {
                         </div>
                         <div className={classes.Box}>
                             <h2> My Projects </h2>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin eu eros est. Aliquam et odio efficitur, sodales mi id, pretium nisl. Donec suscipit ultrices ligula, in volutpat est pulvinar in. Praesent eu rhoncus felis. Cras odio nibh, faucibus eu sapien vel, faucibus placerat felis. Nullam ultrices faucibus lobortis. Vestibulum a iaculis diam, et tempor augue. Vestibulum fermentum feugiat dui, blandit fringilla risus feugiat a. Cras sed nisi accumsan, rutrum risus nec, porttitor velit. Proin ultricies ornare dui eget mollis.</p>
                         </div>
-                        <div className={classes.Box}>
-                            {/*<ProjectDisplay /> for each project tied to the user's account*/}
-                            <p style = {{textAlign: "center"}}>No projects yet!</p>
-                        </div>
+
+                            {this.state.projects ? this.state.projects.map(project => <ProjectCard projectID = {project}/>) :                         <div className={classes.Box}><p style = {{textAlign: "center"}}>No projects yet!</p>                        </div>}
+
                     </React.Fragment>
                 }
             </div>

@@ -5,6 +5,10 @@ import Flag from 'react-country-flag';
 import {Link} from 'react-router-dom';
 import Loading from '../Loading/Loading';
 import { withFirebase } from '../../firebase/index';
+import MarkdownIt from 'markdown-it';
+import ReactHtmlParser, { processNodes, convertNodeToElement, htmlparser2 } from 'react-html-parser';
+
+const md = new MarkdownIt();
 
 const ProgressBar = (props) =>{
     const progress = props.funded / props.fundingLimit * 100
@@ -75,7 +79,7 @@ class ProjectCard extends React.Component {
                                 <Flag countryCode={creatorInfo.country} svg/>
                             </div>
                         </div>
-                        <p>{project.description}</p>
+                        <p>{ReactHtmlParser(md.render(project.description.text))}</p>
                         <div className = {classes.FadeOut}/>
                         <Link 
                             className={classes.SeeMore}
