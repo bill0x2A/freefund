@@ -1,6 +1,7 @@
 import React from 'react';
 import classes from './CreateProject.module.css';
 import NoAddress from '../NoAddress/NoAddress';
+import Loading from '../Loading/Loading';
 import MarkdownEditor from './MarkdownEditor/MarkdownEditor';
 import { connect } from 'react-redux';
 import { withFirebase } from '../../firebase/index';
@@ -20,6 +21,7 @@ class CreateProject extends React.Component {
             imageHashes: [],
             imgBuffers: [],
             fileNames : [],
+            submitting : false,
         }
     }
 
@@ -45,7 +47,7 @@ class CreateProject extends React.Component {
     }
 
     onSubmit = async () => {
-
+        this.setState({submitting : true});
         //Format tags as an array of lowercase strings, removing 
         await this.uploadImages();
 
@@ -149,10 +151,29 @@ class CreateProject extends React.Component {
     
     render(){
         let disabled = false;
-        const { title, description, t1desc, t2desc, t3desc, t1funding, t2funding, t3funding, tags, imgHashes, fundingLimit, endTime, fileNames} = this.state;
+        const { title, description, t1desc, t2desc, t3desc, t1funding, t2funding, t3funding, tags, imgHashes, fundingLimit, endTime, fileNames, submitting} = this.state;
         if(!title || !description || !t1desc || !t2desc || !t3desc || !t1funding || !t2funding || !t3funding || !tags || !fundingLimit, !endTime){
             disabled = true;
         }
+
+        let submitButton = (
+            <div 
+                className={classes.SubmitButton}
+                onClick={this.onSubmit}
+            >Submit</div>
+        )
+        if(disabled){
+            submitButton = (
+                <div 
+                    className={classes.SubmitButton}
+                    style ={{background : "gray", cursor: "none"}}
+                >Please fill out all fields</div>
+            )
+        }
+        if(submitting){
+            submitButton = <Loading/>
+        }
+
         let imageMessage = <span>Drag images here</span>;
         if(fileNames.length > 0){
             imageMessage = <React.Fragment>{fileNames.map(fileName => <p>{fileName}</p>)}</React.Fragment>
@@ -276,16 +297,7 @@ class CreateProject extends React.Component {
                                 />
                             </div> */}
                             <div className={classes.SubmitContainer}>
-                                {disabled ? 
-                                <div 
-                                    className={classes.SubmitButton}
-                                    style ={{background : "gray", cursor: "none"}}
-                                >Please fill out all fields</div> :
-                                    <div 
-                                        className={classes.SubmitButton}
-                                        onClick={this.onSubmit}
-                                    >Submit</div>
-                                }
+                                {submitButton}
                             </div>
                     </React.Fragment>
                 }
