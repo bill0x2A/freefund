@@ -85,6 +85,10 @@ class ProjectCard extends React.Component {
                             className={classes.SeeMore}
                             to={"projects/" + this.props.projectID}
                         >See more</Link>
+                            <Link 
+                            className={classes.GoToDAO}
+                            to={"funding_dao/" + this.props.projectID}
+                        >View DAO</Link>
                     </div>
                 }
             </React.Fragment>

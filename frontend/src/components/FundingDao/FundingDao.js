@@ -96,6 +96,94 @@ class NewProposal extends React.Component {
     
 }
 
+class DirtyFixWrapper extends React.Component {
+    constructor(props){
+        super(props);
+        this.state = {
+            loading : true,
+        }
+    }
+
+        componentDidMount(){
+            this.loadProposal();
+        }
+
+        loadProposal = () => {
+            this.props.firebase.proposal(this.props.proposalID).on("value", snap => {
+                const data = snap.val();
+                const proposalData = {
+                    ...data,
+                    id : this.props.proposalID,
+                }
+                this.setState({proposalData, loading : false});
+            })
+        }
+
+        render(){
+            const timeNow = new Date();
+            const timeCreated = new Date(this.state.proposalData?.timeCreated);
+            const hoursLeft = 48 - Math.floor((timeNow - timeCreated) / 1000 / 60 / 60);
+            return(
+                <React.Fragment>
+                    {this.state.loading ? <Loading/> : <ProposalDisplay proposal={this.state.proposalData} clicked ={this.props.clicked} hoursLeft={hoursLeft}/>}
+                </React.Fragment>
+            )
+        }
+}
+
+class DirtyFixWrapperDisplay extends React.Component {
+    constructor(props){
+        super(props);
+        this.state = {
+            loading : true,
+        }
+    }
+
+        componentDidMount(){
+            this.loadProposal();
+        }
+
+        componentDidUpdate(prevProps){
+            if(prevProps.proposalID !== this.props.proposalID){
+                this.loadProposal();
+            }
+        }
+
+        loadProposal = () => {
+            this.props.firebase.proposal(this.props.proposalID).on("value", snap => {
+                const data = snap.val();
+                console.log("DATA", data)
+                const proposalData = {
+                    ...data,
+                    id : this.props.proposalID,
+                }
+                this.setState({proposalData, loading : false});
+            })
+        }
+
+        render(){
+            const {proposalData} = this.state
+            const timeNow = new Date();
+            const timeCreated = new Date(proposalData?.timeCreated);
+            const hoursLeft = 48 - Math.floor((timeNow - timeCreated) / 1000 / 60 / 60);
+            return(
+                <React.Fragment>
+                    {this.state.loading ? <Loading/> : (
+                        <div className={classes.ProposalShow}>
+                            <h2>{proposalData.title}</h2>
+                            <h4>{hoursLeft}H remaining to vote</h4>
+                            <br/>
+                            <h4>Requesting {proposalData.funding} <img src={DAI}/> DAI </h4>
+                            <p>{proposalData.body}</p>
+                            {this.props.veto}
+                            <div className={classes.Vetoes}>Vetoed {proposalData.vetoes} times</div>
+                        </div>
+                    )}
+                </React.Fragment>
+            )
+        }
+}
+
 class Veto extends React.Component {
     constructor(props){
         super(props);
@@ -145,9 +233,7 @@ class Veto extends React.Component {
 
 const ProposalDisplay = (props) => {
     const {proposal, clicked } = props;
-    const timeNow = new Date();
-    const timeCreated = new Date(proposal.timeCreated);
-    const hoursLeft = 48 - Math.floor((timeNow - timeCreated) / 1000 / 60 / 60);
+
     return(
         <div
             className={classes.ProposalDisplay}
@@ -155,7 +241,7 @@ const ProposalDisplay = (props) => {
         >
             <h3>{proposal.title}</h3>
             <span>{proposal.funding} DAI <img src={DAI}/></span>
-            <p>{hoursLeft}H remaining</p>
+            <p>{props.hoursLeft}H remaining</p>
         </div>
     )
 }
@@ -166,7 +252,6 @@ class FundingDao extends React.Component {
         super(props);
         this.state = {
             loading : true,
-            selectedProposal : null,
             proposing : false,
             proposals : [],
             vetoing : false,
@@ -180,33 +265,17 @@ class FundingDao extends React.Component {
     loadData = () => {
         this.props.firebase.project(this.props.match.params.projectID).on("value", snap => {
             const data = snap.val();
+            let proposalIDs;
+            if(data.proposals){
+                proposalIDs = [...Object.keys(data.proposals)];
+            }
             this.setState({
                 ...this.state,
                 ...data,
                 proposals : [],
+                proposalIDs : proposalIDs,
+                loading : false
             });
-            if(data.proposals){
-                const proposalIDs = [...Object.keys(data.proposals)];
-                this.loadProposals(proposalIDs);
-            } else {
-                this.setState({loading : false})
-            }   
-        })
-    }
-
-    loadProposals = (proposalIDs) => {
-        console.log("PROPOSALS: ", this.state.proposals)
-        proposalIDs.forEach(propID => {
-            let proposals = [...this.state.proposals];
-            this.props.firebase.proposal(propID).once("value", snap => {
-                const data = snap.val();
-                const proposal = {
-                    ...data,
-                    id : propID,
-                }
-                proposals.push(proposal);
-                this.setState({proposals : proposals, loading : false});
-            })
         })
     }
 
@@ -243,16 +312,9 @@ class FundingDao extends React.Component {
     }
 
     render(){
-        const {loading, creatorAddress, selectedProposal, title, proposing, proposals, vetoing } = this.state;
+        const {loading, creatorAddress, selectedProposal, title, proposing, proposals, vetoing, proposalIDs } = this.state;
         const creator = (creatorAddress == this.props.selectedAddress);
-        console.log(proposals);
-        let hoursLeft = null;
-        let veto = null;
-        if(selectedProposal){
-            const timeNow = new Date();
-            const timeCreated = new Date(selectedProposal.timeCreated);
-            hoursLeft = 48 - Math.floor((timeNow - timeCreated) / 1000 / 60 / 60);
-        }
+        let veto;
         if(!creator){
             veto = (
                 <div
@@ -286,24 +348,18 @@ class FundingDao extends React.Component {
                             <h3>Proposals</h3>
                             {creator && <span onClick = {this.proposeHandler}>+</span>}
                         </div>
-                        {proposals.map(proposal => (<ProposalDisplay
-                                                        key={proposal.title}
-                                                        proposal={proposal}
+                        {/* This is absolutely terrible change it when you're not about to fall asleep */}
+                        {proposalIDs?.map(proposal => (<DirtyFixWrapper
+                                                        firebase={this.props.firebase}
+                                                        key={proposal}
+                                                        proposalID={proposal}
                                                         clicked={() => this.setState({selectedProposal : proposal})}
                                                     />))}
                     </div>
                     <div className={classes.Main}>
                         {
                             selectedProposal ? (
-                                <div className={classes.ProposalShow}>
-                                    <h2>{selectedProposal.title}</h2>
-                                    <h4>{hoursLeft}H remaining to vote</h4>
-                                    <br/>
-                                    <h4>Requesting {selectedProposal.funding} <img src={DAI}/> DAI </h4>
-                                    <p>{selectedProposal.body}</p>
-                                    {veto}
-                                    <div className={classes.Vetoes}>Vetoed {selectedProposal.vetoes} times</div>
-                                </div>
+                                <DirtyFixWrapperDisplay proposalID={selectedProposal} veto={veto} firebase={this.props.firebase}/>
                             ) : (
                                 <div style={{display:"flex", justifyContent:"center", alignItems:"center", height:"100%"}}>
                                     <p style ={{fontSize:"25px", color:"var(--bold)", fontWeight: "600"}}>Please select a proposal</p>

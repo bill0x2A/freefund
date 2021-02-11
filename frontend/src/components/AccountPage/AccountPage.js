@@ -142,7 +142,7 @@ class AccountPage extends React.Component {
                                     value={this.state.firstName}
                                     style={{borderRight: "none"}}
                                 />
-                                                            <input
+                                <input
                                     type='text'
                                     placeholder="Last name"
                                     name="lastName"

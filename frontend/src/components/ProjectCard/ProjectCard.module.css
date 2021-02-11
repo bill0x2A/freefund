@@ -83,13 +83,14 @@
     align-items: center;
 }
 
-.SeeMore {
+.SeeMore, .GoToDAO {
     position: absolute;
     z-index: 101;
     bottom : 5px;
     right : 5px;
     background: var(--bold);
     padding: 5px 10px;
+    height: 35px;
     width: 100px;
     color: white;
     text-decoration: none;
@@ -102,8 +103,14 @@
     transition: all 300ms;
 }
 
-.SeeMore:hover {
+.SeeMore:hover, .GoToDAO:hover {
     filter: contrast(120%);
+}
+
+.GoToDAO {
+    right : 120px;
+    background: var(--accent);
+    border : 2px dashed var(--bold);
 }
 
 .TimeLeft {
