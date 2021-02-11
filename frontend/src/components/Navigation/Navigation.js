@@ -70,6 +70,7 @@ class WalletInfo extends React.Component {
         super(props);
         this.state = {
             loading : true,
+            image : defaultpp,
         }
     }
 

@@ -4,6 +4,7 @@ import NoAddress from '../NoAddress/NoAddress';
 import ReactFlagsSelect from 'react-flags-select';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import ProjectCard from '../ProjectCard/ProjectCard';
+import Loading from '../Loading/Loading';
 import ReactTooltip from 'react-tooltip';
 import { connect } from 'react-redux';
 import { withFirebase } from '../../firebase/index';
@@ -21,6 +22,7 @@ class AccountPage extends React.Component {
         this.state = {
             bio : "",
             profileHash : "QmVLKVhG5VNfpXDfUpa81xpHR7TmCtUx3rtoEewkAowZse",
+            submitting : false,
         }
     }
 
@@ -32,6 +34,7 @@ class AccountPage extends React.Component {
                 ...data,
                 projects : (data?.project ? [...Object.keys(data?.projects)] : null),
             }
+            console.log(accountData);
             this.setState({...accountData});
         })
     }
@@ -48,7 +51,7 @@ class AccountPage extends React.Component {
         reader.readAsArrayBuffer(file)
     
         reader.onloadend = () => {
-            this.setState({imgBuffer : Buffer(reader.result)});
+            this.setState({imgBuffer : Buffer(reader.result), newProfilePicture : true});
         };
     }
 
@@ -56,7 +59,7 @@ class AccountPage extends React.Component {
             await ipfs.add(this.state.imgBuffer)
                     .then((result, error) => {
                         if(!error){
-                            this.setState({imgHash : result.path});
+                            this.setState({profileHash : result.path});
                             console.log("IPFS: ", result.path)
                         } else {
                             console.log(error)
@@ -69,14 +72,17 @@ class AccountPage extends React.Component {
     }
     
     onSubmit = async () => {
-        await this.uploadImage();
+        this.setState({submitting : true});
+        if(this.state.newProfilePicture){
+            await this.uploadImage();
+        }
         const userData = {
             email : this.state.email,
             firstName  : this.state.firstName,
             lastName : this.state.lastName,
             bio   : this.state.bio,
             country : this.state.country,
-            profileHash : this.state.imgHash,
+            profileHash : this.state.profileHash,
         }
         this.props.firebase.user(this.props.selectedAddress).set(userData);
         this.props.history.push('/')
@@ -84,9 +90,27 @@ class AccountPage extends React.Component {
 
     render = () => {
         let disabled = false;
-        const {email, firstName, lastName, country} = this.state;
+        const {email, firstName, lastName, country, submitting} = this.state;
         if(!email || !firstName || !lastName || !country){
             disabled = true;
+        }
+
+        let submitButton = (
+            <div 
+                className={classes.SubmitButton}
+                onClick={this.onSubmit}
+            >Submit</div>
+        )
+        if(disabled){
+            submitButton = (
+                <div 
+                    className={classes.SubmitButton}
+                    style ={{background : "gray", cursor: "none"}}
+                >Please fill out all required fields</div>
+            )
+        }
+        if(submitting){
+            submitButton = <Loading/>
         }
         return(
             <div className ={classes.AccountPage}>
@@ -146,26 +170,20 @@ class AccountPage extends React.Component {
                         </div>
                         <div className={classes.Box}>
                             <h3>Profile Picture</h3>
-                            <div className={classes.ImageUpload}>
-                                <input
-                                    type='file'
-                                    accept=".jpg, .jpeg, .png, .bmp, .gif"
-                                    onChange={this.captureFile}
-                                />
-                                <p>Drag image here</p>
+                            <div className={classes.ImageUploadContainer}>
+                                <img src = {`https://ipfs.infura.io/ipfs/${this.state.profileHash}`}/>
+                                <div className={classes.ImageUpload}>
+                                    <input
+                                        type='file'
+                                        accept=".jpg, .jpeg, .png, .bmp, .gif"
+                                        onChange={this.captureFile}
+                                    />
+                                    <p>Drag image here</p>
+                                </div>
                             </div>
                         </div>
                         <div className={classes.SubmitContainer}>
-                        {disabled ? 
-                                <div 
-                                    className={classes.SubmitButton}
-                                    style ={{background : "gray", cursor: "none"}}
-                                >Please fill out all required fields</div> :
-                                    <div 
-                                        className={classes.SubmitButton}
-                                        onClick={this.onSubmit}
-                                    >Submit</div>
-                                }
+                            {submitButton}
                         </div>
                         <div className={classes.Box}>
                             <h2> My Projects </h2>
