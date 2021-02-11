@@ -137,6 +137,12 @@ textarea {
 }
 
 
+.DateTime {
+    border: 2px solid var(--bold);
+    height: 50px;
+    width: 260px;
+}
+
 .SubmitContainer {
     width: 100%;
     display: flex;

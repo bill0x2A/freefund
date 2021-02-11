@@ -20,8 +20,12 @@ const md = new MarkdownIt();
 const CarouselDisplay = ({imageHashes}) => {
 
     // Fetch images from ipfs
-    console.log("IMGHASHES: ", imageHashes);
-    const images = imageHashes.map(imgHash => `https://ipfs.infura.io/ipfs/${imgHash}`);
+
+    const images = imageHashes?.map(imgHash => (
+        <div className={classes.Test}>
+            <img src = {`https://ipfs.infura.io/ipfs/${imgHash}`}/>
+        </div>
+    ));
 
     return(
             <Carousel
@@ -29,9 +33,7 @@ const CarouselDisplay = ({imageHashes}) => {
                 interval={4400}
                 infiniteLoop={true}
             >
-                <div className={classes.Test}>
-                    <img src={images[0]} />                        
-                </div>
+                {images}
             </Carousel>
     )
 }
@@ -91,7 +93,7 @@ class ProjectPage extends React.Component {
     }
 
     pledgeHandler = (value) => {
-        // This is not very React but it works for now
+        // This is not very 'React' but it works for now
         document.body.style.height = "100vh";
         document.body.style.overflow = "hidden";
         this.setState({pledging:true, pledge : value});

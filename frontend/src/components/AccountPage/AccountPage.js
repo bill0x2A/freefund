@@ -4,17 +4,23 @@ import NoAddress from '../NoAddress/NoAddress';
 import ReactFlagsSelect from 'react-flags-select';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import ProjectCard from '../ProjectCard/ProjectCard';
+import ReactTooltip from 'react-tooltip';
 import { connect } from 'react-redux';
 import { withFirebase } from '../../firebase/index';
 import {withRouter} from 'react-router-dom';
 import ipfsClient from 'ipfs-http-client';
 const ipfs = ipfsClient({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
 
+const Required = () => (
+    <span data-tip="required field">*</span>
+)
+
 class AccountPage extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-
+            bio : "",
+            profileHash : "QmVLKVhG5VNfpXDfUpa81xpHR7TmCtUx3rtoEewkAowZse",
         }
     }
 
@@ -24,9 +30,9 @@ class AccountPage extends React.Component {
             const data = snap.val();
             const accountData = {
                 ...data,
-                projects : [...Object.keys(data.projects)],
+                projects : (data?.project ? [...Object.keys(data?.projects)] : null),
             }
-            this.setState({...accountData}, () => console.log(this.state));
+            this.setState({...accountData});
         })
     }
 
@@ -51,6 +57,7 @@ class AccountPage extends React.Component {
                     .then((result, error) => {
                         if(!error){
                             this.setState({imgHash : result.path});
+                            console.log("IPFS: ", result.path)
                         } else {
                             console.log(error)
                         }
@@ -76,6 +83,11 @@ class AccountPage extends React.Component {
     }
 
     render = () => {
+        let disabled = false;
+        const {email, firstName, lastName, country} = this.state;
+        if(!email || !firstName || !lastName || !country){
+            disabled = true;
+        }
         return(
             <div className ={classes.AccountPage}>
                 {!this.props.selectedAddress ? <NoAddress/> :
@@ -86,7 +98,7 @@ class AccountPage extends React.Component {
                             <p>Before you are able to fund or create projects, we need to know a little bit about you first. Please fill in the form below.</p>
                         </div>
                         <div className={classes.Box}>
-                            <h3>Email</h3>
+                            <h3>Email<Required/></h3>
                             <input
                                 type='text'
                                 placeholder="Your email address"
@@ -96,7 +108,7 @@ class AccountPage extends React.Component {
                             />
                         </div>
                         <div className={classes.Box}>
-                            <h3>Name</h3>
+                            <h3>Name<Required/></h3>
                             <div style={{width: "100%", display: "flex"}}>
                                 <input
                                     type='text'
@@ -126,7 +138,7 @@ class AccountPage extends React.Component {
                             />
                         </div>
                         <div className={classes.Box}>
-                            <h3>Country</h3>
+                            <h3>Country<Required/></h3>
                             <ReactFlagsSelect
                                 selected={this.state.country}
                                 onSelect={country => this.setState({country})}
@@ -144,17 +156,23 @@ class AccountPage extends React.Component {
                             </div>
                         </div>
                         <div className={classes.SubmitContainer}>
-                            <div 
-                                className={classes.SubmitButton}
-                                onClick={this.onSubmit}
-                            >Submit Changes</div>
+                        {disabled ? 
+                                <div 
+                                    className={classes.SubmitButton}
+                                    style ={{background : "gray", cursor: "none"}}
+                                >Please fill out all required fields</div> :
+                                    <div 
+                                        className={classes.SubmitButton}
+                                        onClick={this.onSubmit}
+                                    >Submit</div>
+                                }
                         </div>
                         <div className={classes.Box}>
                             <h2> My Projects </h2>
                         </div>
 
-                            {this.state.projects ? this.state.projects.map(project => <ProjectCard projectID = {project}/>) :                         <div className={classes.Box}><p style = {{textAlign: "center"}}>No projects yet!</p>                        </div>}
-
+                        {this.state.projects ? this.state.projects.map(project => <div style={{marginBottom: "20px"}}><ProjectCard projectID = {project}/></div>) : <div className={classes.Box}><p style = {{textAlign: "center"}}>No projects yet!</p></div>}
+                        <ReactTooltip/>
                     </React.Fragment>
                 }
             </div>

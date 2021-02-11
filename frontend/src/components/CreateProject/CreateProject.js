@@ -6,45 +6,51 @@ import { connect } from 'react-redux';
 import { withFirebase } from '../../firebase/index';
 import { withRouter } from 'react-router-dom';
 import DAI from '../../assets/DAI.png';
-import {test1} from '../../constants/testProjects';
+import DateTimePicker from 'react-datetime-picker'
 import testpp from '../../assets/testpp.png'
 import ipfsClient from 'ipfs-http-client';
 const ipfs = ipfsClient({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
-
-let projectTemplate = {
-    title : "Test title",
-    description : "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam interdum, enim vel vulputate tempor, libero erat rhoncus dolor, rutrum scelerisque ex lectus vitae est. Donec a porttitor nisi. Nam ac urna eget mi venenatis interdum nec quis lacus. Nulla molestie dapibus nisl eget tincidunt. Vivamus finibus ultricies viverra. Ut mauris urna, tincidunt a tristique in, sollicitudin at est. Aliquam in ullamcorper leo. Nulla facilisi. Aenean pretium nunc ut metus vehicula efficitur sed eget nulla. Mauris pulvinar dignissim turpis, et posuere lacus lacinia vel. Phasellus id leo ultrices, lobortis felis in, malesuada diam. Donec auctor massa sit amet dui pharetra pulvinar vitae quis metus. Donec id turpis massa. Proin ut tempus lacus, at sagittis augue. Nam interdum odio vel quam finibus euismod. Pellentesque quis facilisis urna.",
-    creatorImage : testpp,
-    creatorName : "Bert Brown",
-    creatorCountryCode : "BR",
-    creatorBio : "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam interdum, enim vel vulputate tempor, libero erat rhoncus dolor, rutrum scelerisque ex lectus vitae est. Donec a porttitor nisi. Nam ac urna eget mi venenatis interdum nec quis lacus. Nulla molestie dapibus nisl eget tincidunt. Vivamus finibus ultricies viverra. Ut mauris urna, tincidunt a tristique in, sollicitudin at est. Aliquam in ullamcorper leo. Nulla facilisi. Aenean pretium nunc ut metus vehicula efficitur sed eget nulla. Mauris pulvinar dignissim turpis, et posuere lacus lacinia vel. Phasellus id leo ultrices, lobortis felis in.",
-    funded : 0,
-    fundingLimit : 7000,
-    imageHashes : [],
-}
 
 class CreateProject extends React.Component {
 
     constructor(props){
         super(props);
         this.state = {
-            project : projectTemplate,
+            project : {},
             imageHashes: [],
             imgBuffers: [],
         }
     }
 
+
     onChange = (e) => {
+        const name = e.target.name;
+        const value = e.target.value;
+        console.log({name , value});
         this.setState({[e.target.name] : e.target.value});
     }
+
+    dateTimeChangeHandler = (value) => {
+        const date = new Date(value);
+        console.log(date);
+        this.setState({endTime : date}, () => console.log(this.state.endTime));
+    }
     
+    handleEditorChange = ({html, text}) => { 
+        const markdown = {
+            html : html,
+            text : text,
+        }
+        this.setState({description : markdown});
+    }
+
     onSubmit = async () => {
 
         //Format tags as an array of lowercase strings, removing 
         await this.uploadImages();
 
         const projectID = Math.random().toString(36).substr(2, 9);
-        const { title, description, t1desc, t2desc, t3desc, t1funding, t2funding, t3funding, tags, imgHashes, fundingLimit} = this.state;
+        const { title, description, t1desc, t2desc, t3desc, t1funding, t2funding, t3funding, tags, imgHashes, fundingLimit, endTime} = this.state;
         
         const project = {
             ...this.state.project,
@@ -56,10 +62,15 @@ class CreateProject extends React.Component {
             t1funding : t1funding,
             t2funding : t2funding,
             t3funding : t3funding,
+            fundingLimit : fundingLimit,
             creatorAddress : this.props.selectedAddress,
             imgHashes : imgHashes,
             funded : 0,
+            endTime : endTime,
         }
+
+
+        // We will leave out tags for now....
 
         // if(this.state.tags.length > 0){
         //     let tags = this.state.tags.split(',')
@@ -112,17 +123,33 @@ class CreateProject extends React.Component {
         this.setState({imgHashes});
     }
 
-    // CHECK THE USER HAS ACCOUNT INFORMATION 
+    checkUser = () => {
+        this.props.firebase.user(this.props.selectedAddress).once("value", snap => {
+            const data = snap.val();
+            if(!data){
+                this.props.history.push('/account');
+                return;
+            }
+            if(!data.email || !data.firstName || !data.lastName || !data.country){
+                this.props.history.push('/account');
+                return;
+            }
+        })
+    }
 
-    handleEditorChange = ({html, text}) => { 
-        const markdown = {
-            html : html,
-            text : text,
-        }
-        this.setState({description : markdown});
-      }
+    componentDidMount(){
+        this.checkUser();
+    }
+
+
     
     render(){
+        let disabled = false;
+        const { title, description, t1desc, t2desc, t3desc, t1funding, t2funding, t3funding, tags, imgHashes, fundingLimit, endTime} = this.state;
+        if(!title || !description || !t1desc || !t2desc || !t3desc || !t1funding || !t2funding || !t3funding || !tags || !fundingLimit, !endTime){
+            disabled = true;
+        }
+        
         return (
             <div className={classes.CreateProject}>
                 {!this.props.selectedAddress ? <NoAddress/> : 
@@ -143,6 +170,18 @@ class CreateProject extends React.Component {
                             <div className={classes.Box}>
                                 <h3>Description</h3>
                                 <MarkdownEditor handleEditorChange={(html, text) => this.handleEditorChange(html, text)}/>
+                            </div>
+                            <div className={classes.Box}>
+                            <h3>How much are you asking for?</h3>
+                            <div className={classes.Payment}>
+                                        <input 
+                                            type="number"
+                                            name="fundingLimit"
+                                            placeholder="Funding"
+                                            onChange={this.onChange}
+                                        />
+                                        <span>DAI <img src={DAI}/></span>
+                                    </div>
                             </div>
                             <div className={classes.Box}>
                                 <h3>Contribution Tiers</h3>
@@ -213,6 +252,14 @@ class CreateProject extends React.Component {
                                 </div>
                             </div>
                             <div className={classes.Box}>
+                                <h3>End of funding period</h3>
+                                <DateTimePicker
+                                    onChange = {this.dateTimeChangeHandler}
+                                    value = {this.state.endTime}
+                                    className={classes.DateTime}
+                                />
+                            </div>
+                            {/* <div className={classes.Box}>
                                 <h3>Add Some Tags</h3>
                                 <input
                                     type='text'
@@ -220,12 +267,18 @@ class CreateProject extends React.Component {
                                     name="tags"
                                     onChange={this.onChange}
                                 />
-                            </div>
+                            </div> */}
                             <div className={classes.SubmitContainer}>
+                                {disabled ? 
                                 <div 
                                     className={classes.SubmitButton}
-                                    onClick={this.onSubmit}
-                                >Submit</div>
+                                    style ={{background : "gray", cursor: "none"}}
+                                >Please fill out all fields</div> :
+                                    <div 
+                                        className={classes.SubmitButton}
+                                        onClick={this.onSubmit}
+                                    >Submit</div>
+                                }
                             </div>
                     </React.Fragment>
                 }

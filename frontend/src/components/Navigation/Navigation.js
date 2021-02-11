@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM, { render } from 'react-dom';
 import {Link} from 'react-router-dom';
 import classes from './Navigation.module.css';
 import * as ROUTES from '../../constants/routes';
@@ -8,7 +8,8 @@ import identicon from 'identicon';
 import { connect } from 'react-redux';
 import { withFirebase } from '../../firebase/index';
 import circle from '../../assets/circle.png';
-import cheating from '../../assets/cheating.png';
+import defaultpp from '../../assets/defaultpp.png';
+import Loading from '../Loading/Loading';
 
 
 const NoWalletDetected = () => (
@@ -64,23 +65,50 @@ const NetworkAlert = ({networkID}) => {
 
 }
  
-const WalletInfo = ({selectedAddress}) => {
-    // let icon = new Image();
-    // identicon.generate({ id: 'ajido', size: 150 }, function(err, buffer) {
-    //     if (err) throw err;
-    //     icon.src = buffer;
-    // });
-    const displayAddress = selectedAddress.substring(0, 4) + '...' + selectedAddress.substring( 35, selectedAddress.length-1)
-    let image = cheating;
-    return(
-        <Link
-            className={classes.WalletInfo}
-            to={ROUTES.ACCOUNT}
-        >
-            <p>{displayAddress}</p>
-            <img src={image}/>
-        </Link>
-    )
+class WalletInfo extends React.Component {
+    constructor(props){
+        super(props);
+        this.state = {
+            loading : true,
+        }
+    }
+
+    componentDidMount(){
+        this.setProfilePicture()
+    }
+    
+    setProfilePicture = () => {
+        const selectedAddress = this.props.selectedAddress;
+        const displayAddress = selectedAddress.substring(0, 4) + '...' + selectedAddress.substring( 35, selectedAddress.length-1)
+        let image = defaultpp;
+        this.props.firebase.user(selectedAddress).on("value", snap => {
+            const data = snap.val();
+            if(data.profileHash){
+                const image = `https://ipfs.infura.io/ipfs/${data.profileHash}`
+                this.setState({ image, displayAddress: displayAddress, loading:false })
+            } else {
+                this.setState({image : image, displayAddress : displayAddress, loading : false})
+            }
+        })
+        
+    }
+    render(){
+        return(
+            <React.Fragment>
+                {
+                    this.state.loading ? <Loading/> : 
+                        <Link
+                            className={classes.WalletInfo}
+                            to={ROUTES.ACCOUNT}
+                        >
+                            <p>{this.state.displayAddress}</p>
+                            <img src={this.state.image}/>
+                        </Link>
+                }
+            </React.Fragment>
+
+        )
+    }
 
 }
 
@@ -106,7 +134,10 @@ const Navigation = props => {
                     {!selectedAddress ? <div onClick={() => connectWallet()}
                                               className = {classes.ConnectWallet}
                                               >Connect Wallet</div> :
-                                        <WalletInfo selectedAddress={selectedAddress}/>
+                                        <WalletInfo 
+                                            firebase={props.firebase}
+                                            selectedAddress={selectedAddress}
+                                        />
                                         }
                 </div>
             </div>

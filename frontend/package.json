@@ -19,6 +19,7 @@
     "pure-react-carousel": "^1.27.6",
     "react": "^17.0.1",
     "react-country-flag": "^2.3.0",
+    "react-datetime-picker": "^3.0.5",
     "react-dom": "^17.0.1",
     "react-flags-select": "^2.1.1",
     "react-html-parser": "^2.0.2",
