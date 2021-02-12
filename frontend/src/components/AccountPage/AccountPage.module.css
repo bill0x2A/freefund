@@ -58,8 +58,24 @@ textarea {
     cursor: pointer;
 }
 
+.ImageUploadContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.ImageUploadContainer img {
+    position: relative;
+    top: -10px;
+    height: 150px;
+    width: 150px;
+    border: 4px dashed var(--accent);
+}
+
 .ImageUpload {
     position: relative;
+    width: 70%;
+    margin-left : 10px;
     height: 150px;
     border: 4px dashed var(--bold);
     display: flex;
@@ -95,4 +111,9 @@ textarea {
     user-select: none;
     cursor: pointer;
     padding: 10px 20px;
+    transition: all 300ms;
+}
+
+.SubmitButton:hover {
+    filter : contrast(130%);
 }

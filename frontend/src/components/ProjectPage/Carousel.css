@@ -211,6 +211,7 @@ ul {
       transition: opacity 0.35s ease-in-out; }
   .carousel .control-dots {
     position: absolute;
+    display: none;
     bottom: 0;
     margin: 10px 0;
     padding: 0;

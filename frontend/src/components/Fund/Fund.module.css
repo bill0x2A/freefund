@@ -77,6 +77,8 @@
     width: auto;
     min-width: 130px;
     background: var(--bold);
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
     justify-content: space-around;
     color: white;
     padding: 5px 10px;

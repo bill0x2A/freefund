@@ -5,6 +5,7 @@ import Dapp from './components/Dapp/Dapp';
 import {BrowserRouter as Router} from 'react-router-dom';
 import {createStore} from 'redux';
 import { Provider } from 'react-redux';
+import Firebase, { FirebaseContext } from './firebase/index';
 import reducer from './store/reducer';
 
 
@@ -41,12 +42,14 @@ const store = createStore(reducer);
 
 
 ReactDOM.render(
-  <React.StrictMode>
-    <Provider store={store}>
+  <Provider store ={store}> 
+    <FirebaseContext.Provider value = {new Firebase()}>
       <Router>
-        <Dapp />
+        <React.StrictMode>
+          <Dapp />
+        </React.StrictMode>
       </Router>
-    </Provider>
-  </React.StrictMode>,
+    </FirebaseContext.Provider>
+  </Provider>,
   document.getElementById('root')
 );

@@ -3,6 +3,7 @@ import classes from './Dapp.module.css';
 import * as ROUTES from '../../constants/routes';
 import * as actionTypes from '../../store/actionTypes';
 import { connect } from 'react-redux';
+import { withFirebase } from '../../firebase/index';
 
 import { BrowserRouter as Router,
   Route,
@@ -21,6 +22,7 @@ import CreateProject from '../CreateProject/CreateProject';
 import AccountPage from '../AccountPage/AccountPage';
 import ProjectPage from '../ProjectPage/ProjectPage';
 import MobileMessage from '../MobileMessage/MobileMessage';
+import FundingDao from '../FundingDao/FundingDao';
 
 import onMobile from '../../util/detectMobile';
 
@@ -57,6 +59,7 @@ class Dapp extends React.Component {
                   <Route exact path={ROUTES.LANDING} component={LandingPage}/>
                   <Route exact path={ROUTES.PROJECTS} component={ProjectBrowser}/>
                   <Route path={ROUTES.PROJECT} component={ProjectPage}/>
+                  <Route path={ROUTES.FUNDING_DAO} component={FundingDao}/>
                   <Route path={ROUTES.CREATE} render = {() => <CreateProject selectedAddress={this.state.selectedAddress}/>}/>
                   <Route path={ROUTES.ACCOUNT} render = {() => <AccountPage selectedAddress={this.state.selectedAddress}/>}/>
                 </Switch>
@@ -167,4 +170,4 @@ const mapDispatchToProps = dispatch => ({
   setNetworkID        : networkId              => dispatch({type : actionTypes.setNetworkID, id : networkId}),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Dapp);
+export default connect(mapStateToProps, mapDispatchToProps)(withFirebase(Dapp));

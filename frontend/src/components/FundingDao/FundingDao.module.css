@@ -1,0 +1,282 @@
+.FundingDao{
+    display: flex;
+    min-height: calc(100vh - 200px);
+}
+
+.ProposalSidebar {
+    flex: 1;
+    border : 4px solid var(--bold);
+}
+
+.ProposalDisplay {
+    position: relative;
+    width: 100%;
+    background: #eaeaea;
+    height: 80px;
+    border-bottom: 4px solid var(--bold);
+    cursor: pointer;
+    padding : 5px 10px;
+}
+
+.ProposalDisplay h3 {
+    margin: 0;
+}
+
+.ProposalDisplay p {
+    color: var(--accent);
+    font-weight: 600;
+}
+
+.ProposalDisplay:hover {
+    background: #bbbbbb;
+}
+
+.ProposalDisplay span {
+    position: absolute;
+    bottom: 0;
+    right : 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    background: var(--bold);
+    border : 3px solid var(--bold);
+    border-left : none;
+    padding: 5px 8px;
+    color: white;
+    user-select: none;
+    border-top-left-radius: 5px;
+}
+
+.ProposalDisplay img{
+    height: 18px;
+    margin-left: 5px;
+}
+
+.Heading {
+    position: relative;
+    width: 100%;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: var(--bold);
+    border-bottom : 4px solid var(--bold);
+}
+
+.Heading h3{
+    padding-right : 50px;
+}
+
+.Heading span {
+    position: absolute;
+    right : 0;
+    background: var(--accent);
+    height: 56px;
+    width: 60px;
+    color: white;
+    font-size: 40px;
+    user-select: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 300ms;
+}
+
+.Heading span:hover {
+    filter : contrast(120%);
+}
+
+.Heading h3 {
+    color: white;
+    font-size: 30px;
+    margin : 0;
+}
+
+.Main {
+    flex : 3;
+    border: 4px dashed var(--bold);
+    border-left : none;
+}
+
+
+/* NEW PROPOSAL STYLES */
+
+.NewProposal, .NewVeto {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 30px 20px;
+    min-width: 500px;
+    background: white;
+    box-shadow: var(--bold) 1px 1px, var(--bold) 2px 2px, var(--bold) 3px 3px, var(--bold) 4px 4px, var(--bold) 5px 5px ;
+}
+
+.NewProposal h3, .NewVeto h3 {
+    color: var(--bold);
+    margin-top : 5px;
+}
+
+.Close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0 6px;
+    color: var(--bold);
+    font-weight: bold;
+    font-size: 20px;
+    cursor: pointer;
+    user-select: none;
+    transition: all 300ms;
+    border-bottom-left-radius: 5px;
+}
+
+.Close:hover {
+    filter: contrast(120%);
+    background: rgba(0,0,0,0.15);
+}
+
+.Payment {
+    width: 100%;
+    display: flex;
+    height: 50px;
+    align-items: center;
+}
+
+.Payment input[type=number] {
+    width: 80%;
+    border : 3px solid var(--bold);
+    border-right : none;
+    color: black;
+    padding : 10px 10px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.Payment span {
+    width : 20%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    background: var(--bold);
+    height: calc(100% - 2px);
+    border : 3px solid var(--bold);
+    border-left : none;
+    color: white;
+    user-select: none;
+}
+
+.Payment img{
+    height: 18px;
+    margin-left: 5px;
+}
+
+.SubmitContainer {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-top : 20px;
+}
+
+.SubmitButton {
+    background: var(--bold);
+    color: white;
+    user-select: none;
+    cursor: pointer;
+    padding: 10px 20px;
+    transition: all 300ms;
+}
+
+.SubmitButton:hover {
+    filter : contrast(130%);
+}
+
+.NewProposal textarea, .NewVeto textarea {
+    outline: none;
+    border : 3px solid var(--bold);
+    border-top: none;
+    margin-top : -1px;
+    color: black;
+    padding : 10px 10px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.NewVeto textarea {
+    border-top : 3px solid var(--bold);
+}
+
+.NewProposal input[type=text] {
+    width: 100%;
+    border : 3px solid var(--bold);
+    margin-top: 10px;
+    color: black;
+    padding : 10px 10px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.ProposalShow {
+    position: relative;
+    padding : 20px 40px;
+    background: #eaeaea;
+    width: 100%;
+    height: 100%;
+}
+
+.ProposalShow h2 {
+    color : var(--bold);
+}
+
+.ProposalShow h4 {
+    display: inline-block;
+    padding: 5px 10px;
+    color : var(--accent);
+    background: white;
+    margin: 5px 10px;
+    border-radius: 5px;
+}
+
+.ProposalShow h4 img {
+    position: relative;
+    top : 4px;
+    align-items: center;
+    height: 20px;
+    width: 20px;
+}
+
+.Veto {
+    position: absolute;
+    bottom : 15px;
+    right : 15px;
+    padding : 10px 20px;
+    font-size: 30px;
+    font-weight: 600;
+    background: crimson;
+    border-radius: 5px;
+    border : 3px solid white;
+    color: white;
+    cursor: pointer;
+    transition: all 300ms;
+}
+
+.Veto:hover {
+    filter: contrast(120%);
+}
+
+.Vetoes {
+    background: crimson;
+    color: white;
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-bottom-left-radius: 5px;
+    padding: 5px 10px;
+}
+
+br {
+    height: 20px;
+}
