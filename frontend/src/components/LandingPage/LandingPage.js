@@ -21,6 +21,7 @@ const LandingPage =  () => {
                 <div>
                     <h2>Each Project, a Community</h2>
                     <h3>Feedback from your community of investors, as standard</h3>
+                    <h3>0% commision fee for creators</h3>
                 </div>
                 <img src={community}/>
             </div>
