@@ -3,12 +3,12 @@ import classes from './CreateProject.module.css';
 import NoAddress from '../NoAddress/NoAddress';
 import Loading from '../Loading/Loading';
 import MarkdownEditor from './MarkdownEditor/MarkdownEditor';
+import Tier from './Tier/Tier';
 import { connect } from 'react-redux';
 import { withFirebase } from '../../firebase/index';
 import { withRouter } from 'react-router-dom';
 import DAI from '../../assets/DAI.png';
 import DateTimePicker from 'react-datetime-picker'
-import testpp from '../../assets/testpp.png'
 import ipfsClient from 'ipfs-http-client';
 const ipfs = ipfsClient({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
 
@@ -21,6 +21,7 @@ class CreateProject extends React.Component {
             imageHashes: [],
             imgBuffers: [],
             fileNames : [],
+            tiers : [],
             submitting : false,
         }
     }
@@ -30,6 +31,40 @@ class CreateProject extends React.Component {
         const value = e.target.value;
         this.setState({[e.target.name] : e.target.value});
     }
+
+    addTierHandler = () => {
+        const emptyTier = {
+            description : null,
+            funding : null,
+        };
+        let tiers = [...this.state.tiers];
+        tiers.push(emptyTier);
+        this.setState({tiers});
+    }
+
+    removeTierHandler = index => {
+        console.log(index);
+        this.setState(prevState => {
+            prevState.tiers.splice(index, 1)
+            return { tiers : prevState.tiers }
+        });
+    }
+
+    onChangeDesc = (e, index) => {
+        this.setState(prevState => {
+            let tiers = prevState.tiers;
+            tiers[index].description = e.target.value
+            return { tiers }
+        })
+    }
+
+    onChangeFunding = (e, index) => {
+        this.setState(prevState => {
+            let tiers = prevState.tiers;
+            tiers[index].funding = e.target.value;
+            return { tiers }
+        })
+    }    
 
     dateTimeChangeHandler = (value) => {
         const date = new Date(value);
@@ -51,18 +86,13 @@ class CreateProject extends React.Component {
         await this.uploadImages();
 
         const projectID = Math.random().toString(36).substr(2, 9);
-        const { title, description, t1desc, t2desc, t3desc, t1funding, t2funding, t3funding, tags, imgHashes, fundingLimit, endTime} = this.state;
+        const { title, description, tiers, tags, imgHashes, fundingLimit, endTime} = this.state;
         
         const project = {
             ...this.state.project,
             title : title,
             description : description,
-            t1desc : t1desc,
-            t2desc : t2desc,
-            t3desc : t3desc,
-            t1funding : t1funding,
-            t2funding : t2funding,
-            t3funding : t3funding,
+            tiers : tiers,
             fundingLimit : fundingLimit,
             creatorAddress : this.props.selectedAddress,
             imgHashes : imgHashes,
@@ -125,7 +155,7 @@ class CreateProject extends React.Component {
                         }
                     })
         }
-        this.setState({imgHashes}, () => console.log(this.state.imgHashes));
+        this.setState({imgHashes});
     }
 
     checkUser = () => {
@@ -146,15 +176,14 @@ class CreateProject extends React.Component {
         this.checkUser();
     }
 
-
-    
     render(){
+        
         let disabled = false;
-        const { title, description, t1desc, t2desc, t3desc, t1funding, t2funding, t3funding, tags, imgHashes, fundingLimit, endTime, fileNames, submitting} = this.state;
+        const { title, description, t1desc, t2desc, t3desc, t1funding, t2funding, t3funding, tags, imgHashes, fundingLimit, endTime, fileNames, submitting, tiers} = this.state;
         if(!title || !description || !t1desc || !t2desc || !t3desc || !t1funding || !t2funding || !t3funding || !tags || !fundingLimit, !endTime){
             disabled = true;
         }
-
+        console.log(tiers)
         let submitButton = (
             <div 
                 className={classes.SubmitButton}
@@ -177,12 +206,13 @@ class CreateProject extends React.Component {
         if(fileNames.length > 0){
             imageMessage = <React.Fragment>{fileNames.map(fileName => <p>{fileName}</p>)}</React.Fragment>
         }
+
         return (
             <div className={classes.CreateProject}>
                 {!this.props.selectedAddress ? <NoAddress/> : 
                     <React.Fragment>
                         <div className={classes.Box}>
-                            <h2> Create New Project </h2>
+                            <h2>Create New Project</h2>
                             <p>This is how you're going to sell your idea to the world! Make sure to include a comprehensive, well formatted description and add some great images to get your funders excited.</p>
                         </div>
                         <div className={classes.Box}>
@@ -192,78 +222,44 @@ class CreateProject extends React.Component {
                                 placeholder="Project Title"
                                 name="title"
                                 onChange={this.onChange}
-                        />
-                            </div>
-                            <div className={classes.Box}>
-                                <h3>Description</h3>
-                                <MarkdownEditor handleEditorChange={(html, text) => this.handleEditorChange(html, text)}/>
-                            </div>
-                            <div className={classes.Box}>
+                            />
+                        </div>
+                        <div className={classes.Box}>
+                            <h3>Description</h3>
+                            <MarkdownEditor handleEditorChange={(html, text) => this.handleEditorChange(html, text)}/>
+                        </div>
+                        <div className={classes.Box}>
                             <h3>How much are you asking for?</h3>
                             <div className={classes.Payment}>
-                                        <input 
-                                            type="number"
-                                            name="fundingLimit"
-                                            placeholder="Funding"
-                                            onChange={this.onChange}
-                                        />
-                                        <span>DAI <img src={DAI}/></span>
-                                    </div>
+                                <input 
+                                    type="number"
+                                    name="fundingLimit"
+                                    placeholder="Funding"
+                                    onChange={this.onChange}
+                                />
+                                <span>DAI <img src={DAI}/></span>
+                            </div>
                             </div>
                             <div className={classes.Box}>
                                 <h3>Contribution Tiers</h3>
+                                <div
+                                    className={classes.AddTier}
+                                    onClick = {this.addTierHandler}
+                                >Add Tier</div>
                                 <div className={classes.Tiers}>
-                                    <div className={classes.Tier}>
-                                        <h4>Tier 1</h4>
-                                        <textarea
-                                            placeholder="Tier Rewards Description"
-                                            name="t1desc"
-                                            onChange={this.onChange}
-                                        />
-                                    <div className={classes.Payment}>
-                                        <input 
-                                            type="number"
-                                            name="t1funding"
-                                            placeholder="Minimum funding"
-                                            onChange={this.onChange}
-                                        />
-                                        <span>DAI <img src={DAI}/></span>
-                                    </div>
-                                    </div>
-                                    <div className={classes.Tier}>
-                                        <h4>Tier 2</h4>
-                                        <textarea
-                                            placeholder="Tier Rewards Description"
-                                            name="t2desc"
-                                            onChange={this.onChange}
-                                        />
-                                     <div className={classes.Payment}>
-                                        <input 
-                                            type="number"
-                                            name="t2funding"
-                                            placeholder="Minimum funding"
-                                            onChange={this.onChange}
-                                        />
-                                        <span>DAI <img src={DAI}/></span>
-                                    </div>
-                                    </div>
-                                    <div className={classes.Tier}>
-                                        <h4>Tier 3</h4>
-                                        <textarea
-                                            placeholder="Tier Rewards Description"
-                                            name="t3desc"
-                                            onChange={this.onChange}
-                                        />
-                                    <div className={classes.Payment}>
-                                        <input 
-                                            type="number"
-                                            name="t3funding"
-                                            placeholder="Minimum funding"
-                                            onChange={this.onChange}
-                                        />
-                                        <span>DAI <img src={DAI}/></span>
-                                    </div>
-                                    </div>
+                                   {!(tiers.length > 0) ?
+                                    <p>Add tiers</p> : 
+                                    <React.Fragment>
+                                        {tiers.map((tier, index) => <Tier
+                                                onRemove = {this.removeTierHandler}
+                                                onChangeDesc = {this.onChangeDesc}
+                                                onChangeFund = {this.onChangeFunding}
+                                                tier = {tier}
+                                                index = {index}
+                                                key = {index}
+                                            />)}
+                                    </React.Fragment>
+                                    }
                                 </div>
                             </div>
                             <div className={classes.Box}>

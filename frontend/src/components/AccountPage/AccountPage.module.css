@@ -115,5 +115,5 @@ textarea {
 }
 
 .SubmitButton:hover {
-    filter : contrast(130%);
+    background: var(--accent);
 }

@@ -82,7 +82,6 @@ class ProjectPage extends React.Component {
 
     componentDidMount = () => {
         this.loadData();
-        this.testDataLoader();
     }
 
     loadData = () => {
@@ -106,28 +105,6 @@ class ProjectPage extends React.Component {
         document.body.style.height = "100%";
         document.body.style.overflow = "auto";
         this.setState({pledging:false});
-    }
-
-    testDataLoader = () => {
-        let project;
-        switch(this.props.match.params.projectID){
-            case "opaemf-9j1028c9j":
-                project = test1;
-                this.setState({project : project, loading : false});
-                break;
-            case "spodja-km90ecu3":
-                project = test2;
-                this.setState({project : project, loading : false});
-                break;
-            case "sdapoij-893hf90":
-                project = test3;
-                this.setState({project : project, loading : false});
-                break;
-            case "m094398fuj-aifhjw80":
-                project = test4;
-                this.setState({project : project, loading : false});
-                break;
-        }
     }
 
     parseDescription = (text) => {
@@ -206,24 +183,15 @@ class ProjectPage extends React.Component {
                                     </div>
 
                                     <div className={classes.RewardTiers}>
-                                        <RewardTier
-                                            index={1}
-                                            amount={project.t1funding}
-                                            pledgeHandler={() => this.pledgeHandler(project.t1funding)}
-                                            description={project.t1desc}
-                                        />
-                                        <RewardTier
-                                            index={2}
-                                            amount={project.t2funding}
-                                            pledgeHandler={() => this.pledgeHandler(project.t2funding)}
-                                            description={project.t2desc}
-                                        />
-                                        <RewardTier
-                                            index={3}
-                                            amount={project.t3funding}
-                                            pledgeHandler={() => this.pledgeHandler(project.t3funding)}
-                                            description={project.t3desc}
-                                        />
+                                        {project.tiers.map((tier, index) => (
+                                            <RewardTier
+                                                index={index + 1}
+                                                amount={tier.funding}
+                                                pledgeHandler={() => this.pledgeHandler(tier.funding)}
+                                                description={tier.description}
+                                            />
+                                        ))}
+
                                     </div>
                                 </div>
                             </div>

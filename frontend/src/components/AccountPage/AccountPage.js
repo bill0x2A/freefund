@@ -56,15 +56,15 @@ class AccountPage extends React.Component {
     }
 
     uploadImage = async () => {
-            await ipfs.add(this.state.imgBuffer)
-                    .then((result, error) => {
-                        if(!error){
-                            this.setState({profileHash : result.path});
-                            console.log("IPFS: ", result.path)
-                        } else {
-                            console.log(error)
-                        }
-                    })
+        await ipfs.add(this.state.imgBuffer)
+                .then((result, error) => {
+                    if(!error){
+                        this.setState({profileHash : result.path});
+                        console.log("IPFS: ", result.path)
+                    } else {
+                        console.log(error)
+                    }
+                })
     }
 
     componentDidMount = () => {

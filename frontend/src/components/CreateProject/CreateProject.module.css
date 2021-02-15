@@ -14,6 +14,7 @@ textarea {
 }
 
 .Box{
+    position: relative;
     padding: 10px 30px;
     background: #eaeaea;
     box-shadow: var(--bold) 1px 1px, var(--bold) 2px 2px, var(--bold) 3px 3px, var(--bold) 4px 4px, var(--bold) 5px 5px ;
@@ -47,23 +48,31 @@ textarea {
 }
 
 .Tiers {
-    display: flex;
-    justify-content: space-between;
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     width: 100%;
 }
 
-.Tier {
-    /* border: 4px dashed var(--bold); */
-    width: 33%;
-    padding: 20px 15px;
+.AddTier {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding : 5px 10px;
+    color: white;
+    border-left: 2px solid white;
+    border-bottom: 2px solid white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent);
+    transition: all 300ms;
+    cursor: pointer;
+    user-select: none;
 }
 
-.Tier h4 {
-    color: white;
-    display: inline-block;
-    padding: 2px 10px;
-    background: var(--bold);
-    margin: 0;
+.AddTier:hover {
+    filter: contrast(120%);
 }
 
 .Payment {
@@ -147,7 +156,6 @@ textarea {
     user-select: none;
 }
 
-
 .DateTime {
     border: 2px solid var(--bold);
     height: 50px;
@@ -171,6 +179,6 @@ textarea {
 }
 
 .SubmitButton:hover {
-    filter: contrast(120%);
+    background: var(--accent);
 }
 

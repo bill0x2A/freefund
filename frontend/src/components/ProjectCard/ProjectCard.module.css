@@ -104,7 +104,7 @@
 }
 
 .SeeMore:hover, .GoToDAO:hover {
-    filter: contrast(120%);
+    background: var(--accent);
 }
 
 .GoToDAO {

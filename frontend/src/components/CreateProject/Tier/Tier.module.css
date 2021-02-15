@@ -1,0 +1,29 @@
+.Tier {
+    position: relative;
+    width: 100%;
+    padding: 20px 15px;
+}
+
+.Tier h4 {
+    color: white;
+    display: inline-block;
+    padding: 2px 10px;
+    background: var(--bold);
+    margin: 0;
+}
+
+.DeleteTier {
+    position: absolute;
+    top : 0;
+    right: 0;
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--bold);
+    font-weight: 600;
+    user-select: none;
+    cursor: pointer;
+}

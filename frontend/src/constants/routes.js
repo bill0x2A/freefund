@@ -4,4 +4,4 @@ export const PROJECTS = '/projects';
 export const CREATE = '/create';
 export const PROJECT = '/projects/:projectID';
 export const DONATE = '/project/:projectID/fund';
-export const FUNDING_DAO = '/funding_dao/:projectID';
+// export const FUNDING_DAO = '/funding_dao/:projectID';

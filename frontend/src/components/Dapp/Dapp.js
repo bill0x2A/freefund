@@ -22,14 +22,14 @@ import CreateProject from '../CreateProject/CreateProject';
 import AccountPage from '../AccountPage/AccountPage';
 import ProjectPage from '../ProjectPage/ProjectPage';
 import MobileMessage from '../MobileMessage/MobileMessage';
-import FundingDao from '../FundingDao/FundingDao';
+// import FundingDao from '../FundingDao/FundingDao';
 
 import onMobile from '../../util/detectMobile';
 
 import { daiAbi, rinkebyDaiAddress } from '../../constants/tokenData';
 
 const HARDHAT_NETWORK_ID = '31337';
-const KOVAN_NETWORK_ID = '42'
+const MAINNET_NETWORK_ID = '42'
 const RINKEBY_NETWORK_ID = '4'
 
 class Dapp extends React.Component {
@@ -52,16 +52,15 @@ class Dapp extends React.Component {
             <Navigation
               selectedAddress={this.state.selectedAddress}
               connectWallet = {this._connectWallet}
-                />
+            />
             <div className={classes.Layout}>
               <div className={classes.Main}>
                 <Switch>
                   <Route exact path={ROUTES.LANDING} component={LandingPage}/>
                   <Route exact path={ROUTES.PROJECTS} component={ProjectBrowser}/>
                   <Route path={ROUTES.PROJECT} component={ProjectPage}/>
-                  <Route path={ROUTES.FUNDING_DAO} component={FundingDao}/>
-                  <Route path={ROUTES.CREATE} render = {() => <CreateProject selectedAddress={this.state.selectedAddress}/>}/>
-                  <Route path={ROUTES.ACCOUNT} render = {() => <AccountPage selectedAddress={this.state.selectedAddress}/>}/>
+                  <Route path={ROUTES.CREATE} component = {CreateProject}/>
+                  <Route path={ROUTES.ACCOUNT} component = {AccountPage}/>
                 </Switch>
               </div>
             </div>
