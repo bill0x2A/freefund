@@ -20,10 +20,12 @@ module.exports = function (app, dbe){
         if(address){
             user.findOne({address}, (err,doc)=>{
                 if(doc){
-                    var token = jwt.sign({email: doc.email, address} , secret, {
+                    var token = jwt.sign({email: doc.email, address, time: Date.now()} , secret, {
                         expiresIn: 86400 // expires in 24 hours
                     });
-                    res.json({message: "User registered", data: doc, token})
+                    let dc = {...doc}
+                    delete dc._id
+                    res.json({message: "Login successful", data: dc, token})
                 }else{
                     res.status(400).json({message:"User not yet registered"})
                 }
@@ -34,35 +36,59 @@ module.exports = function (app, dbe){
     })
 
     app.post('/register', (req,res)=>{
-        const {address, email, firstName, lastName, location} = req.body
-        if(address && email && firstName && lastName && location){
-            var token = jwt.sign({email: email, address} , secret, {
-                expiresIn: 86400 // expires in 24 hours
-            });
-            user.insertOne({address, email, firstName, lastName, location, balance}, (err, docs)=>{
-                res.json({message:"registered successfully", token})
+        const {address, countryCode, bio, imgHash, email, firstName, lastName} = req.body
+        if(address && email && firstName && lastName && countryCode){
+            user.findOne({address}, (err,doc)=>{
+                if(doc){
+                    res.status(400).json({message:"User already registered"})
+                }else{
+                    var token = jwt.sign({email: email, address, time: Date.now()} , secret, {
+                        expiresIn: 86400 // expires in 24 hours
+                    });
+                    user.insertOne({address, email, firstName, lastName, countryCode, bio, imgHash, fundedProjects:[], createdProjects:[], balance:"0.00"}, (err, docs)=>{
+                        res.json({message:"registered successfully", token})
+                    })
+                }
             })
+            
         }else{
             res.status(400).json({message: "One or more required fields not provided", error:true})
         }
     })
 
     app.post('/addProject',verify, (req, res)=>{
-        const {name, pictures, description, reason, goal, tier1, tier2, tier3, time } = req.body
-        if(name && pictures && description && reason && goal){
+        const {title, creatorAddress, fundingAddress, imgHashes, description, reason, fundingLimit, 
+            funding, t1desc, t1funding,  t2desc, t2funding, t3desc, t3funding, funders} = req.body
+        if(title && imgHashes && description && fundingLimit && creatorAddress){
             const id = shortId.generate()
-            const address = null //generate address
-            db.insertOne({name, user: req.user, id, pictures, time, description, reason, tier1, tier2, tier3, goal, current:0}, (err,doc)=>{
-                res.json({message:"Project created successfully",name, id, address })
+            //const address = null //generate address
+            user.findOne({address: creatorAddress}, (err,doc)=>{
+                if(doc){
+                    user.findOneAndUpdate({address: creatorAddress}, {$push :{ createdProjects: {title, id, description, reason, fundingAddress, imgHashes, fundingLimit} }} )
+                    db.insertOne({title, user: req.user, id, description, reason, creatorAddress, fundingAddress,
+                        imgHashes, fundingLimit, funding, t1desc, t1funding, t2desc, t2funding, t3desc, t3funding, funders }, (err,doc)=>{
+                            res.json({message:"Project created successfully",title, id, creatorAddress, fundingAddress })
+                    })
+                }else{
+                    res.status(400).json({error:true, message:"Creator not a registered user"})
+                }
             })
+            
         }else{
             res.status(400).json({error:true, message:"One or more required fields not provided"})
         }
     })
 
-    app.get('/listProjects',verify, (req,res)=>{
-        const data = db.find().toArray()
-        res.json({data})
+    app.get('/listProjects',verify, async (req,res)=>{
+        let data = await db.find()
+        data = await data.toArray()
+        
+        let datum = data.map(i=> {
+            delete i._id
+            return i
+        })
+
+        res.json({projects: datum})
     })
 
     app.post('/project', verify, (req,res)=>{
@@ -70,6 +96,7 @@ module.exports = function (app, dbe){
         if(id){
             db.findOne({id}, (err,doc)=>{
                 if(doc){
+                    delete doc._id
                     res.json({message:"Found successfully", data:doc})
                 }else{
                     res.status(400).json({message:"Incorrect Id"})
@@ -85,7 +112,8 @@ module.exports = function (app, dbe){
         if(address){
             user.findOne({address}, (err,doc)=>{
                 if(doc){
-                    json({message: "User registered", data: doc})
+                    delete data._id
+                    res.json({message: "User registered", data: doc})
                 }else{
                     res.status(400).json({message:"User not yet registered"})
                 }

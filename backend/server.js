@@ -4,9 +4,9 @@ const mongodb = require('mongodb')
 const routes = require('./functions/routes')
 const cors = require('cors')
 const app = express()
+
 app.use(express.json())
 app.use(cors())
-
 
 mongodb.connect(process.env.DB, { useUnifiedTopology: true }, (err, client)=>{
     if(err){
@@ -19,3 +19,5 @@ mongodb.connect(process.env.DB, { useUnifiedTopology: true }, (err, client)=>{
         console.log("app listening at port 5000")
     })
 })
+
+module.exports = app

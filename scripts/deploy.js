@@ -20,10 +20,15 @@ async function main() {
   console.log("Account balance:", (await deployer.getBalance()).toString());
 
   const Token = await ethers.getContractFactory("Token");
+  const Box = await ethers.getContractFactory("Box");
   const token = await Token.deploy();
+  const box = await Box.deploy();
+  //const box = await upgrades.deployProxy(Box, [42], { initializer: 'store' });
   await token.deployed();
+  await box.deployed();
 
   console.log("Token address:", token.address);
+  console.log("Box address:", box.address);
 
   // We also save the contract's artifacts and address in the frontend directory
   saveFrontendFiles(token);
