@@ -6,7 +6,8 @@
     "test": "test"
   },
   "scripts": {
-    "test": "hardhat test"
+    "test": "hardhat test",
+    "start": "cd backend && npm run start"
   },
   "repository": {
     "type": "git",
