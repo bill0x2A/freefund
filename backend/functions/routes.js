@@ -112,7 +112,7 @@ module.exports = function (app, dbe){
         if(address){
             user.findOne({address}, (err,doc)=>{
                 if(doc){
-                    delete data._id
+                    delete doc._id
                     res.json({message: "User registered", data: doc})
                 }else{
                     res.status(400).json({message:"User not yet registered"})
