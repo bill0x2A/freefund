@@ -131,10 +131,12 @@ class ProjectPage extends React.Component {
                                         <Fund
                                             projectID={this.props.match.params.projectID}
                                             pledge={pledge}
-                                            dismiss={this.dismissPledgeHandler}/>
+                                            dismiss={this.dismissPledgeHandler}
+                                        />
                                      </ModalContainer>}
 
                         <h2>{project.title}</h2>
+                        <h3 className={classes.Tagline}>{project.tagline}</h3>
                         <div className={classes.TimeLeft}>{timeLeft(project.endTime)}</div>
 
                         <div className={classes.Main}>
@@ -183,7 +185,7 @@ class ProjectPage extends React.Component {
                                     </div>
 
                                     <div className={classes.RewardTiers}>
-                                        {project.tiers.map((tier, index) => (
+                                        {project.tiers?.map((tier, index) => (
                                             <RewardTier
                                                 index={index + 1}
                                                 amount={tier.funding}

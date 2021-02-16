@@ -1,14 +1,19 @@
 import React from 'react'
 import classes from './AccountPage.module.css';
+
 import NoAddress from '../NoAddress/NoAddress';
 import ReactFlagsSelect from 'react-flags-select';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import ProjectCard from '../ProjectCard/ProjectCard';
 import Loading from '../Loading/Loading';
 import ReactTooltip from 'react-tooltip';
+import * as actionTypes from '../../store/actionTypes';
+
 import { connect } from 'react-redux';
 import { withFirebase } from '../../firebase/index';
-import {withRouter} from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
+import { register } from '../../mongo/mongo';
+
 import ipfsClient from 'ipfs-http-client';
 const ipfs = ipfsClient({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
 
@@ -77,14 +82,19 @@ class AccountPage extends React.Component {
             await this.uploadImage();
         }
         const userData = {
+            address : this.props.selectedAddress,
             email : this.state.email,
             firstName  : this.state.firstName,
             lastName : this.state.lastName,
             bio   : this.state.bio,
-            country : this.state.country,
-            profileHash : this.state.profileHash,
+            countryCode : this.state.country,
+            imgHash : this.state.profileHash,
         }
-        this.props.firebase.user(this.props.selectedAddress).set(userData);
+
+        const data = await register(userData);
+        console.log("TOKEN", data?.token);
+        this.props.setToken(data?.token)
+
         this.props.history.push('/')
     }
 
@@ -202,4 +212,8 @@ const mapStateToProps = state => ({
     selectedAddress : state.selectedAddress,
 })
 
-export default connect(mapStateToProps, null)(withFirebase(withRouter(AccountPage)));
+const mapDispatchToProps = dispatch => ({
+    setToken : tokenId => dispatch({type : actionTypes.setToken, token : tokenId}),
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(withFirebase(withRouter(AccountPage)));

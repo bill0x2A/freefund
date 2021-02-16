@@ -3,8 +3,6 @@ import ReactDOM, { render } from 'react-dom';
 import {Link} from 'react-router-dom';
 import classes from './Navigation.module.css';
 import * as ROUTES from '../../constants/routes';
-import jazzicon from '@metamask/jazzicon';
-import identicon from 'identicon';
 import { connect } from 'react-redux';
 import { withFirebase } from '../../firebase/index';
 import circle from '../../assets/circle.png';
@@ -64,64 +62,27 @@ const NetworkAlert = ({networkID}) => {
     )
 
 }
- 
-class WalletInfo extends React.Component {
-    constructor(props){
-        super(props);
-        this.state = {
-            loading : true,
-            image : defaultpp,
-        }
-    }
 
-    componentDidMount(){
-        this.setProfilePicture();
-    }
-
-    componentDidUpdate(prevProps) {
-        if (this.props.selectedAddress !== prevProps.selectedAddress) {
-            this.setProfilePicture();
-        }
-    }
-
-    setProfilePicture = () => {
-        const selectedAddress = this.props.selectedAddress;
-        const displayAddress = selectedAddress.substring(0, 4) + '...' + selectedAddress.substring( 35, selectedAddress.length-1)
-        let image = defaultpp;
-        this.props.firebase.user(selectedAddress).on("value", snap => {
-            const data = snap.val();
-            if(data.profileHash){
-                const image = `https://ipfs.infura.io/ipfs/${data.profileHash}`
-                this.setState({ image, displayAddress: displayAddress, loading:false })
-            } else {
-                this.setState({image : image, displayAddress : displayAddress, loading : false})
-            }
-        })
-        
-    }
-    render(){
-        return(
+const WalletInfo = ({user}) => {
+    const displayAddress = user?.address.substring(0, 4) + '...' + user?.address.substring( 35, user?.address.length-1)
+    return (
             <React.Fragment>
                 {
-                    this.state.loading ? <Loading/> : 
+                    !user ? <Loading/> : 
                         <Link
                             className={classes.WalletInfo}
                             to={ROUTES.ACCOUNT}
                         >
-                            <p>{this.state.displayAddress}</p>
-                            <img src={this.state.image}/>
+                            <p>{displayAddress}</p>
+                            <img src={`https://ipfs.infura.io/ipfs/${user.imgHash}`}/>
                         </Link>
                 }
             </React.Fragment>
-
-        )
-    }
-
+    )
 }
 
 const Navigation = props => {
-    const {selectedAddress, connectWallet} = props;
-    console.log(selectedAddress, connectWallet)
+    const {selectedAddress, connectWallet, user} = props;
     return (
         <div className={classes.Navigation}>
             {window.ethereum === undefined && <NoWalletDetected/>}
@@ -136,13 +97,13 @@ const Navigation = props => {
                 </Link>
                 <div className={classes.RightNav}>
                     <Link to = {ROUTES.PROJECTS} className={classes.NavItem}>Browse Projects</Link>
-                    {selectedAddress &&
+                    {user &&
                         <Link to = {ROUTES.CREATE} className={classes.NavItem}>Create Project</Link>}
-                    {!selectedAddress ? <div onClick={() => connectWallet()}
+                    {!props.selectedAddress ? <div onClick={connectWallet}
                                               className = {classes.ConnectWallet}
                                               >Connect Wallet</div> :
                                         <WalletInfo 
-                                            firebase={props.firebase}
+                                            user={user}
                                             selectedAddress={selectedAddress}
                                         />
                                         }
@@ -155,6 +116,7 @@ const Navigation = props => {
 const mapStateToProps = state => ({
     selectedAddress : state.selectedAddress,
     networkID       : state.networkID,
+    user           : state.user,
 })
 
 const mapDispatchToProps = dispatch => ({

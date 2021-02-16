@@ -54,6 +54,10 @@ textarea {
     width: 100%;
 }
 
+@media only screen and (max-width: 1330px){
+    .Tiers { grid-template-columns: repeat(2, 1fr);}
+}
+
 .AddTier {
     position: absolute;
     top: 0;

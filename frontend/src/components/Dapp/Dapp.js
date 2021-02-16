@@ -4,6 +4,7 @@ import * as ROUTES from '../../constants/routes';
 import * as actionTypes from '../../store/actionTypes';
 import { connect } from 'react-redux';
 import { withFirebase } from '../../firebase/index';
+import { login } from '../../mongo/mongo';
 
 import { BrowserRouter as Router,
   Route,
@@ -111,12 +112,17 @@ class Dapp extends React.Component {
     });
   }
 
-  _initialize(userAddress) {
+  _initialize = async userAddress => {
 
     this.props.connectWallet(userAddress);
 
     // FETCH USER INFORMATION HERE
 
+    const data = await login(userAddress);
+      console.dir(data);
+      this.props.setToken(data?.token)
+      this.props.setUser(data.data)
+    
     this._intializeEthers();
   }
 
@@ -166,7 +172,9 @@ const mapDispatchToProps = dispatch => ({
   connectDaiContract  : contract        => dispatch({type : actionTypes.connectDaiContract, contract : contract}),
   disconnectWallet    : ()              => dispatch({type : actionTypes.disconnectWallet}),
   resetState          : ()              => dispatch({type : actionTypes.resetState}),
-  setNetworkID        : networkId              => dispatch({type : actionTypes.setNetworkID, id : networkId}),
+  setNetworkID        : networkId       => dispatch({type : actionTypes.setNetworkID, id : networkId}),
+  setToken            : tokenId         => dispatch({type : actionTypes.setToken, token : tokenId}),
+  setUser             : userData        => dispatch({type : actionTypes.setUser, user : userData}),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withFirebase(Dapp));

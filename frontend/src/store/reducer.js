@@ -1,10 +1,9 @@
 import * as actionTypes from './actionTypes';
 
 const initialState = {
-    // The user's address and balance
     selectedAddress: undefined,
     mobile: false,
-    // The ID about transactions being sent, and any possible error with them
+    token : null,
   };
 
 const reducer = ( state = initialState, action ) => {
@@ -40,6 +39,17 @@ const reducer = ( state = initialState, action ) => {
             return {
                 ...state,
                 networkID : action.id,
+            }
+        case actionTypes.setToken:
+            console.log("LOGIN TOKEN: ", action.token);
+            return {
+                ...state,
+                token : action.token,
+            }
+        case actionTypes.setUser:
+            return {
+                ...state,
+                user : action.user,
             }
         default:
             return state

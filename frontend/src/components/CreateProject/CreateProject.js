@@ -86,11 +86,12 @@ class CreateProject extends React.Component {
         await this.uploadImages();
 
         const projectID = Math.random().toString(36).substr(2, 9);
-        const { title, description, tiers, tags, imgHashes, fundingLimit, endTime} = this.state;
+        const { title, tagline, description, tiers, tags, imgHashes, fundingLimit, endTime} = this.state;
         
         const project = {
             ...this.state.project,
             title : title,
+            tagline : tagline,
             description : description,
             tiers : tiers,
             fundingLimit : fundingLimit,
@@ -225,6 +226,16 @@ class CreateProject extends React.Component {
                             />
                         </div>
                         <div className={classes.Box}>
+                            <h3>Tagline</h3>
+                            <p>One sentence to summarise your project.</p>
+                            <input
+                                type='text'
+                                placeholder="Tagline"
+                                name="tagline"
+                                onChange={this.onChange}
+                            />
+                        </div>
+                        <div className={classes.Box}>
                             <h3>Description</h3>
                             <MarkdownEditor handleEditorChange={(html, text) => this.handleEditorChange(html, text)}/>
                         </div>
@@ -245,10 +256,13 @@ class CreateProject extends React.Component {
                                 <div
                                     className={classes.AddTier}
                                     onClick = {this.addTierHandler}
-                                >Add Tier</div>
+                                    >Add Tier
+                                </div>
                                 <div className={classes.Tiers}>
                                    {!(tiers.length > 0) ?
-                                    <p>Add tiers</p> : 
+                                    <div style = {{display :"flex", alignItems : "center", justifyContent : "center"}}>
+                                        <p>No Tiers Yet</p>
+                                    </div> : 
                                     <React.Fragment>
                                         {tiers.map((tier, index) => <Tier
                                                 onRemove = {this.removeTierHandler}
