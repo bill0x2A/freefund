@@ -1,14 +1,19 @@
 import React from 'react';
 import classes from './CreateProject.module.css';
+
 import NoAddress from '../NoAddress/NoAddress';
 import Loading from '../Loading/Loading';
 import MarkdownEditor from './MarkdownEditor/MarkdownEditor';
 import Tier from './Tier/Tier';
+import DateTimePicker from 'react-datetime-picker'
+
 import { connect } from 'react-redux';
 import { withFirebase } from '../../firebase/index';
 import { withRouter } from 'react-router-dom';
+import { addProject } from '../../mongo/mongo';
+
 import DAI from '../../assets/DAI.png';
-import DateTimePicker from 'react-datetime-picker'
+
 import ipfsClient from 'ipfs-http-client';
 const ipfs = ipfsClient({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
 
@@ -87,7 +92,7 @@ class CreateProject extends React.Component {
 
         const projectID = Math.random().toString(36).substr(2, 9);
         const { title, tagline, description, tiers, tags, imgHashes, fundingLimit, endTime} = this.state;
-        
+        console.log("TOKEN SENT IN STATE: ", this.props.token);
         const project = {
             ...this.state.project,
             title : title,
@@ -97,8 +102,10 @@ class CreateProject extends React.Component {
             fundingLimit : fundingLimit,
             creatorAddress : this.props.selectedAddress,
             imgHashes : imgHashes,
-            funded : 0,
+            funding : 0,
             endTime : endTime,
+            reason : "",
+            token : this.props.token,
         }
 
 
@@ -117,12 +124,15 @@ class CreateProject extends React.Component {
         //         return tag.toLowerCase();
         //     })
         // }
-
-        console.log(project);
         
-        this.props.firebase.project(projectID).set(project);
-        this.props.firebase.user(this.props.selectedAddress).child('projects').child(projectID).set(projectID);
-        this.props.history.push(`/projects/${projectID}`);
+        const { data, response } = await addProject(project);
+        if(response.ok){
+            this.props.history.push(`/projects/${data.id}`);
+        } else {
+            // Handle the error
+            console.log("Something went wrong");
+        }
+        
 
     }
 
@@ -184,7 +194,6 @@ class CreateProject extends React.Component {
         if(!title || !description || !t1desc || !t2desc || !t3desc || !t1funding || !t2funding || !t3funding || !tags || !fundingLimit, !endTime){
             disabled = true;
         }
-        console.log(tiers)
         let submitButton = (
             <div 
                 className={classes.SubmitButton}
@@ -318,6 +327,7 @@ class CreateProject extends React.Component {
 
 const mapStateToProps = state => ({
     selectedAddress : state.selectedAddress,
+    token : state.token,
 })
 
 export default connect(mapStateToProps, null)(withFirebase(withRouter(CreateProject)));

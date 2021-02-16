@@ -62,3 +62,31 @@ export const register = async userData => {
           // Handle in calling component
         });    
 }
+
+export const addProject = async ({projectData}) => {
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(projectData)
+      };
+
+      const response = await fetch(`https://dirt-noble-driver.glitch.me/addProject`, requestOptions)
+      console.log(response)
+      const responseCode = response.status;
+      if (!response.ok) {
+        // Not an OK reseponse
+        if (responseCode == 400) {
+            // Parse the body to see if we have the message
+            const data = await response.json();
+            console.log(data.message);
+            if (data.message === "One or more required fields not provided") {
+                return;
+            }
+        }
+        throw new Error("HTTP error " + responseCode);
+    }
+
+    // OK response
+    const data = await response.json();
+    return {data, response};
+}

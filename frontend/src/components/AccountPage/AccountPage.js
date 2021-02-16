@@ -26,22 +26,9 @@ class AccountPage extends React.Component {
         super(props);
         this.state = {
             bio : "",
-            profileHash : "QmVLKVhG5VNfpXDfUpa81xpHR7TmCtUx3rtoEewkAowZse",
+            imgHash : "QmVLKVhG5VNfpXDfUpa81xpHR7TmCtUx3rtoEewkAowZse",
             submitting : false,
         }
-    }
-
-    loadUserData = () => {
-        this.props.firebase.user(this.props.selectedAddress)
-        .once("value", snap => {
-            const data = snap.val();
-            const accountData = {
-                ...data,
-                projects : (data?.projects ? [...Object.keys(data.projects)] : null),
-            }
-            console.log(accountData);
-            this.setState({...accountData});
-        })
     }
 
     onChange = (e) => {
@@ -64,7 +51,7 @@ class AccountPage extends React.Component {
         await ipfs.add(this.state.imgBuffer)
                 .then((result, error) => {
                     if(!error){
-                        this.setState({profileHash : result.path});
+                        this.setState({imgHash : result.path});
                         console.log("IPFS: ", result.path)
                     } else {
                         console.log(error)
@@ -73,7 +60,7 @@ class AccountPage extends React.Component {
     }
 
     componentDidMount = () => {
-        this.loadUserData();
+        this.setState({...this.props.user})
     }
     
     onSubmit = async () => {
@@ -88,7 +75,7 @@ class AccountPage extends React.Component {
             lastName : this.state.lastName,
             bio   : this.state.bio,
             countryCode : this.state.country,
-            imgHash : this.state.profileHash,
+            imgHash : this.state.imgHash,
         }
 
         const data = await register(userData);
@@ -100,8 +87,8 @@ class AccountPage extends React.Component {
 
     render = () => {
         let disabled = false;
-        const {email, firstName, lastName, country, submitting} = this.state;
-        if(!email || !firstName || !lastName || !country){
+        const {email, firstName, lastName, countryCode, submitting} = this.state;
+        if(!email || !firstName || !lastName || !countryCode){
             disabled = true;
         }
 
@@ -124,7 +111,7 @@ class AccountPage extends React.Component {
         }
         return(
             <div className ={classes.AccountPage}>
-                {!this.props.selectedAddress ? <NoAddress/> :
+                {!this.props.user ? <NoAddress/> :
                     <React.Fragment>
                         {this.state.errorMessage && <ErrorMessage message={this.state.errorMessage}/>}
                         <div className={classes.Box}>
@@ -174,14 +161,14 @@ class AccountPage extends React.Component {
                         <div className={classes.Box}>
                             <h3>Country<Required/></h3>
                             <ReactFlagsSelect
-                                selected={this.state.country}
-                                onSelect={country => this.setState({country})}
+                                selected={this.state.countryCode}
+                                onSelect={countryCode => this.setState({countryCode})}
                             />
                         </div>
                         <div className={classes.Box}>
                             <h3>Profile Picture</h3>
                             <div className={classes.ImageUploadContainer}>
-                                <img src = {`https://ipfs.infura.io/ipfs/${this.state.profileHash}`}/>
+                                <img src = {`https://ipfs.infura.io/ipfs/${this.state.imgHash}`}/>
                                 <div className={classes.ImageUpload}>
                                     <input
                                         type='file'
@@ -210,6 +197,7 @@ class AccountPage extends React.Component {
 
 const mapStateToProps = state => ({
     selectedAddress : state.selectedAddress,
+    user : state.user,
 })
 
 const mapDispatchToProps = dispatch => ({
