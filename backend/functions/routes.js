@@ -45,7 +45,7 @@ module.exports = function (app, dbe){
                     var token = jwt.sign({email: email, address, time: Date.now()} , secret, {
                         expiresIn: 86400 // expires in 24 hours
                     });
-                    user.insertOne({address, email, firstName, lastName, countryCode, bio, imgHash, fundedProjects:[], createdProjects:[], balance:"0.00"}, (err, docs)=>{
+                    user.insertOne({address, email, firstName, lastName, countryCode, bio, imgHash, fundedProjects:[], createdProjects:[], balance:"0.00", createdAt: new Date(), updatedAt: new Date()}, (err, docs)=>{
                         res.json({message:"registered successfully", token})
                     })
                 }
@@ -64,9 +64,9 @@ module.exports = function (app, dbe){
             //const address = null //generate address
             user.findOne({address: creatorAddress}, (err,doc)=>{
                 if(doc){
-                    user.findOneAndUpdate({address: creatorAddress}, {$push :{ createdProjects: {title, id, description, reason, fundingAddress, imgHashes, fundingLimit} }} )
+                    user.findOneAndUpdate({address: creatorAddress}, {$push :{ createdProjects: {title, id, description, reason, fundingAddress, imgHashes, fundingLimit} }, updatedAt: new Date()} )
                     db.insertOne({title, user: req.user, id, description, reason, creatorAddress, fundingAddress,
-                        imgHashes, fundingLimit, funding, t1desc, t1funding, t2desc, t2funding, t3desc, t3funding, funders }, (err,doc)=>{
+                        imgHashes, fundingLimit, funding, t1desc, t1funding, t2desc, t2funding, t3desc, t3funding, funders, createdAt: new Date(), updatedAt: new Date() }, (err,doc)=>{
                             res.json({message:"Project created successfully",title, id, creatorAddress, fundingAddress })
                     })
                 }else{
