@@ -90,9 +90,8 @@ class CreateProject extends React.Component {
         //Format tags as an array of lowercase strings, removing 
         await this.uploadImages();
 
-        const projectID = Math.random().toString(36).substr(2, 9);
         const { title, tagline, description, tiers, tags, imgHashes, fundingLimit, endTime} = this.state;
-        console.log("TOKEN SENT IN STATE: ", this.props.token);
+        
         const project = {
             ...this.state.project,
             title : title,
@@ -107,7 +106,6 @@ class CreateProject extends React.Component {
             reason : "",
             token : this.props.token,
         }
-
 
         // We will leave out tags for now....
 

@@ -1,18 +1,23 @@
 import React from 'react';
-import {withRouter} from 'react-router-dom';
 import classes from './ProjectPage.module.css';
 import styles from './Carousel.css';
+
 import { Carousel } from 'react-responsive-carousel';
-import { withFirebase } from '../../firebase/index';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { loadProject } from '../../mongo/mongo';
+
+import ReactHtmlParser, { processNodes, convertNodeToElement, htmlparser2 } from 'react-html-parser';
 import MarkdownIt from 'markdown-it';
 import timeLeft from '../../util/timeDifferece';
-import ReactHtmlParser, { processNodes, convertNodeToElement, htmlparser2 } from 'react-html-parser';
 
-import Loading from '../Loading/Loading';
-import {test1, test2, test3, test4} from '../../constants/testProjects';
-import DAI from '../../assets/DAI.png'
 import ModalContainer from '../hoc/ModalContainer/ModalContainer';
 import Fund from '../Fund/Fund';
+import Loading from '../Loading/Loading';
+
+import DAI from '../../assets/DAI.png'
+
+
 
 const md = new MarkdownIt();
 
@@ -42,7 +47,7 @@ const CarouselDisplay = ({imageHashes}) => {
 
 
 const ProgressBar = (props) =>{
-    const progress = props.funded / props.fundingLimit * 100
+    const progress = props.funding / props.fundingLimit * 100
     return (
         <div className={classes.ProgressBar}>
             <div style={{
@@ -84,14 +89,17 @@ class ProjectPage extends React.Component {
         this.loadData();
     }
 
-    loadData = () => {
-        this.props.firebase.project(this.props.match.params.projectID)
-        .on("value", data => {
-            const project = data.val();
-            this.setState({project : project});
-            this.parseDescription(project.description.text);
-            this.loadCreatorData(project.creatorAddress);
-        })
+    loadData = async () => {
+        const projectID = this.props.match.params.projectID;
+        console.log(projectID);
+        const response = await loadProject("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJpbGx5c21pdGgxOTk4QGxpdmUuY29tIiwiYWRkcmVzcyI6IjB4NTU5OGU5YjZmMmQ0MDAxOGVkZTZlNzRkZWQxYzQzNmZmMGEyYmFiYyIsInRpbWUiOjE2MTM1NTkxNzI0OTMsImlhdCI6MTYxMzU1OTE3MiwiZXhwIjoxNjEzNjQ1NTcyfQ.zct8x9XN8K5olzu3XhOYs7q2QGWlErL7WvfEwaSebMk", projectID);
+        if(response === 404){
+            this.props.history.push('/404')
+        } else {
+            console.log(response.data);
+            this.setState({project : response.data, loading : false});
+            // this.loadCreatorData(), set loading to false after this not as above.
+        }
     }
 
     pledgeHandler = (value) => {
@@ -145,7 +153,7 @@ class ProjectPage extends React.Component {
                                 <div className={classes.FundingLeft}>
                                     <div className={classes.FundingTopline}>
                                         <div className={classes.FundingInfo}>
-                                            <span>{project.funded.toFixed(2)}</span>
+                                            <span>{project.funding.toFixed(2)}</span>
                                             <img src = {DAI}/>
                                             <span>raised</span>
                                         </div>
@@ -155,7 +163,7 @@ class ProjectPage extends React.Component {
                                             <span style={{color: "#606060"}}>goal</span>
                                         </div>
                                     </div>
-                                    <ProgressBar funded={project.funded} fundingLimit={project.fundingLimit}/>
+                                    <ProgressBar funding={project.funding} fundingLimit={project.fundingLimit}/>
                                 </div>
                                 <div className={classes.PledgeContainer}>
                                     <div
@@ -178,9 +186,9 @@ class ProjectPage extends React.Component {
                                 </div>
                                 <div style = {{flex : 2}}>
                                     <div className={classes.CreatorInfo}>
-                                            <h4>{creatorData.firstName} {creatorData.lastName}</h4>
-                                            <img src={`https://ipfs.infura.io/ipfs/${creatorData.profileHash}`}/>
-                                            <p>{creatorData.bio}</p>
+                                            <h4>{creatorData?.firstName} {creatorData?.lastName}</h4>
+                                            <img src={`https://ipfs.infura.io/ipfs/${creatorData?.profileHash}`}/>
+                                            <p>{creatorData?.bio}</p>
                                        
                                     </div>
 
@@ -207,5 +215,13 @@ class ProjectPage extends React.Component {
 
 }
 
+const mapStateToProps = state => ({
+    token : state.token,
+    user : state.token,
+});
 
-export default withRouter(withFirebase(ProjectPage));
+const mapDispatchToProps = dispatch => ({
+
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(ProjectPage));

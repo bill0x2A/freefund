@@ -23,6 +23,7 @@ import CreateProject from '../CreateProject/CreateProject';
 import AccountPage from '../AccountPage/AccountPage';
 import ProjectPage from '../ProjectPage/ProjectPage';
 import MobileMessage from '../MobileMessage/MobileMessage';
+import MissingPage from '../MissingPage/MissingPage';
 // import FundingDao from '../FundingDao/FundingDao';
 
 import onMobile from '../../util/detectMobile';
@@ -62,6 +63,7 @@ class Dapp extends React.Component {
                   <Route path={ROUTES.PROJECT} component={ProjectPage}/>
                   <Route path={ROUTES.CREATE} component = {CreateProject}/>
                   <Route path={ROUTES.ACCOUNT} component = {AccountPage}/>
+                  <Route component = {MissingPage}/>
                 </Switch>
               </div>
             </div>
@@ -121,7 +123,7 @@ class Dapp extends React.Component {
     const data = await login(userAddress);
       console.dir(data);
       this.props.setToken(data?.token)
-      this.props.setUser(data.data)
+      this.props.setUser(data?.data)
     
     this._intializeEthers();
   }

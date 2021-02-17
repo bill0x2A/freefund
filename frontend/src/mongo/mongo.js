@@ -6,7 +6,6 @@ export const login = async address => {
       };
 
       const response = await fetch(`https://dirt-noble-driver.glitch.me/login`, requestOptions)
-      console.log(response)
       const responseCode = response.status;
       if (!response.ok) {
         // Not an OK reseponse
@@ -24,7 +23,7 @@ export const login = async address => {
     // OK response, read the data from the body, this is also async
     const data = await response.json();
     console.log(data)
-    console.log("TOKEN: ", data.token);
+    console.log("TOKEN FROM LOGIN: ", data.token);
     return data;
 };
 
@@ -63,15 +62,13 @@ export const register = async userData => {
         });    
 }
 
-export const addProject = async ({projectData}) => {
+export const addProject = async projectData => {
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(projectData)
       };
-
       const response = await fetch(`https://dirt-noble-driver.glitch.me/addProject`, requestOptions)
-      console.log(response)
       const responseCode = response.status;
       if (!response.ok) {
         // Not an OK reseponse
@@ -88,5 +85,32 @@ export const addProject = async ({projectData}) => {
 
     // OK response
     const data = await response.json();
-    return {data, response};
+    return {data, responseCode};
+}
+
+export const loadProject = async (token, id) => {
+  const requestOptions = {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({token, id}),
+  };
+  console.log(requestOptions.body);
+  const response = await fetch(`https://dirt-noble-driver.glitch.me/project`, requestOptions)
+  const responseCode = response.status;
+  if (!response.ok) {
+    // Not an OK reseponse
+    if (responseCode == 400) {
+        // Parse the body to see if we have the message
+        const data = await response.json();
+        console.log(data.message);
+        if (data.message === "Incorrect Id") {
+            return 404;
+        }
+    }
+    throw new Error("HTTP error " + responseCode);
+}
+
+// OK response
+const data = await response.json();
+return data;
 }
