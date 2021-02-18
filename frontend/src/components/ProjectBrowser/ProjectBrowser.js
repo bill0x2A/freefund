@@ -1,7 +1,6 @@
 import React from 'react';
 import classes from './ProjectBrowser.module.css';
 import ProjectCard from '../ProjectCard/ProjectCard';
-import {test1, test2, test3, test4} from '../../constants/testProjects';
 import { withFirebase } from '../../firebase/index';
 import Loading from '../Loading/Loading';
 

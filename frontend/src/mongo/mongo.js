@@ -1,10 +1,12 @@
+
+ 
 export const login = async address => {
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ address })
       };
-
+      console.log(requestOptions.body)
       const response = await fetch(`https://dirt-noble-driver.glitch.me/login`, requestOptions)
       const responseCode = response.status;
       if (!response.ok) {
@@ -13,9 +15,10 @@ export const login = async address => {
             // Parse the body to see if we have the message
             const data = await response.json();
             if (data.message === "User not yet registered") {
-                // Do nothing
-                return;
+                console.log(data);
+                return data;
             }
+            console.log(data.message);
         }
         throw new Error("HTTP error " + responseCode);
     }
@@ -114,3 +117,4 @@ export const loadProject = async (token, id) => {
 const data = await response.json();
 return data;
 }
+

@@ -76,7 +76,7 @@ class ProjectCard extends React.Component {
                                 <Flag countryCode={creatorInfo.country} svg/>
                             </div>
                         </div>
-                        <p>{ReactHtmlParser(md.render(project.description.text))}</p>
+                        <div>{ReactHtmlParser(md.render(project.description.text))}</div>
                         <div className={classes.TimeLeft}>
                             <span>{timeLeft(project.endTime)}</span>
                         </div>

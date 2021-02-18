@@ -5,6 +5,7 @@ import * as actionTypes from '../../store/actionTypes';
 import { connect } from 'react-redux';
 import { withFirebase } from '../../firebase/index';
 import { login } from '../../mongo/mongo';
+import detectEthereumProvider from '@metamask/detect-provider';
 
 import { BrowserRouter as Router,
   Route,
@@ -12,6 +13,7 @@ import { BrowserRouter as Router,
  } from 'react-router-dom';
 
 import { ethers } from "ethers";
+
 
 // import TokenArtifact from "../../contracts/Token.json";
 // import contractAddress from "../../contracts/contract-address.json";
@@ -75,58 +77,102 @@ class Dapp extends React.Component {
 
   componentDidMount(){
     this.setState({mobile : onMobile()});
+    this.checkConnection();
+  }
+
+  // ####### METAMASK API #######
+  // Would preferably handle this in it's own file but it needs to dispatch Redux state changes
+  
+  checkConnection = async () => {
+    // This is run every time the Dapp component is mounted (i.e. on page reload),
+    // it should account for all possibilities.
+
+    const provider = await detectEthereumProvider();
+    let chainID;
+    if (provider){
+        if (provider !== window.ethereum) {
+            console.error('Do you have multiple wallets installed?');
+            // Give the user visual feedback here
+          } else {
+
+            // Handle chain ID detection and switching
+            chainID = await window.ethereum.request({method : 'eth_chainId'});
+            this.props.setNetworkID(chainID);
+            window.ethereum.on('chainChanged', chainID => {
+                this.handleChainChanged(chainID);
+            });
+
+            // Detect accounts
+            window.ethereum
+                .request({ method : 'eth_accounts'})
+                .then(this.handleAccountsChanged)
+                .catch(err => {
+                    console.log(err);
+                })
+
+            window.ethereum.on('accountsChanged', accounts => {
+                this.handleAccountsChanged(accounts);
+            });
+
+          }
+    }
+  }
+
+  handleChainChanged = () => {
+    // As recommended by MetaMask docs
+    console.log("CHAIN CHANGED");
+    window.location.reload();
+  }
+
+  handleAccountsChanged = accounts => {
+    if (accounts.length === 0) {
+      // MetaMask is locked or the user has not connected any accounts
+      this.props.resetState();
+      console.log('Please connect to MetaMask.');
+    } else if (accounts[0] !== this.props.selectedAddress) {
+      // Account is not what we have in state, reinitialize everything for a new account
+      this._initialize(accounts[0]);
+    } else {
+      console.log("STATE = METAMASK, ALL GOOD!")
+    }
+    // Check login token here
   }
 
   _connectWallet =  async () => {
     // This method is run when the user clicks the Connect. It connects the
     // dapp to the user's wallet, and initializes it.
 
-    // To connect to the user's wallet, we have to run this method.
-    // It returns a promise that will resolve to the user's address.
     const [selectedAddress] = await window.ethereum.enable();
-    // Once we have the address, we can initialize the application.
 
-    // First we check the network
     if (!this._checkNetwork()) {
       return;
     }
 
     this._initialize(selectedAddress);
-
-    // We reinitialize it whenever the user changes their account.
-    window.ethereum.on("accountsChanged", ([newAddress]) => {
-      // `accountsChanged` event can be triggered with an undefined newAddress.
-      // This happens when the user removes the Dapp from the "Connected
-      // list of sites allowed access to your addresses" (Metamask > Settings > Connections)
-      // To avoid errors, we reset the dapp state 
-      if (newAddress === undefined) {
-        this.props.disconnectWallet();
-        return;
-      }
-      
-      this._initialize(newAddress);
-    });
-    
-    // We reset the dapp state if the network is changed
-    window.ethereum.on("networkChanged", ([networkId]) => {
-      this.props.resetState();
-      this.props.setNetworkID(networkId);
-    });
   }
 
   _initialize = async userAddress => {
-
+    this.props.resetState();
     this.props.connectWallet(userAddress);
 
     // FETCH USER INFORMATION HERE
-
+    console.log("Running login");
     const data = await login(userAddress);
-      console.dir(data);
-      this.props.setToken(data?.token)
-      this.props.setUser(data?.data)
+      if(!data.token){
+        // User is not registered
+        this.props.setToken(null)
+        this.props.setUser({address : userAddress})
+      } else {
+        // User is registered
+        this.props.setToken(data?.token)
+        this.props.setUser(data?.data)
+      }
+
     
     this._intializeEthers();
   }
+
+  // ####### ETHERS #######
 
   async _intializeEthers() {
     // We first initialize ethers by creating a provider using window.ethereum
@@ -140,8 +186,7 @@ class Dapp extends React.Component {
     // INITIALISE CONTRACTS HERE
   }
 
-  // This is an utility method that turns an RPC error into a human readable
-  // message.
+  // This is an utility method that turns an RPC error into a human readable message.
   _getRpcErrorMessage(error) {
     if (error.data) {
       return error.data.message;

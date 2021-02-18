@@ -130,7 +130,6 @@ class CreateProject extends React.Component {
             // Handle the error
             console.log("Something went wrong");
         }
-        
 
     }
 
@@ -196,14 +195,16 @@ class CreateProject extends React.Component {
             <div 
                 className={classes.SubmitButton}
                 onClick={this.onSubmit}
-            >Submit</div>
+                >Submit
+            </div>
         )
         if(disabled){
             submitButton = (
                 <div 
                     className={classes.SubmitButton}
                     style ={{background : "gray", cursor: "none"}}
-                >Please fill out all fields</div>
+                    >Please fill out all fields
+                </div>
             )
         }
         if(submitting){

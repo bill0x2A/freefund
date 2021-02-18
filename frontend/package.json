@@ -5,6 +5,7 @@
   "dependencies": {
     "@iconify-icons/simple-line-icons": "^1.1.0",
     "@iconify/react": "^1.1.4",
+    "@metamask/detect-provider": "^1.2.0",
     "@metamask/jazzicon": "^2.0.0",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",

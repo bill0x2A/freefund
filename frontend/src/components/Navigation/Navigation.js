@@ -5,8 +5,8 @@ import classes from './Navigation.module.css';
 import * as ROUTES from '../../constants/routes';
 import { connect } from 'react-redux';
 import { withFirebase } from '../../firebase/index';
-import circle from '../../assets/circle.png';
 import defaultpp from '../../assets/defaultpp.png';
+import svgLogo from '../../assets/logo.svg';
 import Loading from '../Loading/Loading';
 
 
@@ -32,27 +32,28 @@ const NetworkAlert = ({networkID}) => {
     if(!networkID){
         return null;
     }
+    const id = parseInt(networkID);
 
-    switch(networkID){
-        case "1":
+    switch(id){
+        case 1:
             alertText = "WARNING : Connected to Ethereum Mainnet, please switch to Rinkeby Testnet";
             break;
-        case "3":
+        case 3:
             alertText = "Connected to Ropsten Testnet, please switch to Rinkeby Testnet";
             break;
-        case "5":
+        case 5:
             alertText = "Connected to Goerli Testnet, please switch to Rinkeby Testnet";
             break;       
-        case "4":
+        case 4:
             return null; 
-        case "2018":
+        case 2018:
             alertText = "Connected to Dev Testnet, please switch to Rinkeby Testnet";
             break;
-        case "42":
+        case 42:
             alertText = "Connected to Kovan Testnet, please switch to Rinkeby Testnet";
             break;
         default:
-            alertText = `Connected to network with ID : ${networkID}`;
+            alertText = `Connected to network with ID : ${id}`;
             break;                
     }
     return(
@@ -65,6 +66,7 @@ const NetworkAlert = ({networkID}) => {
 
 const WalletInfo = ({user}) => {
     const displayAddress = user?.address.substring(0, 4) + '...' + user?.address.substring( 35, user?.address.length-1)
+    const profilePicture = user?.imgHash ? `https://ipfs.infura.io/ipfs/${user.imgHash}` : defaultpp
     return (
             <React.Fragment>
                 {
@@ -74,7 +76,7 @@ const WalletInfo = ({user}) => {
                             to={ROUTES.ACCOUNT}
                         >
                             <p>{displayAddress}</p>
-                            <img src={`https://ipfs.infura.io/ipfs/${user.imgHash}`}/>
+                            <img src={profilePicture}/>
                         </Link>
                 }
             </React.Fragment>
@@ -86,13 +88,13 @@ const Navigation = props => {
     return (
         <div className={classes.Navigation}>
             {window.ethereum === undefined && <NoWalletDetected/>}
-            <NetworkAlert networkID={"4"}/>
+            <NetworkAlert networkID={props.networkID}/>
             <div className ={classes.Navbar}>
                 <Link
                     className={classes.Logo}
                     to={ROUTES.LANDING}
                 >
-                    <img src = {circle}/>
+                    <img src={svgLogo}/>
                     <h2>FREEFUND</h2>
                 </Link>
                 <div className={classes.RightNav}>

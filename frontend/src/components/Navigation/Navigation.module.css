@@ -30,6 +30,8 @@
     font-size: 22px;
     margin-left: 10px;
     user-select: none;
+    font-family: "Roboto", sans-serif;
+    letter-spacing: 1px;
 }
 
 .RightNav {
