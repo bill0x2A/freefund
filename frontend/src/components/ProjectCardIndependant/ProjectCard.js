@@ -5,6 +5,7 @@ import Flag from 'react-country-flag';
 import {Link} from 'react-router-dom';
 import Loading from '../Loading/Loading';
 import timeLeft from '../../util/timeDifferece';
+import { withFirebase } from '../../firebase/index';
 import MarkdownIt from 'markdown-it';
 import ReactHtmlParser, { processNodes, convertNodeToElement, htmlparser2 } from 'react-html-parser';
 
@@ -24,13 +25,43 @@ const ProgressBar = (props) =>{
     )
 }
 
-const ProjectCard = props => {
-    const {project, creatorInfo} = props
-        console.log(project)
+class ProjectCard extends React.Component {
+    constructor(props){
+        super(props);
+        this.state = {
+            loading : true,
+        }
+    }
+
+    loadData = () => {
+        this.props.firebase.project(this.props.projectID)
+            .on("value", data => {
+                const project = data.val();
+                this.setState({project : project});
+                this.loadCreatorData(project.creatorAddress);
+            })
+    }
+
+    loadCreatorData = creatorAddress => {
+        this.props.firebase.user(creatorAddress)
+            .once("value", data => {
+                const creatorInfo = data.val();
+                this.setState({creatorInfo : creatorInfo, loading:false});
+            })
+    }
+
+    componentDidMount(){
+        this.loadData();
+    }
+
+    render(){
+        const {project, creatorInfo} = this.state
         return(
+            <React.Fragment>
+                {this.state.loading ? <Loading/> : 
                     <div className={classes.ProjectCard}>
                         <div className = {classes.FundingInfo}>
-                            <span style ={{color:"#5CDB95"}}>{project.funding?.toFixed(2)}</span>
+                            <span style ={{color:"#5CDB95"}}>{project.funded.toFixed(2)}</span>
                             <span style ={{color:"#606060"}}>/{project.fundingLimit}</span>
                             <img src = {DAI}/>
                         </div>
@@ -39,24 +70,27 @@ const ProjectCard = props => {
                             <ProgressBar funded = {project.funded} fundingLimit={project.fundingLimit}/>
                         </div>
                         <div className={classes.CreatorInfo}>
-                            <img src={`https://ipfs.infura.io/ipfs/${creatorInfo?.profileHash}`}/>
+                            <img src={`https://ipfs.infura.io/ipfs/${creatorInfo.profileHash}`}/>
                             <div className={classes.CreatorName}>
-                                <span>{creatorInfo?.firstName} {creatorInfo?.lastName}</span>
-                                <Flag countryCode={creatorInfo?.country} svg/>
+                                <span>{creatorInfo.firstName} {creatorInfo.lastName}</span>
+                                <Flag countryCode={creatorInfo.country} svg/>
                             </div>
                         </div>
-                        <div>{(typeof(project.description) == "string") ? project.description : ReactHtmlParser(md.render(project.description.text))}</div>
+                        <div>{ReactHtmlParser(md.render(project.description.text))}</div>
                         <div className={classes.TimeLeft}>
-                            <span>{timeLeft(project.createdAt)}</span>
+                            <span>{timeLeft(project.endTime)}</span>
                         </div>
                         <div className = {classes.FadeOut}/>
                         <Link 
                             className={classes.SeeMore}
-                            to={"projects/" + project.id}
+                            to={"projects/" + this.props.projectID}
                         >See more</Link>
                     </div>
+                }
+            </React.Fragment>
             
         )
     }
+}
 
-export default ProjectCard;
+export default withFirebase(ProjectCard);

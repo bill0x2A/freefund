@@ -1,3 +1,4 @@
+import data from "@iconify-icons/simple-line-icons/wallet";
 
  
 export const login = async address => {
@@ -91,11 +92,11 @@ export const addProject = async projectData => {
     return {data, responseCode};
 }
 
-export const loadProject = async (token, id) => {
+export const loadProject = async id => {
   const requestOptions = {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({token, id}),
+    body: JSON.stringify({id}),
   };
   console.log(requestOptions.body);
   const response = await fetch(`https://dirt-noble-driver.glitch.me/project`, requestOptions)
@@ -111,10 +112,46 @@ export const loadProject = async (token, id) => {
         }
     }
     throw new Error("HTTP error " + responseCode);
+  }
+
+  // OK response
+  const data = await response.json();
+  return data;
 }
 
-// OK response
-const data = await response.json();
-return data;
+export const loadProjects = async () => {
+  const requestOptions = {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+    body: null,
+  };
+  const response = await fetch(`https://dirt-noble-driver.glitch.me/listProjects`, requestOptions)
+  const responseCode = response.status;
+  if (!response.ok){
+    const data = await response.json()
+    throw new Error("HTTP error " + responseCode + "\n" + data.message);
+  }
+  const data = await response.json();
+  console.log("PROJECTS", data.projects);
+  return data.projects;
+
+}
+
+export const loadUser = async address => {
+  const requestOptions = {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'request-no-cors' : true },
+    body: {address},
+  };
+  const response = await fetch(`https://dirt-noble-driver.glitch.me/user`, requestOptions);
+  const responseCode = response.status;
+  if (!response.ok){
+    const data = await response.json();
+    console.log(data.message)
+    throw new Error("HTTP error " + responseCode + "\n" + data.message);
+  }
+
+  const data = await response.json();
+  return data;
 }
 

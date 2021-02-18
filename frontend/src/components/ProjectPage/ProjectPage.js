@@ -5,7 +5,7 @@ import styles from './Carousel.css';
 import { Carousel } from 'react-responsive-carousel';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { loadProject } from '../../mongo/mongo';
+import { loadProject, loadUser } from '../../mongo/mongo';
 
 import ReactHtmlParser, { processNodes, convertNodeToElement, htmlparser2 } from 'react-html-parser';
 import MarkdownIt from 'markdown-it';
@@ -92,13 +92,14 @@ class ProjectPage extends React.Component {
     loadData = async () => {
         const projectID = this.props.match.params.projectID;
         console.log(projectID);
-        const response = await loadProject("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJpbGx5c21pdGgxOTk4QGxpdmUuY29tIiwiYWRkcmVzcyI6IjB4NTU5OGU5YjZmMmQ0MDAxOGVkZTZlNzRkZWQxYzQzNmZmMGEyYmFiYyIsInRpbWUiOjE2MTM1NTkxNzI0OTMsImlhdCI6MTYxMzU1OTE3MiwiZXhwIjoxNjEzNjQ1NTcyfQ.zct8x9XN8K5olzu3XhOYs7q2QGWlErL7WvfEwaSebMk", projectID);
+        const response = await loadProject(projectID);
         if(response === 404){
             this.props.history.push('/404')
         } else {
             console.log(response.data);
-            this.setState({project : response.data, loading : false});
-            // this.loadCreatorData(), set loading to false after this not as above.
+            this.setState({project : response.data}, () => {
+                this.loadCreatorData(response.data.creatorAddress)
+            });
         }
     }
 
@@ -120,12 +121,9 @@ class ProjectPage extends React.Component {
         this.setState({descriptionHtml : html});
     }
 
-    loadCreatorData = creatorAddress => {
-        this.props.firebase.user(creatorAddress)
-            .once("value", data => {
-                const creatorData = data.val();
-                this.setState({creatorData, loading:false});
-            })
+    loadCreatorData = async creatorAddress => {
+        const user = await loadUser(creatorAddress);
+        this.setState({creatorData : user.data, loading : false})
     }
 
     render(){
@@ -145,7 +143,7 @@ class ProjectPage extends React.Component {
 
                         <h2>{project.title}</h2>
                         <h3 className={classes.Tagline}>{project.tagline}</h3>
-                        <div className={classes.TimeLeft}>{timeLeft(project.endTime)}</div>
+                        <div className={classes.TimeLeft}>{timeLeft(project.createdAt)}</div>
 
                         <div className={classes.Main}>
 
@@ -153,7 +151,7 @@ class ProjectPage extends React.Component {
                                 <div className={classes.FundingLeft}>
                                     <div className={classes.FundingTopline}>
                                         <div className={classes.FundingInfo}>
-                                            <span>{project.funding.toFixed(2)}</span>
+                                            <span>{project.funding?.toFixed(2)}</span>
                                             <img src = {DAI}/>
                                             <span>raised</span>
                                         </div>
@@ -180,7 +178,7 @@ class ProjectPage extends React.Component {
                                     <div className={classes.Description}>
                                         <h2>Project Information</h2>
                                         <div>
-                                         {ReactHtmlParser(this.state.descriptionHtml)}
+                                        {(typeof(project.description) == "string") ? project.description : ReactHtmlParser(md.render(project.description.text))}
                                         </div>
                                     </div>
                                 </div>
@@ -189,7 +187,6 @@ class ProjectPage extends React.Component {
                                             <h4>{creatorData?.firstName} {creatorData?.lastName}</h4>
                                             <img src={`https://ipfs.infura.io/ipfs/${creatorData?.profileHash}`}/>
                                             <p>{creatorData?.bio}</p>
-                                       
                                     </div>
 
                                     <div className={classes.RewardTiers}>

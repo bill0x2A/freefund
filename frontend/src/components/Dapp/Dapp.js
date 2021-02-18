@@ -129,7 +129,9 @@ class Dapp extends React.Component {
       // MetaMask is locked or the user has not connected any accounts
       this.props.resetState();
       console.log('Please connect to MetaMask.');
-    } else if (accounts[0] !== this.props.selectedAddress) {
+    } else if (accounts[0] !== this.props.user?.address) {
+      console.log(accounts[0], this.props.user?.address)
+      console.log("Account diff found");
       // Account is not what we have in state, reinitialize everything for a new account
       this._initialize(accounts[0]);
     } else {
@@ -211,7 +213,9 @@ class Dapp extends React.Component {
 
 
 // Redux connection
-const mapStateToProps = null;
+const mapStateToProps = state => ({
+  user : state.user,
+});
 
 const mapDispatchToProps = dispatch => ({
   connectProvider     : provider        => dispatch({type : actionTypes.connectProvider, provider : provider}),

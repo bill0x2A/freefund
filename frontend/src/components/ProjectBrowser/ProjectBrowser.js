@@ -4,6 +4,8 @@ import ProjectCard from '../ProjectCard/ProjectCard';
 import { withFirebase } from '../../firebase/index';
 import Loading from '../Loading/Loading';
 
+import { loadProjects } from '../../mongo/mongo';
+
 class ProjectBrowser extends React.Component {
     constructor(props){
         super(props);
@@ -34,14 +36,19 @@ class ProjectBrowser extends React.Component {
     }
 
     componentDidMount(){
-        this.loadProjectsIDs();
+        this.loadProjects();
+    }
+
+    loadProjects = async () => {
+        const projects = await loadProjects();
+        this.setState({projects, loading : false})
     }
 
     render(){
         return(
             <React.Fragment>
             {this.state.loading ? <Loading/> : 
-                <div className={classes.ProjectBrowser}>
+            <div className={classes.ProjectBrowser}>
                 <div className={classes.SearchContainer}>
                     <input 
                         type="text"
@@ -56,8 +63,8 @@ class ProjectBrowser extends React.Component {
                 <div className={classes.Box}>
                     <h2>Popular Projects</h2>
                     <div className={classes.Projects}>
-                        {this.state.projectIDs.map(projectID => (
-                            <ProjectCard key={projectID} projectID={projectID}/>
+                        {this.state.projects.map(project => (
+                            <ProjectCard key={project.id} project={project}/>
                         ))}
                     </div>
                 </div>
