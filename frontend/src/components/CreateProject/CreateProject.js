@@ -8,7 +8,6 @@ import Tier from './Tier/Tier';
 import DateTimePicker from 'react-datetime-picker'
 
 import { connect } from 'react-redux';
-import { withFirebase } from '../../firebase/index';
 import { withRouter } from 'react-router-dom';
 import { addProject } from '../../mongo/mongo';
 
@@ -167,17 +166,7 @@ class CreateProject extends React.Component {
     }
 
     checkUser = () => {
-        this.props.firebase.user(this.props.selectedAddress).once("value", snap => {
-            const data = snap.val();
-            if(!data){
-                this.props.history.push('/account');
-                return;
-            }
-            if(!data.email || !data.firstName || !data.lastName || !data.country){
-                this.props.history.push('/account');
-                return;
-            }
-        })
+        // Replace with token logic
     }
 
     componentDidMount(){
@@ -329,4 +318,4 @@ const mapStateToProps = state => ({
     token : state.token,
 })
 
-export default connect(mapStateToProps, null)(withFirebase(withRouter(CreateProject)));
+export default connect(mapStateToProps, null)(withRouter(CreateProject));

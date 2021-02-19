@@ -10,7 +10,6 @@ import ReactTooltip from 'react-tooltip';
 import * as actionTypes from '../../store/actionTypes';
 
 import { connect } from 'react-redux';
-import { withFirebase } from '../../firebase/index';
 import { withRouter } from 'react-router-dom';
 import { register } from '../../mongo/mongo';
 
@@ -204,4 +203,4 @@ const mapDispatchToProps = dispatch => ({
     setToken : tokenId => dispatch({type : actionTypes.setToken, token : tokenId}),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(withFirebase(withRouter(AccountPage)));
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(AccountPage));

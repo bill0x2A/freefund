@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import ReactTooltip from 'react-tooltip';
 import { Icon, InlineIcon } from '@iconify/react';
 import walletIcon from '@iconify-icons/simple-line-icons/wallet';
-import {withFirebase} from '../../firebase/index';
 
 
 import DAI from '../../assets/DAI.png';
@@ -43,10 +42,7 @@ class Fund extends React.Component {
     }
 
     loadProjectData = () => {
-        this.props.firebase.project(this.props.projectID)
-            .once("value", data => {
-                this.setState({funded : data.val().funded});
-            })
+        // Convert to mongo
     }
 
     async _transferTokens(to, amount) {
@@ -83,7 +79,7 @@ class Fund extends React.Component {
           this.setState({ txSuccess : true, sentTx : tx.hash })
           console.log("FUNDING: ",this.state.funded)
           const newFunded = parseFloat(this.state.funded) + parseFloat(amount);
-          this.props.firebase.project(this.props.projectID).child('funded').set(newFunded);
+          // Funding amount to database
           this.updateUserBalance();
           
         } catch (error) {
@@ -207,4 +203,4 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = null;
 
-export default connect(mapStateToProps, mapDispatchToProps)(withFirebase(Fund));
+export default connect(mapStateToProps, mapDispatchToProps)(Fund);

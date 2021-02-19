@@ -1,7 +1,6 @@
 import React from 'react';
 import classes from './ProjectBrowser.module.css';
 import ProjectCard from '../ProjectCard/ProjectCard';
-import { withFirebase } from '../../firebase/index';
 import Loading from '../Loading/Loading';
 
 import { loadProjects } from '../../mongo/mongo';
@@ -24,11 +23,7 @@ class ProjectBrowser extends React.Component {
     }
 
     loadProjectsIDs = () => {
-        this.props.firebase.projects().once("value", snap => {
-            const data = [...Object.keys(snap.val())];
-            console.log("DATA: ", data);
-            this.setState({projectIDs : data, loading : false})
-        })
+
     }
 
     onChange = (e) => {
@@ -77,4 +72,4 @@ class ProjectBrowser extends React.Component {
 }
 
 
-export default withFirebase(ProjectBrowser);
+export default ProjectBrowser;

@@ -13,7 +13,6 @@
     "bootstrap": "^4.6.0",
     "ethereum-blockies": "^0.1.1",
     "ethers": "^5.0.29",
-    "firebase": "^8.2.6",
     "identicon": "^3.0.1",
     "ipfs-http-client": "^49.0.1",
     "markdown-it": "^12.0.4",

@@ -4,7 +4,6 @@ import {Link} from 'react-router-dom';
 import classes from './Navigation.module.css';
 import * as ROUTES from '../../constants/routes';
 import { connect } from 'react-redux';
-import { withFirebase } from '../../firebase/index';
 import defaultpp from '../../assets/defaultpp.png';
 import svgLogo from '../../assets/logo.svg';
 import Loading from '../Loading/Loading';
@@ -125,4 +124,4 @@ const mapDispatchToProps = dispatch => ({
 
 })
 
-  export default connect(mapStateToProps, mapDispatchToProps)(withFirebase(Navigation));
+  export default connect(mapStateToProps, mapDispatchToProps)(Navigation);

@@ -1,6 +1,5 @@
 import React from 'react';
 import classes from './FundingDao.module.css';
-import { withFirebase } from '../../firebase/index';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
@@ -36,12 +35,7 @@ class NewProposal extends React.Component {
         }
 
         const proposalID = this.props.projectID + "-" + Math.random().toString(36).substr(2, 9);
-        this.props.firebase.project(this.props.projectID)
-            .child("proposals")
-            .child(proposalID)
-            .set(proposalID);
-        
-        this.props.firebase.proposals().child(proposalID).set(proposal);
+        // Add proposal to database
 
         this.props.dismiss();
     }
@@ -109,14 +103,7 @@ class DirtyFixWrapper extends React.Component {
         }
 
         loadProposal = () => {
-            this.props.firebase.proposal(this.props.proposalID).on("value", snap => {
-                const data = snap.val();
-                const proposalData = {
-                    ...data,
-                    id : this.props.proposalID,
-                }
-                this.setState({proposalData, loading : false});
-            })
+            // Load proposal from database
         }
 
         render(){
@@ -150,15 +137,7 @@ class DirtyFixWrapperDisplay extends React.Component {
         }
 
         loadProposal = () => {
-            this.props.firebase.proposal(this.props.proposalID).on("value", snap => {
-                const data = snap.val();
-                console.log("DATA", data)
-                const proposalData = {
-                    ...data,
-                    id : this.props.proposalID,
-                }
-                this.setState({proposalData, loading : false});
-            })
+            //
         }
 
         render(){
@@ -263,20 +242,7 @@ class FundingDao extends React.Component {
     }
 
     loadData = () => {
-        this.props.firebase.project(this.props.match.params.projectID).on("value", snap => {
-            const data = snap.val();
-            let proposalIDs;
-            if(data.proposals){
-                proposalIDs = [...Object.keys(data.proposals)];
-            }
-            this.setState({
-                ...this.state,
-                ...data,
-                proposals : [],
-                proposalIDs : proposalIDs,
-                loading : false
-            });
-        })
+
     }
 
     proposeHandler = () => {
@@ -295,7 +261,7 @@ class FundingDao extends React.Component {
     
     vetoHandler = reason => {
         const vetoID = Math.random().toString(36).substr(2, 9);
-        this.props.firebase.proposal(this.state.selectedProposal.id).child("vetoes").set(this.state.selectedProposal.vetoes + 1);
+        // Save veto to database
         this.setState({vetoing:false});
     }
     
@@ -332,7 +298,6 @@ class FundingDao extends React.Component {
                         <NewProposal
                             projectID={this.props.match.params.projectID}
                             dismiss={this.dismissProposeHandler}
-                            firebase = {this.props.firebase}
                         />
                         </ModalContainer>}
                         {vetoing && <ModalContainer>
@@ -350,7 +315,6 @@ class FundingDao extends React.Component {
                         </div>
                         {/* This is absolutely terrible change it when you're not about to fall asleep */}
                         {proposalIDs?.map(proposal => (<DirtyFixWrapper
-                                                        firebase={this.props.firebase}
                                                         key={proposal}
                                                         proposalID={proposal}
                                                         clicked={() => this.setState({selectedProposal : proposal})}
@@ -359,7 +323,7 @@ class FundingDao extends React.Component {
                     <div className={classes.Main}>
                         {
                             selectedProposal ? (
-                                <DirtyFixWrapperDisplay proposalID={selectedProposal} veto={veto} firebase={this.props.firebase}/>
+                                <DirtyFixWrapperDisplay proposalID={selectedProposal} veto={veto}/>
                             ) : (
                                 <div style={{display:"flex", justifyContent:"center", alignItems:"center", height:"100%"}}>
                                     <p style ={{fontSize:"25px", color:"var(--bold)", fontWeight: "600"}}>Please select a proposal</p>
@@ -383,4 +347,4 @@ const mapDispatchToProps = dispatch => ({
 
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(withFirebase(withRouter(FundingDao)));
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(FundingDao));

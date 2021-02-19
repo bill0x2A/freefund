@@ -3,7 +3,6 @@ import classes from './Dapp.module.css';
 import * as ROUTES from '../../constants/routes';
 import * as actionTypes from '../../store/actionTypes';
 import { connect } from 'react-redux';
-import { withFirebase } from '../../firebase/index';
 import { login } from '../../mongo/mongo';
 import detectEthereumProvider from '@metamask/detect-provider';
 
@@ -228,4 +227,4 @@ const mapDispatchToProps = dispatch => ({
   setUser             : userData        => dispatch({type : actionTypes.setUser, user : userData}),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(withFirebase(Dapp));
+export default connect(mapStateToProps, mapDispatchToProps)(Dapp);
