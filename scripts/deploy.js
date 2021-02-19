@@ -19,22 +19,17 @@ async function main() {
 
   console.log("Account balance:", (await deployer.getBalance()).toString());
 
-  const Token = await ethers.getContractFactory("Token");
-  const Box = await ethers.getContractFactory("Box");
-  const token = await Token.deploy();
-  const box = await Box.deploy();
-  //const box = await upgrades.deployProxy(Box, [42], { initializer: 'store' });
-  await token.deployed();
-  await box.deployed();
+  const FreeFund = await ethers.getContractFactory("FreeFund");
+  const freefund = await FreeFund.deploy();
+  await freefund.deployed();
 
-  console.log("Token address:", token.address);
-  console.log("Box address:", box.address);
+  console.log("FreeFund Smart Contract address:", freefund.address);
 
   // We also save the contract's artifacts and address in the frontend directory
-  saveFrontendFiles(token);
+  saveFrontendFiles(freefund);
 }
 
-function saveFrontendFiles(token) {
+function saveFrontendFiles(freefund) {
   const fs = require("fs");
   const contractsDir = __dirname + "/../frontend/src/contracts";
 
@@ -44,14 +39,14 @@ function saveFrontendFiles(token) {
 
   fs.writeFileSync(
     contractsDir + "/contract-address.json",
-    JSON.stringify({ Token: token.address }, undefined, 2)
+    JSON.stringify({ FreeFund: freefund.address }, undefined, 2)
   );
 
-  const TokenArtifact = artifacts.readArtifactSync("Token");
+  const FreeFundArtifact = artifacts.readArtifactSync("FreeFund");
 
   fs.writeFileSync(
-    contractsDir + "/Token.json",
-    JSON.stringify(TokenArtifact, null, 2)
+    contractsDir + "/FreeFund.json",
+    JSON.stringify(FreeFundArtifact, null, 2)
   );
 }
 
