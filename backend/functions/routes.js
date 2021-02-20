@@ -58,15 +58,16 @@ module.exports = function (app, dbe){
 
     app.post('/addProject',verify, (req, res)=>{
         const {title, creatorAddress, fundingAddress, imgHashes, description, reason, fundingLimit, 
-            funding, t1desc, t1funding,  t2desc, t2funding, t3desc, t3funding, funders} = req.body
+            funding, tiers, funders} = req.body
+        
         if(title && imgHashes && description && fundingLimit && creatorAddress){
             const id = shortId.generate()
             //const address = null //generate address
             user.findOne({address: creatorAddress}, (err,doc)=>{
                 if(doc){
-                    user.findOneAndUpdate({address: creatorAddress}, {$push :{ createdProjects: {title, id, description, reason, fundingAddress, imgHashes, fundingLimit} }, updatedAt: new Date()} )
+                    user.findOneAndUpdate({address: creatorAddress}, {$set: {updatedAt: new Date()}, $push :{ createdProjects: {title, id, description, reason, fundingAddress, imgHashes, fundingLimit} }} )
                     db.insertOne({title, user: req.user, id, description, reason, creatorAddress, fundingAddress,
-                        imgHashes, fundingLimit, funding, t1desc, t1funding, t2desc, t2funding, t3desc, t3funding, funders, createdAt: new Date(), updatedAt: new Date() }, (err,doc)=>{
+                        imgHashes, fundingLimit, funding, tiers, funders, createdAt: new Date(), updatedAt: new Date() }, (err,doc)=>{
                             res.json({message:"Project created successfully",title, id, creatorAddress, fundingAddress })
                     })
                 }else{

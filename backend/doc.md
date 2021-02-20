@@ -12,7 +12,7 @@
 
 - POST '/register':
   
-  body requirement: address, email, firstName, lastName, location
+  body requirement: address, countryCode, bio, imgHash, email, firstName, lastName
   
   response:
     - 200: message = "registered successfully", token
@@ -20,7 +20,8 @@
 
 - POST '/addProject':
   
-  body requirement: token, name, pictures (array of hashes), description, reason, goal (number or string), tier1 (object), tier2 (object), tier3 (object), time (timestamp)
+  body requirement: title, creatorAddress, fundingAddress, imgHashes, description, reason, fundingLimit, 
+            funding, tiers (array of tier object), funders
   
   response:
     - 200: message = "Project created successfully",name, id, address (escrow address)
