@@ -125,8 +125,8 @@ contract FreeFund is Dai {
         
         // track cumulative receipts per client
         clientStructs[msg.sender].amountSent += msg.value;
-        Deposit(msg.sender, msg.value);
-        Balance(balanceDai());
+        emit Deposit(msg.sender, msg.value);
+        emit Balance(balanceDai());
         return balanceDai();
     }
 
