@@ -9,7 +9,7 @@ import reducer from './store/reducer';
 
 const loadState = () => {
   try {
-    const serializedState = localStorage.getItem('state');
+    const serializedState = getCookie('state');
     if(serializedState === null) {
       return undefined;
     }
