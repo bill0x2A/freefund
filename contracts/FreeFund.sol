@@ -1,57 +1,136 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.7.3;
+pragma solidity ^0.7.6;
 
-// Adding only ERC-20 function that we use from DAI smart contract
-interface DaiToken {
+// Adding only ERC-20 DAI functions that we need
+interface DaiInterface {
     function transfer(address dst, uint wad) external returns (bool);
     function balanceOf(address guy) external view returns (uint);
 }
 
-contract meta {
-    DaiToken daitoken;
+contract Dai {
+    DaiInterface daitoken;
 
-    constructor() public{
-        // daitoken = DaiToken(0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa); // Kovan
-        daitoken = DaiToken(0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa); // Rinkeby
+    constructor() {
+        //daitoken =  DaiInterface(0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa);     // Kovan
+        daitoken = DaiInterface(0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa);    // Rinkeby
     }
 }
 
-contract FreeFund is meta {
+contract FreeFund is Dai {
+
+    // // mapping of supporters and their total amount of donated DAI
+    // // uint needs to me mapped to dai balance!  
+    // mapping (address => uint) public supporters; // 'public' for testing purposes, make 'private' in prod
+     
+    address public creator = msg.sender; // can withdraw funds after the successful is successfully funded and finished
     
-    address public creator;
     uint public start = block.timestamp;
-    uint public end = block.timestamp + 2629743; // default project funding period = 1 month 
-    uint public target; // in Wei
     
-    /*
-    https://www.unixtimestamp.com/index.php
-    Human Readable Unix timestampo converter
-        Time                    Seconds
-        1 Hour	                3600 Seconds
-        1 Day	                86400 Seconds
-        1 Week	                604800 Seconds
-        1 Month (30.44 days)	2629743 Seconds
-        1 Year (365.24 days)	31556926 Seconds
-    */
+    // uint public end = block.timestamp + 2629743; // default project funding period = 1 month 
+    uint public end = block.timestamp + 60; // 1 min 
+    // uint public end; 
     
-    constructor (address _creator, uint _target) {
-        // pass cretor address
-        // pass target
-        creator = _creator;
-        target = _target;
+    uint public target = 10 * 1e18; // hardcoded target = 10 DAI 
+    uint public returnedDai;        // returnedDai
+    uint public receivedDai = msg.value;        // receivedDai
+    
+    struct Client {
+        uint amountSent;
+        uint returned;
+        uint clientIndex;
+    }
+
+    mapping(address => Client) public clientStructs;
+    address[] public clientList;
+    
+    // how to fetch the current balance in DAI on the same smart contract ??
+    // uint public balance;
+        
+    // FE needs to pass variables into constructor
+    // on submit pass variables
+    // trigger deployment script
+    constructor (uint _target, uint _end) {
+        // creator = _creator;          // creator is msg.sender!
+
+        target = _target * 1e18;     // in ether 10^18 or 1e18
+        // target = _target * 10 *1e18; // hardcoded target = 10 DAI
+        
+        end = _end;                  // unix timestamp format. Example: 1613753999 = 19/02/2021 16:55 (UTC)
     }
 
     // Creator needs to input the amount he wants to withdraw after the project is finished
-    function withdraw(uint withdraw_amount) public onlyCreator {
+    function withdrawAllFunds() public onlyCreator {
+        
+        // check if the project funding period has ended already
         require(block.timestamp > end, "Project funds can only be withdrawn at the end of the project funding duration");
-        // Send the amount to the requestor/ creator
-        daitoken.transfer(msg.sender, withdraw_amount);
-        emit Withdrawal(msg.sender, withdraw_amount);
+        
+        // check if gathered donations are equal or bigger than the set minimum target
+        require(daitoken.balanceOf(address(this)) >= target, "the project has not reach the funding target");
+        
+        // if both checks abot are positive, the creator can withdraw the total donation amount
+        uint totalBalance = daitoken.balanceOf(address(this));        
+        daitoken.transfer(msg.sender, totalBalance);
+        emit Withdrawal(msg.sender, totalBalance);
     }
-
+    
+    /*
+    
+    // in case the minimum funding target was not reached at the end of the funding project,
+    // give all DAI back to supporters
+    function revertDonations() internal {
+        if (block.timestamp > end && daitoken.balanceOf(address(this)) < target) {
+            // revert all DAI back to the individual suporters according to mapping
+        } 
+    }
+    // in case the project is funded, but the creator does not withdraw within 60 days,
+    // funds should also return to supporters in order to not be locked in the SC forever
+    
+    */
+    
     event Withdrawal(address indexed to, uint amount);
     event Deposit(address indexed from, uint amount);
+    event Returned(address indexed to, uint amount);
+    event Balance(uint amount);
+    
+    // show DAI balance of SC  
+    function balanceDai() public view returns(uint) {
+        // return DAI balance on this SC
+        return daitoken.balanceOf(address(this));
+    }
+    
+    // get SC address
+    function getSmartContractAddress() public view returns(address) {
+        return address(this);
+    }
+    
+    // get current timestamp
+    function getCurrentTimeStamp() public view returns(uint) {
+        return block.timestamp;
+    }
+    
+    //check if a particular address is a depositor (client)
+    function isClient(address client) public view returns(bool) {
+        if(clientList.length==0) return false;
+        return clientList[ clientStructs[client].clientIndex ] == client;
+    }
+    
+    //register the deposits sent to this contract
+    function deposit() public payable returns(uint){
+        
+        // push new client, update existing
+        if(!isClient(msg.sender)) {
+            clientList.push(msg.sender);
+            clientStructs[msg.sender].clientIndex = clientList.length-1;
+        }
+        
+        // track cumulative receipts per client
+        clientStructs[msg.sender].amountSent += msg.value;
+        emit Deposit(msg.sender, msg.value);
+        emit Balance(balanceDai());
+        return balanceDai();
+    }
 
+    // modifier so that only the project creator can call certain functions
     modifier onlyCreator {
         require(msg.sender == creator, "Only the FreeFund project creator can call this function");
         _;
