@@ -3,7 +3,6 @@ import classes from './Dapp.module.css';
 import * as ROUTES from '../../constants/routes';
 import * as actionTypes from '../../store/actionTypes';
 import { connect } from 'react-redux';
-import { withFirebase } from '../../firebase/index';
 import { login } from '../../mongo/mongo';
 import detectEthereumProvider from '@metamask/detect-provider';
 
@@ -30,9 +29,9 @@ import MissingPage from '../MissingPage/MissingPage';
 
 import onMobile from '../../util/detectMobile';
 
-import { daiAbi, rinkebyDaiAddress } from '../../constants/tokenData';
+import { daiAbi, rinkebyDaiAddress, freefundFactoryAbi } from '../../constants/contractData';
 
-const HARDHAT_NETWORK_ID = '31337';
+const HARDHAT_NETWORK_ID = '31337'
 const MAINNET_NETWORK_ID = '42'
 const RINKEBY_NETWORK_ID = '4'
 
@@ -179,11 +178,16 @@ class Dapp extends React.Component {
   async _intializeEthers() {
     // We first initialize ethers by creating a provider using window.ethereum
     const provider = new ethers.providers.Web3Provider(window.ethereum);
+    // // alternative provider options
+    // const provider = new ethers.providers.JsonRpcProvider('<...Rinkeby...>');
     this.props.connectProvider(provider);
 
     const rinkebyDai = new ethers.Contract(rinkebyDaiAddress, daiAbi, provider);
     const rinkebyDaiWithSigner = rinkebyDai.connect(provider.getSigner());
     this.props.connectDaiContract(rinkebyDaiWithSigner);
+
+    const freefundFactory  = new ethers.ContractFactory(interface, bytecode, signer)
+    this.props.connectFactory(freefundFactory);
 
     // INITIALISE CONTRACTS HERE
   }
@@ -228,4 +232,4 @@ const mapDispatchToProps = dispatch => ({
   setUser             : userData        => dispatch({type : actionTypes.setUser, user : userData}),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(withFirebase(Dapp));
+export default connect(mapStateToProps, mapDispatchToProps)(Dapp);

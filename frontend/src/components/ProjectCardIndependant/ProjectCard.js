@@ -5,7 +5,6 @@ import Flag from 'react-country-flag';
 import {Link} from 'react-router-dom';
 import Loading from '../Loading/Loading';
 import timeLeft from '../../util/timeDifferece';
-import { withFirebase } from '../../firebase/index';
 import MarkdownIt from 'markdown-it';
 import ReactHtmlParser, { processNodes, convertNodeToElement, htmlparser2 } from 'react-html-parser';
 
@@ -34,20 +33,11 @@ class ProjectCard extends React.Component {
     }
 
     loadData = () => {
-        this.props.firebase.project(this.props.projectID)
-            .on("value", data => {
-                const project = data.val();
-                this.setState({project : project});
-                this.loadCreatorData(project.creatorAddress);
-            })
+
     }
 
     loadCreatorData = creatorAddress => {
-        this.props.firebase.user(creatorAddress)
-            .once("value", data => {
-                const creatorInfo = data.val();
-                this.setState({creatorInfo : creatorInfo, loading:false});
-            })
+
     }
 
     componentDidMount(){
@@ -93,4 +83,4 @@ class ProjectCard extends React.Component {
     }
 }
 
-export default withFirebase(ProjectCard);
+export default ProjectCard;

@@ -5,7 +5,6 @@ import Dapp from './components/Dapp/Dapp';
 import {BrowserRouter as Router} from 'react-router-dom';
 import {createStore} from 'redux';
 import { Provider } from 'react-redux';
-import Firebase, { FirebaseContext } from './firebase/index';
 import reducer from './store/reducer';
 
 const loadState = () => {
@@ -40,11 +39,9 @@ store.subscribe(() => {
 
 ReactDOM.render(
   <Provider store ={store}> 
-    <FirebaseContext.Provider value = {new Firebase()}>
       <Router>
         <Dapp />
       </Router>
-    </FirebaseContext.Provider>
   </Provider>,
   document.getElementById('root')
 );
