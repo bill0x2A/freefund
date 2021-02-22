@@ -30,6 +30,11 @@ const reducer = ( state = initialState, action ) => {
                 ...state,
                 daiContract : action.contract,
             }
+        case actionTypes.connectFactory:
+            return {
+                ...state,
+                factory : action.factory,
+            }
 
         case actionTypes.disconnectWallet:
             return {

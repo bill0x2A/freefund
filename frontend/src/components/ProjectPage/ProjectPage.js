@@ -1,8 +1,9 @@
-import React from 'react';
+import React, {useState} from 'react';
 import classes from './ProjectPage.module.css';
 import styles from './Carousel.css';
 
 import { Carousel } from 'react-responsive-carousel';
+import ReactPlayer from 'react-player/youtube';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { loadProject, loadUser } from '../../mongo/mongo';
@@ -26,6 +27,7 @@ const md = new MarkdownIt();
 const CarouselDisplay = ({imageHashes}) => {
 
     // Fetch images from ipfs
+    const [autoplay, setAutoplay] = useState(false);
 
     const images = imageHashes?.map(imgHash => (
         <div className={classes.Test} key={imgHash}>
@@ -35,16 +37,22 @@ const CarouselDisplay = ({imageHashes}) => {
 
     return(
             <Carousel
-                autoPlay={true}
+                autoPlay={autoplay}
                 interval={4400}
                 infiniteLoop={true}
             >
+                <ReactPlayer
+                    url="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+                    controls
+                    style = {{display: "inline-block", width : "100%", background : "purple", margin : "0"}}
+                    onPause = {setAutoplay(true)}
+                    onPlay = {setAutoplay(false)}
+                    onEnded = {setAutoplay(true)}
+                />
                 {images}
             </Carousel>
     )
 }
-
-
 
 const ProgressBar = (props) =>{
     const progress = props.funding / props.fundingLimit * 100
@@ -97,7 +105,7 @@ class ProjectPage extends React.Component {
             this.props.history.push('/404')
         } else {
             console.log(response.data);
-            this.setState({project : response.data}, () => {
+            this.setState({project : response.data, loading : false}, () => {
                 this.loadCreatorData(response.data.creatorAddress)
             });
         }

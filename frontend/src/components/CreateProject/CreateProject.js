@@ -10,6 +10,7 @@ import DateTimePicker from 'react-datetime-picker'
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { addProject } from '../../mongo/mongo';
+import { ethers } from 'ethers';
 
 import DAI from '../../assets/DAI.png';
 
@@ -86,47 +87,85 @@ class CreateProject extends React.Component {
 
     onSubmit = async () => {
         this.setState({submitting : true});
-        //Format tags as an array of lowercase strings, removing 
+
         await this.uploadImages();
 
-        const { title, tagline, description, tiers, tags, imgHashes, fundingLimit, endTime} = this.state;
+        const {fundingLimit, endTime} = this.state;
         
+        // #### SC Constructor variables ####
+        const endTimeSC = endTime.getTime()/1000;
+        const timeNow = new Date();
+        const startTimeSC = timeNow.getTime()/1000;
+        const targetSC = ethers.utils.parseUnits(fundingLimit, 18)
+
+        /*
+            https://www.unixtimestamp.com/index.php
+            Human Readable Unix timestampo converter
+                Time                    Seconds
+                1 Hour	                3600 Seconds
+                1 Day	                86400 Seconds
+                1 Week	                604800 Seconds
+                1 Month (30.44 days)	2629743 Seconds
+                1 Year (365.24 days)	31556926 Seconds
+        */
+
+        // 1. Creator submits data in FE
+        // 2. onclick data is send to ... ? 
+        // 3. Depoloy SC
+        // 4. Get SC address, ABI, maybe bytecode?
+        // 5. Send to BE database.
+        
+        // 6. Project ended, check:
+        // 7. if balance < target then revert tx
+        // 8. else balance >= target, creator can withdraw funds
+        // 9. timer if creator does not withdraw within 60 days, also revert
+
+        ////////////////// Nino: Variables requied to initialize SC
+        // creator address = this.props.user.address
+        // startTime is automated onSubmit
+        // endTime = endTimeSC
+        // target =  fundingLimit
+
+        ///////////////// FE 
+
+        ////////////////// Nino: Once the SC is created, return variables to FE
+        // smartContractAddress = 0xSC123....
+        // supporter can send DAI directly to the SC 0xSC123...
+        // 
+
+        const contract = await this.props.factory.deploy(this.props.user.address, endTimeSC, startTimeSC, targetSC);
+        const contractAddress = contract.address; // Available before deployment
+
+        if(!contractAddress){
+            throw new Error("Contract address is not defined, initialisation failed");
+        }
+
+        console.log(contract.deployTransaction);
+
+        let receipt;
+        try {
+            // Try to deploy the contract
+            receipt = contract.deployTransaction.wait();
+        } catch {
+            // Contract deployment failed
+        }
+
+
+        // Format variables for database
         const project = {
             ...this.state.project,
-            title : title,
-            tagline : tagline,
-            description : description,
-            tiers : tiers,
-            fundingLimit : fundingLimit,
-            creatorAddress : this.props.selectedAddress,
-            imgHashes : imgHashes,
+            creatorAddress : contractAddress,
             funding : 0,
-            endTime : endTime,
             reason : "",
             token : this.props.token,
         }
 
-        // We will leave out tags for now....
-
-        // if(this.state.tags.length > 0){
-        //     let tags = this.state.tags.split(',')
-        //     //note make this recursive
-        //     tags = tags.map(tag => {
-        //         if(tag[0] === ' '){
-        //             tag = tag.substring(1);
-        //         }
-        //         if(tag[tag.length-1] === ' '){
-        //             tag = tag.slice(0, -1);
-        //         }
-        //         return tag.toLowerCase();
-        //     })
-        // }
-        
+        // Push project to database
         const { data, response } = await addProject(project);
         if(response.ok){
             this.props.history.push(`/projects/${data.id}`);
         } else {
-            // Handle the error
+            // Handle the error with a lovely litte popup
             console.log("Something went wrong");
         }
 
@@ -316,6 +355,7 @@ class CreateProject extends React.Component {
 const mapStateToProps = state => ({
     selectedAddress : state.selectedAddress,
     token : state.token,
+    mainContract : state.mainContract,
 })
 
 export default connect(mapStateToProps, null)(withRouter(CreateProject));

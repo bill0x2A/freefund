@@ -186,7 +186,7 @@ class Fund extends React.Component {
                     {txError && <div 
                                     className={classes.Submit} 
                                     style = {{marginLeft : "5px"}}
-                                    onClick = {() => this._transferTokens("0xa53f2C25278E515851DB513f6C990681429f9a4a", pledge)}
+          f              onClick = {() => this._transferTokens("0xa53f2C25278E515851DB513f6C990681429f9a4a", pledge)}
                                 >Fund</div>
                     }
                 </div>

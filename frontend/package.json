@@ -24,6 +24,7 @@
     "react-flags-select": "^2.1.1",
     "react-html-parser": "^2.0.2",
     "react-markdown-editor-lite": "^1.2.4",
+    "react-player": "^2.9.0",
     "react-redux": "^7.2.2",
     "react-responsive-carousel": "^3.2.11",
     "react-router": "^5.2.0",
