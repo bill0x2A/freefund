@@ -107,8 +107,7 @@ class Fund extends React.Component {
     }
 
     updateUserBalance = async () => {
-        const {daiContract, selectedAddress} = this.props;
-        const balance = await daiContract.balanceOf(selectedAddress);
+        const balance = await this.props.daiContract .balanceOf(this.props.user?.selectedAddress);
 
         this.setState({balance : ethers.utils.formatUnits(balance, 18)});
     }
@@ -199,6 +198,7 @@ class Fund extends React.Component {
 const mapStateToProps = state => ({
     daiContract : state.daiContract,
     selectedAddress : state.selectedAddress,
+    user : state.user,
 })
 
 const mapDispatchToProps = null;

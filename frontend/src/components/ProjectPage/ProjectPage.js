@@ -41,14 +41,6 @@ const CarouselDisplay = ({imageHashes}) => {
                 interval={4400}
                 infiniteLoop={true}
             >
-                <ReactPlayer
-                    url="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-                    controls
-                    style = {{display: "inline-block", width : "100%", background : "purple", margin : "0"}}
-                    onPause = {setAutoplay(true)}
-                    onPlay = {setAutoplay(false)}
-                    onEnded = {setAutoplay(true)}
-                />
                 {images}
             </Carousel>
     )
@@ -94,7 +86,9 @@ class ProjectPage extends React.Component {
     }  
 
     componentDidMount = () => {
-        this.loadData();
+        if(this.state.loading){
+            this.loadData();
+        }
     }
 
     loadData = async () => {
@@ -105,9 +99,9 @@ class ProjectPage extends React.Component {
             this.props.history.push('/404')
         } else {
             console.log(response.data);
-            this.setState({project : response.data, loading : false}, () => {
-                this.loadCreatorData(response.data.creatorAddress)
-            });
+            if(this.state.loading){
+                this.setState({ project : response.data, loading : false});
+            }
         }
     }
 

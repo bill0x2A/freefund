@@ -41,6 +41,10 @@ module.exports = {
       url: `https://rpc-mainnet.maticvigil.com`,
       accounts: [`0x${PRIVATE_KEY}`]
     },
+  },
+
+  paths : {
+    artifacts : "./frontend/src/artifacts",
   }
 
 };

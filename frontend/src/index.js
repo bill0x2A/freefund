@@ -30,11 +30,11 @@ const saveState = (state) => {
 
 const debug = window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__();
 const peristedState = loadState();
-const store = createStore(reducer, peristedState, debug);
+const store = createStore(reducer, debug);
 
-store.subscribe(() => {
-  saveState(store.getState());
-});
+// store.subscribe(() => {
+//   saveState(store.getState());
+// });
 
 
 ReactDOM.render(

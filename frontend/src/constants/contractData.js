@@ -14,9 +14,3 @@ export const daiAbi = [
     // An event triggered whenever anyone transfers to someone else
     "event Transfer(address indexed from, address indexed to, uint amount)"
   ];
-
-  export const mainContract = "";
-
-  export const mainAbi = [
-    
-  ]

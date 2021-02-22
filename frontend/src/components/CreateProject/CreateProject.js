@@ -91,9 +91,11 @@ class CreateProject extends React.Component {
         await this.uploadImages();
 
         const {fundingLimit, endTime} = this.state;
+        const endTimeDate = new Date(endTime);
+        console.log("ENDTIME: ", endTime);
         
         // #### SC Constructor variables ####
-        const endTimeSC = endTime.getTime()/1000;
+        const endTimeSC = endTimeDate.getTime()/1000;
         const timeNow = new Date();
         const startTimeSC = timeNow.getTime()/1000;
         const targetSC = ethers.utils.parseUnits(fundingLimit, 18)
@@ -132,7 +134,7 @@ class CreateProject extends React.Component {
         // smartContractAddress = 0xSC123....
         // supporter can send DAI directly to the SC 0xSC123...
         // 
-
+        console.log({address : this.props.user.address, endTimeSC, startTimeSC, targetSC});
         const contract = await this.props.factory.deploy(this.props.user.address, endTimeSC, startTimeSC, targetSC);
         const contractAddress = contract.address; // Available before deployment
 
@@ -356,6 +358,8 @@ const mapStateToProps = state => ({
     selectedAddress : state.selectedAddress,
     token : state.token,
     mainContract : state.mainContract,
+    factory : state.factory,
+    user : state.user,
 })
 
 export default connect(mapStateToProps, null)(withRouter(CreateProject));

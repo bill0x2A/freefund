@@ -30,6 +30,7 @@ import MissingPage from '../MissingPage/MissingPage';
 import onMobile from '../../util/detectMobile';
 
 import { daiAbi, rinkebyDaiAddress, freefundFactoryAbi } from '../../constants/contractData';
+import * as artifacts from '../../artifacts/contracts/FreeFund.sol/FreeFund.json';
 
 const HARDHAT_NETWORK_ID = '31337'
 const MAINNET_NETWORK_ID = '42'
@@ -76,7 +77,7 @@ class Dapp extends React.Component {
 
   componentDidMount(){
     this.setState({mobile : onMobile()});
-    this.checkConnection();
+    // this.checkConnection();
   }
 
   // ####### METAMASK API #######
@@ -177,16 +178,18 @@ class Dapp extends React.Component {
 
   async _intializeEthers() {
     // We first initialize ethers by creating a provider using window.ethereum
+    console.dir(window.ethereum);
     const provider = new ethers.providers.Web3Provider(window.ethereum);
-    // // alternative provider options
-    // const provider = new ethers.providers.JsonRpcProvider('<...Rinkeby...>');
     this.props.connectProvider(provider);
 
     const rinkebyDai = new ethers.Contract(rinkebyDaiAddress, daiAbi, provider);
     const rinkebyDaiWithSigner = rinkebyDai.connect(provider.getSigner());
+    console.dir(provider)
+    console.dir(provider.getSigner());
     this.props.connectDaiContract(rinkebyDaiWithSigner);
 
-    const freefundFactory  = new ethers.ContractFactory(interface, bytecode, signer)
+    const scInterface = new ethers.utils.Interface(artifacts.abi);
+    const freefundFactory  = new ethers.ContractFactory(scInterface, artifacts.bytecode, provider.getSigner());
     this.props.connectFactory(freefundFactory);
 
     // INITIALISE CONTRACTS HERE
@@ -230,6 +233,7 @@ const mapDispatchToProps = dispatch => ({
   setNetworkID        : networkId       => dispatch({type : actionTypes.setNetworkID, id : networkId}),
   setToken            : tokenId         => dispatch({type : actionTypes.setToken, token : tokenId}),
   setUser             : userData        => dispatch({type : actionTypes.setUser, user : userData}),
+  connectFactory      : factory         => dispatch({type : actionTypes.connectFactory, factory : factory}),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dapp);
