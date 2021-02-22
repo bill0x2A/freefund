@@ -9,7 +9,7 @@ import reducer from './store/reducer';
 
 const loadState = () => {
   try {
-    const serializedState = localStorage.getItem('state');
+    const serializedState = getCookie('state');
     if(serializedState === null) {
       return undefined;
     }
@@ -19,10 +19,29 @@ const loadState = () => {
   }
 };
 
+const getCookie=(name)=>{
+  var ident
+  let t = decodeURIComponent(document.cookie).split(';')
+  t.map(i => {
+      let b = i.trim().split('=')
+      if (b[0] == name) {
+          ident = b[1]
+      }
+  })
+  return ident
+};
+
+const setCookie=(token)=>{
+  let date = new Date()
+  date.setTime(date.getTime() + (1*24*3600*1000))
+  let expires = `; Expires=${date.toUTCString()}`
+  document.cookie = `state=${token || ""}${expires}; Path=/`
+}
+
 const saveState = (state) => {
   try {
     const serializedState = JSON.stringify(state);
-    localStorage.setItem('state', serializedState);
+    setCookie(serializedState);
   } catch (e) {
 
   }
