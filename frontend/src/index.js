@@ -31,8 +31,6 @@ const getCookie=(name)=>{
   return ident
 };
 
-//To use getCookie to get the cookie, just do getCookie('state)
-
 const setCookie=(token)=>{
   let date = new Date()
   date.setTime(date.getTime() + (1*24*3600*1000))
