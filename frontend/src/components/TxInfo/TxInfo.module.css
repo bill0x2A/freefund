@@ -1,0 +1,27 @@
+.TxMessage {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding : 10px 10px;
+    border: 3px dashed var(--accent);
+    color: var(--accent);
+    background : #eaeaea;
+    position: relative;
+}
+
+.TxMessage p {
+    margin-top : 0;
+}
+
+.TxMessage a {
+    position: relative;
+    text-decoration: none;
+    font-weight: bold;
+    color : var(--accent)
+}
+s
+.TxMessage a:hover {
+    background: rgba(0,0,0,0.1);
+    left: -2px;
+    padding: 2px 5px;
+}

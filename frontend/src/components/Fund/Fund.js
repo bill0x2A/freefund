@@ -10,6 +10,7 @@ import walletIcon from '@iconify-icons/simple-line-icons/wallet';
 import DAI from '../../assets/DAI.png';
 import { ethers } from 'ethers';
 import Loading from '../Loading/Loading';
+import TxInfo from '../TxInfo/TxInfo';
 
 // This is an error code that indicates that the user canceled a transaction
 const ERROR_CODE_TX_REJECTED_BY_USER = 4001;
@@ -107,53 +108,35 @@ class Fund extends React.Component {
     }
 
     updateUserBalance = async () => {
-        const balance = await this.props.daiContract .balanceOf(this.props.user?.selectedAddress);
+        const balance = await this.props.daiContract.balanceOf(this.props.user?.address);
 
         this.setState({balance : ethers.utils.formatUnits(balance, 18)});
     }
 
     render(){
         let { pledge, txError, txBeingSent, txSuccess, sentTx, balance } = this.state;
-        let { dismiss } = this.props;
+        let { dismiss, fundingAddress } = this.props;
+
+        // Billy personal Metamask account for testing / if no funding address is found
+        // Should change to multisig incase of bugs, funds will not be lost (unless custodial issues).
+        fundingAddress = fundingAddress || "0xa53f2C25278E515851DB513f6C990681429f9a4a";
 
         // Conditional rendering based on transaction status
         let txInfo = null;
-        if(txSuccess){
-            // Transaction success message
-            txInfo = (
-                <div className={classes.TxMessage}>
-                    <p>Transaction successful</p>
-                    <p><a target="_blank" href={`https://rinkeby.etherscan.io/tx/${sentTx}`}>View transaction here</a></p>
-                </div>
-            )
-        } else if (txError){
-            txInfo = (
-                    <div className={classes.TxMessage} style={{color : "var(--warning)", border : "3px dashed var(--warning)"}}>
-                        <p>Transaction failed with error message:</p>
-                        <p>{txError}</p>
-                    </div>
-            )
-        } else if(!this.props.selectedAddress){
-            txInfo = (
-                <div className={classes.TxMessage} style={{color : "orange", border : "3px dashed orange", alignItems: "center", justifyContent: "center"}}>
-                    <p>Please connect your wallet first</p>
-                </div>
-        )
-        } else if (txBeingSent){
-            // Spinner and transaction information
-            txInfo = (
-                <div className={classes.TxMessage}>
-                    <Loading style={{position: "absolute", top : "5px", right : "5px"}}/>
-                    <p>Sending transaction:</p>
-                    <p><a target="_blank" href={`https://rinkeby.etherscan.io/tx/${txBeingSent}`}>{txBeingSent}</a></p>
-                </div>
-            )
+        if(txSuccess || txError || !this.props.selectedAddress || txBeingSent || sentTx){
+            txInfo = <TxInfo
+                        txError={txError}
+                        address={this.props.user?.address}
+                        txBeingSent={txBeingSent}
+                        txSuccess={txSuccess}
+                        sentTx={sentTx}
+                    />
         } else {
             // Fund button
             txInfo = (
                 <div 
                     className={classes.Submit}
-                    onClick = {() => this._transferTokens("0xa53f2C25278E515851DB513f6C990681429f9a4a", pledge)}
+                    onClick = {() => this._transferTokens(fundingAddress, pledge)}
                 >Fund</div>
             )
         }

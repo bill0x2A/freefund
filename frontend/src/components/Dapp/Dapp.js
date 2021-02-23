@@ -29,9 +29,10 @@ import MissingPage from '../MissingPage/MissingPage';
 
 import onMobile from '../../util/detectMobile';
 
-import { daiAbi, rinkebyDaiAddress, freefundFactoryAbi } from '../../constants/contractData';
+import { daiAbi, rinkebyDaiAddress } from '../../constants/contractData';
 import * as artifacts from '../../artifacts/contracts/FreeFund.sol/FreeFund.json';
 
+console.log(daiAbi, rinkebyDaiAddress);
 const HARDHAT_NETWORK_ID = '31337'
 const MAINNET_NETWORK_ID = '42'
 const RINKEBY_NETWORK_ID = '4'
@@ -178,18 +179,20 @@ class Dapp extends React.Component {
 
   async _intializeEthers() {
     // We first initialize ethers by creating a provider using window.ethereum
-    console.dir(window.ethereum);
+    // console.dir(window.ethereum);
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     this.props.connectProvider(provider);
 
-    const rinkebyDai = new ethers.Contract(rinkebyDaiAddress, daiAbi, provider);
-    const rinkebyDaiWithSigner = rinkebyDai.connect(provider.getSigner());
-    console.dir(provider)
-    console.dir(provider.getSigner());
+    const signer = provider.getSigner();
+
+    const rinkebyDai = new ethers.Contract(rinkebyDaiAddress, daiAbi);
+    const rinkebyDaiWithSigner = rinkebyDai.connect(signer);
+
     this.props.connectDaiContract(rinkebyDaiWithSigner);
 
     const scInterface = new ethers.utils.Interface(artifacts.abi);
-    const freefundFactory  = new ethers.ContractFactory(scInterface, artifacts.bytecode, provider.getSigner());
+    const freefundFactory  = new ethers.ContractFactory(scInterface, artifacts.bytecode, signer);
+    console.log(freefundFactory);
     this.props.connectFactory(freefundFactory);
 
     // INITIALISE CONTRACTS HERE

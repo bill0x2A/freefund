@@ -130,6 +130,7 @@ class ProjectPage extends React.Component {
 
     render(){
         const { project, loading, pledging, pledge, creatorData } = this.state;
+        const funding = parseFloat(project?.funding);
         return(
             <div className={classes.ProjectPage}>
                 {loading ? <Loading/> :
@@ -140,6 +141,7 @@ class ProjectPage extends React.Component {
                                             projectID={this.props.match.params.projectID}
                                             pledge={pledge}
                                             dismiss={this.dismissPledgeHandler}
+                                            fundingAddress = {project.fundingAddress}
                                         />
                                      </ModalContainer>}
 
@@ -153,7 +155,7 @@ class ProjectPage extends React.Component {
                                 <div className={classes.FundingLeft}>
                                     <div className={classes.FundingTopline}>
                                         <div className={classes.FundingInfo}>
-                                            <span>{project.funding?.toFixed(2)}</span>
+                                            <span>{funding.toFixed(2)}</span>
                                             <img src = {DAI}/>
                                             <span>raised</span>
                                         </div>

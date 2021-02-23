@@ -5,6 +5,7 @@ import NoAddress from '../NoAddress/NoAddress';
 import Loading from '../Loading/Loading';
 import MarkdownEditor from './MarkdownEditor/MarkdownEditor';
 import Tier from './Tier/Tier';
+import TxInfo from '../TxInfo/TxInfo';
 import DateTimePicker from 'react-datetime-picker'
 
 import { connect } from 'react-redux';
@@ -17,34 +18,35 @@ import DAI from '../../assets/DAI.png';
 import ipfsClient from 'ipfs-http-client';
 const ipfs = ipfsClient({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
 
+// This is an error code that indicates that the user canceled a transaction
+const ERROR_CODE_TX_REJECTED_BY_USER = 4001;
+
 class CreateProject extends React.Component {
 
     constructor(props){
         super(props);
         this.state = {
-            project : {},
-            imageHashes: [],
+            imgHashes: [],
             imgBuffers: [],
             fileNames : [],
             tiers : [],
             submitting : false,
+            test : false,
         }
     }
 
     onChange = (e) => {
-        const name = e.target.name;
-        const value = e.target.value;
         this.setState({[e.target.name] : e.target.value});
     }
 
     addTierHandler = () => {
         const emptyTier = {
-            description : null,
-            funding : null,
+            description : "",
+            funding : undefined,
         };
         let tiers = [...this.state.tiers];
         tiers.push(emptyTier);
-        this.setState({tiers});
+        this.setState({ tiers });
     }
 
     removeTierHandler = index => {
@@ -90,19 +92,19 @@ class CreateProject extends React.Component {
 
         await this.uploadImages();
 
-        const {fundingLimit, endTime} = this.state;
+        let {fundingLimit, endTime} = this.state;
         const endTimeDate = new Date(endTime);
-        console.log("ENDTIME: ", endTime);
         
         // #### SC Constructor variables ####
-        const endTimeSC = endTimeDate.getTime()/1000;
-        const timeNow = new Date();
-        const startTimeSC = timeNow.getTime()/1000;
-        const targetSC = ethers.utils.parseUnits(fundingLimit, 18)
+        // parseInt is needed to prevent BigNumber conversion errors
+        let endTimeSC = parseInt(endTimeDate.getTime()/1000);
+        let timeNow = new Date();
+        let startTimeSC = parseInt(timeNow.getTime()/1000);
+        let targetSC = fundingLimit.toString();
 
         /*
             https://www.unixtimestamp.com/index.php
-            Human Readable Unix timestampo converter
+            Human Readable Unix timestamp converter
                 Time                    Seconds
                 1 Hour	                3600 Seconds
                 1 Day	                86400 Seconds
@@ -134,44 +136,80 @@ class CreateProject extends React.Component {
         // smartContractAddress = 0xSC123....
         // supporter can send DAI directly to the SC 0xSC123...
         // 
-        console.log({address : this.props.user.address, endTimeSC, startTimeSC, targetSC});
-        const contract = await this.props.factory.deploy(this.props.user.address, endTimeSC, startTimeSC, targetSC);
-        const contractAddress = contract.address; // Available before deployment
 
-        if(!contractAddress){
-            throw new Error("Contract address is not defined, initialisation failed");
-        }
-
-        console.log(contract.deployTransaction);
-
-        let receipt;
         try {
-            // Try to deploy the contract
-            receipt = contract.deployTransaction.wait();
-        } catch {
-            // Contract deployment failed
-        }
+            // If a transaction fails, we save that error in the component's state.
+            // We only save one such error, so before sending a second transaction, we
+            // clear it.
+            this._dismissTransactionError();
+      
+            // We send the transaction, and save its hash in the Dapp's state. This
+            // way we can indicate that we are waiting for it to be mined.
+            const contract = await this.props.factory.deploy(targetSC, endTimeSC);
+            const contractTx = contract.deployTransaction;
+            this.setState({ txBeingSent: contractTx.hash });
+      
+            // We use .wait() to wait for the transaction to be mined. This method
+            // returns the transaction's receipt.
+            const receipt = await contractTx.wait();
+      
+            // The receipt, contains a status flag, which is 0 to indicate an error.
+            if (receipt.status === 0) {
+              // We can't know the exact error that make the transaction fail once it
+              // was mined, so we throw this generic one.
+              throw new Error("Transaction failed");
+            }
+      
+            // ~~~ TX SUCCESSFUL ~~~
 
+            // Format variables for database
+            const { title, imgHashes, description, fundingLimit, tiers } = this.state;
+            const project = {
+                    title : title,
+                    creatorAddress : this.props.user.address,
+                    fundingAddress : contract.address,
+                    imgHashes : imgHashes,
+                    description : description,
+                    fundingLimit : fundingLimit.toString(), 
+                    funding : "0",
+                    tiers : tiers,
+                    funders : [],
+                    token : this.props.token,
+                }
+            console.dir(project);
+            // Send project data to backend
+            const { data, response } = await addProject(project);
+            if(response.ok){
+                this.setState({ projectID : data.id }, () => {
+                    // One we have the response from the backend show a completed tx
+                    this.setState({ txSuccess : true, sentTx : contractTx.hash })
+                });
+            } else {
+                // Handle the error with a lovely litte popup
+                console.log("Something went wrong");
+            }
 
-        // Format variables for database
-        const project = {
-            ...this.state.project,
-            creatorAddress : contractAddress,
-            funding : 0,
-            reason : "",
-            token : this.props.token,
-        }
-
-        // Push project to database
-        const { data, response } = await addProject(project);
-        if(response.ok){
-            this.props.history.push(`/projects/${data.id}`);
-        } else {
-            // Handle the error with a lovely litte popup
-            console.log("Something went wrong");
-        }
-
+            
+          } catch (error) {
+            // We check the error code to see if this error was produced because the
+            // user rejected a tx. If that's the case, we do nothing.
+            if (error.code === ERROR_CODE_TX_REJECTED_BY_USER) {
+              return;
+            }
+            
+            // Handle the error by displaying it to the user, allow the user to try again.
+            console.error(error);
+            this.setState({ txError: error, submitting : false });
+          } finally {
+            // If we leave the try/catch, we aren't sending a tx anymore, so we clear
+            // this part of the state.
+            this.setState({ txBeingSent: undefined });
+          }
     }
+
+    _dismissTransactionError() {
+        this.setState({ txError: undefined });
+    }  
 
     captureFile = async (e) => {
         e.preventDefault();
@@ -185,7 +223,7 @@ class CreateProject extends React.Component {
                 let fileNames = this.state.fileNames;
                 imgBuffers.push(Buffer(reader.result))
                 fileNames.push(file.name);
-                this.setState({imgBuffers : imgBuffers, fileNames : fileNames}, () => console.log(this.state.fileNames));
+                this.setState({imgBuffers : imgBuffers, fileNames : fileNames});
             };
         }
     };
@@ -217,10 +255,29 @@ class CreateProject extends React.Component {
     render(){
         
         let disabled = false;
-        const { title, description, t1desc, t2desc, t3desc, t1funding, t2funding, t3funding, tags, imgHashes, fundingLimit, endTime, fileNames, submitting, tiers} = this.state;
-        if(!title || !description || !t1desc || !t2desc || !t3desc || !t1funding || !t2funding || !t3funding || !tags || !fundingLimit, !endTime){
+        const { title,
+                description,
+                tags,
+                fundingLimit,
+                endTime,
+                fileNames,
+                submitting,
+                tiers,
+                txError,
+                txBeingSent,
+                txSuccess,
+                sentTx,
+                projectID,
+            } = this.state;
+
+        if(!title || !description || !tags || !fundingLimit, !endTime){
             disabled = true;
         }
+
+        if(this.state.test){
+            disabled = false;
+        }
+
         let submitButton = (
             <div 
                 className={classes.SubmitButton}
@@ -344,8 +401,19 @@ class CreateProject extends React.Component {
                                 />
                             </div> */}
                             <div className={classes.SubmitContainer}>
-                                {submitButton}
+                                { ((!txBeingSent && !txSuccess && !sentTx) || txError) && 
+                                    submitButton
+                                }
                             </div>
+                            <TxInfo 
+                                    txError={txError}
+                                    address={this.props.user?.address}
+                                    txBeingSent={txBeingSent}
+                                    txSuccess={txSuccess}
+                                    sentTx={sentTx}
+                                    projectID={projectID}
+                                    create
+                            />
                     </React.Fragment>
                 }
             </div>

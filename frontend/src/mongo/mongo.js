@@ -74,6 +74,7 @@ export const addProject = async projectData => {
       };
       const response = await fetch(`https://dirt-noble-driver.glitch.me/addProject`, requestOptions)
       const responseCode = response.status;
+      console.dir(response);
       if (!response.ok) {
         // Not an OK reseponse
         if (responseCode == 400) {
@@ -89,7 +90,7 @@ export const addProject = async projectData => {
 
     // OK response
     const data = await response.json();
-    return {data, responseCode};
+    return {data, response};
 }
 
 export const loadProject = async id => {
