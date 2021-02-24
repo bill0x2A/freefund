@@ -13,10 +13,6 @@ import { BrowserRouter as Router,
 
 import { ethers } from "ethers";
 
-
-// import TokenArtifact from "../../contracts/Token.json";
-// import contractAddress from "../../contracts/contract-address.json";
-
 import Navigation from '../Navigation/Navigation';
 import LandingPage from '../LandingPage/LandingPage';
 import ProjectBrowser from '../ProjectBrowser/ProjectBrowser';
@@ -32,7 +28,6 @@ import onMobile from '../../util/detectMobile';
 import { daiAbi, rinkebyDaiAddress } from '../../constants/contractData';
 import * as artifacts from '../../artifacts/contracts/FreeFund.sol/FreeFund.json';
 
-console.log(daiAbi, rinkebyDaiAddress);
 const HARDHAT_NETWORK_ID = '31337'
 const MAINNET_NETWORK_ID = '42'
 const RINKEBY_NETWORK_ID = '4'
@@ -44,7 +39,6 @@ class Dapp extends React.Component {
       selectedAddress: undefined,
       mobile: false,
     };
-
     this.state = this.initialState;
   }
 

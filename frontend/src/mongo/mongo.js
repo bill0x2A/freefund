@@ -138,13 +138,13 @@ export const loadProjects = async () => {
 
 }
 
-export const loadUser = async address => {
+export const loadUserShort = async address => {
   const requestOptions = {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'request-no-cors' : true },
+    headers: { 'Content-Type': 'application/json'},
     body: {address},
   };
-  const response = await fetch(`https://dirt-noble-driver.glitch.me/user`, requestOptions);
+  const response = await fetch(`https://dirt-noble-driver.glitch.me/userShort`, requestOptions);
   const responseCode = response.status;
   if (!response.ok){
     const data = await response.json();

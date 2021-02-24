@@ -26,11 +26,12 @@ const ProgressBar = (props) =>{
 
 const ProjectCard = props => {
     const {project, creatorInfo} = props
+    const funding = parseFloat(project.funding)
         console.log(project)
         return(
                     <div className={classes.ProjectCard}>
                         <div className = {classes.FundingInfo}>
-                            <span style ={{color:"#5CDB95"}}>{project.funding?.toFixed(2)}</span>
+                            <span style ={{color:"#5CDB95"}}>{funding.toFixed(2)}</span>
                             <span style ={{color:"#606060"}}>/{project.fundingLimit}</span>
                             <img src = {DAI}/>
                         </div>

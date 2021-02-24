@@ -6,7 +6,7 @@ import { Carousel } from 'react-responsive-carousel';
 import ReactPlayer from 'react-player/youtube';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { loadProject, loadUser } from '../../mongo/mongo';
+import { loadProject, loadUserShort } from '../../mongo/mongo';
 
 import ReactHtmlParser, { processNodes, convertNodeToElement, htmlparser2 } from 'react-html-parser';
 import MarkdownIt from 'markdown-it';
@@ -98,10 +98,8 @@ class ProjectPage extends React.Component {
         if(response === 404){
             this.props.history.push('/404')
         } else {
-            console.log(response.data);
-            if(this.state.loading){
-                this.setState({ project : response.data, loading : false});
-            }
+            this.setState({ project : response.data, loading : false });
+            this.loadCreatorData(response.data.creatorAddress)
         }
     }
 
@@ -109,7 +107,7 @@ class ProjectPage extends React.Component {
         // This is not very 'React' but it works for now
         document.body.style.height = "100vh";
         document.body.style.overflow = "hidden";
-        this.setState({pledging:true, pledge : value});
+        this.setState({pledging : true, pledge : value});
     }
 
     dismissPledgeHandler = () => {
@@ -124,7 +122,7 @@ class ProjectPage extends React.Component {
     }
 
     loadCreatorData = async creatorAddress => {
-        const user = await loadUser(creatorAddress);
+        const user = await loadUserShort(creatorAddress);
         this.setState({creatorData : user.data, loading : false})
     }
 

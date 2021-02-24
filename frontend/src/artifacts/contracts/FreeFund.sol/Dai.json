@@ -1,0 +1,16 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "Dai",
+  "sourceName": "contracts/FreeFund.sol",
+  "abi": [
+    {
+      "inputs": [],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    }
+  ],
+  "bytecode": "0x6080604052348015600f57600080fd5b50735592ec0cfb4dbc12d3ab100b257153436a1f0fea6000806101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff160217905550603f8060716000396000f3fe6080604052600080fdfea264697066735822122077b6f8e811bbb98cdd9f8dbd33a6abc2cf3993beb3a6a4bcdd9380f805ad29cc64736f6c63430007060033",
+  "deployedBytecode": "0x6080604052600080fdfea264697066735822122077b6f8e811bbb98cdd9f8dbd33a6abc2cf3993beb3a6a4bcdd9380f805ad29cc64736f6c63430007060033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}
