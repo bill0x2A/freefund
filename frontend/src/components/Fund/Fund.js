@@ -108,7 +108,7 @@ class Fund extends React.Component {
     }
 
     updateUserBalance = async () => {
-        const balance = await this.props.daiContract.balanceOf(this.props.user?.address);
+        const balance = await this.props.daiContract?.balanceOf(this.props.user?.address);
 
         this.setState({balance : ethers.utils.formatUnits(balance, 18)});
     }

@@ -144,6 +144,7 @@
 
 .ProgressBar {
     height: 40px;
+    width: 100%;
     border-radius: 100px;
     border: 4px solid white;
     overflow: hidden;

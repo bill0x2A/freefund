@@ -53,7 +53,6 @@ ul {
 .carousel-root {
   outline: none;
   background: #eaeaea;
-  border: 5px dashed var(--bold);
   /* box-shadow: var(--bold) 1px 1px, var(--bold) 2px 2px, var(--bold) 3px 3px, var(--bold) 4px 4px, var(--bold) 5px 5px; */
 }
 
@@ -176,7 +175,7 @@ ul {
     margin: 0;
     position: relative;
     text-align: center;
-    background: #000; }
+    background: none; }
     .carousel .slide img {
       width: 100%;
       vertical-align: top;
