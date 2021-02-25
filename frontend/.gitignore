@@ -25,5 +25,5 @@ yarn-debug.log*
 yarn-error.log*
 
 # unnecessary hardhat files
-./src/artifacts/build-info
-./src/artifacts/hardhat
+src/artifacts/build-info
+src/artifacts/hardhat
