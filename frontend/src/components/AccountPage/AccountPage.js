@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import classes from './AccountPage.module.css';
 
 import NoAddress from '../NoAddress/NoAddress';
@@ -7,11 +7,14 @@ import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import ProjectCard from '../ProjectCard/ProjectCard';
 import Loading from '../Loading/Loading';
 import ReactTooltip from 'react-tooltip';
+import ImgCropper from './ImgCropper/ImgCropper';
 import * as actionTypes from '../../store/actionTypes';
 
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { register } from '../../mongo/mongo';
+
+
 
 import ipfsClient from 'ipfs-http-client';
 const ipfs = ipfsClient({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
@@ -34,20 +37,33 @@ class AccountPage extends React.Component {
         this.setState({[e.target.name] : e.target.value});
     }
 
-    captureFile = (e) => {
-        e.preventDefault();
-        const file = e.target.files[0];
-        const reader = new window.FileReader();
-    
-        reader.readAsArrayBuffer(file)
-    
-        reader.onloadend = () => {
-            this.setState({imgBuffer : Buffer(reader.result), newProfilePicture : true});
-        };
+    handleCrop = crop => {
+        this.setState({crop});
+    }
+
+    handleNewImage = file => {
+        var fr = new FileReader();
+        fr.onload = () => {
+            this.setState({image : fr.result, newProfilePicture : true});
+        }
+        fr.readAsDataURL(file);
     }
 
     uploadImage = async () => {
-        await ipfs.add(this.state.imgBuffer)
+        console.log("Uploading image")
+
+        const blob = await getCroppedImg(this.state.image, this.state.crop);
+        console.log(this.state.image)
+
+        // Testing only
+        // const img = await blobToURL(blob);
+        // this.setState({testImg : img});
+
+        const arrayBuffer = await blob.arrayBuffer()
+        const buffer = arrayBufferToBuffer(arrayBuffer);
+        console.log(buffer);
+
+        await ipfs.add(buffer)
                 .then((result, error) => {
                     if(!error){
                         this.setState({imgHash : result.path});
@@ -95,14 +111,16 @@ class AccountPage extends React.Component {
             <div 
                 className={classes.SubmitButton}
                 onClick={this.onSubmit}
-            >Submit</div>
+                >Submit
+            </div>
         )
         if(disabled){
             submitButton = (
                 <div 
                     className={classes.SubmitButton}
                     style ={{background : "gray", cursor: "none"}}
-                >Please fill out all required fields</div>
+                    >Please fill out all required fields
+                </div>
             )
         }
         if(submitting){
@@ -166,17 +184,11 @@ class AccountPage extends React.Component {
                         </div>
                         <div className={classes.Box}>
                             <h3>Profile Picture</h3>
-                            <div className={classes.ImageUploadContainer}>
-                                <img src = {`https://ipfs.infura.io/ipfs/${this.state.imgHash}`}/>
-                                <div className={classes.ImageUpload}>
-                                    <input
-                                        type='file'
-                                        accept=".jpg, .jpeg, .png, .bmp, .gif"
-                                        onChange={this.captureFile}
-                                    />
-                                    <p>Drag image here</p>
-                                </div>
-                            </div>
+                            <ImgCropper
+                                imgHash={this.state.imgHash}
+                                sendCrop={this.handleCrop}
+                                handleNewImage={this.handleNewImage}
+                            />
                         </div>
                         <div className={classes.SubmitContainer}>
                             {submitButton}
@@ -193,6 +205,66 @@ class AccountPage extends React.Component {
         )
     }
 }
+
+// #### Image cropping code ####
+
+var isArrayBufferSupported = (new Buffer(new Uint8Array([1]).buffer)[0] === 1);
+
+var arrayBufferToBuffer = isArrayBufferSupported ? arrayBufferToBufferAsArgument : arrayBufferToBufferCycle;
+
+function arrayBufferToBufferAsArgument(ab) {
+  return new Buffer(ab);
+}
+
+function arrayBufferToBufferCycle(ab) {
+  var buffer = new Buffer(ab.byteLength);
+  var view = new Uint8Array(ab);
+  for (var i = 0; i < buffer.length; ++i) {
+      buffer[i] = view[i];
+  }
+  return buffer;
+}
+
+function getCroppedImg(imageSrc, crop) {
+    let image = new Image();
+    image.src = imageSrc;
+    const canvas = document.createElement('canvas');
+    canvas.style.display = "none";
+    const scaleX = image.naturalWidth / image.width;
+    const scaleY = image.naturalHeight / image.height;
+    canvas.width = crop.width;
+    canvas.height = crop.height;
+    const ctx = canvas.getContext('2d');
+   
+    ctx.drawImage(
+      image,
+      crop.x * scaleX,
+      crop.y * scaleY,
+      crop.width * scaleX,
+      crop.height * scaleY,
+      0,
+      0,
+      crop.width,
+      crop.height,
+    );
+   
+    // As Base64 string
+    // const base64Image = canvas.toDataURL('image/jpeg');
+   
+    // As a blob
+    return new Promise((resolve, reject) => {
+      canvas.toBlob(blob => {
+        resolve(blob);
+      }, 'image/jpeg', 1);
+    });
+  }
+
+  const blobToURL = (blob) => {
+    return new Promise(resolve => {
+      const url = URL.createObjectURL(blob)
+      resolve(url);
+    })
+  }
 
 const mapStateToProps = state => ({
     selectedAddress : state.selectedAddress,

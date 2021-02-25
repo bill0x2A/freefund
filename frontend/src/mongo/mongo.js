@@ -144,7 +144,8 @@ export const loadUserShort = async address => {
     headers: { 'Content-Type': 'application/json'},
     body: {address},
   };
-  const response = await fetch(`https://dirt-noble-driver.glitch.me/userShort`, requestOptions);
+  console.log(requestOptions.body)
+  const response = await fetch(`https://dirt-noble-driver.glitch.me/short`, requestOptions);
   const responseCode = response.status;
   if (!response.ok){
     const data = await response.json();
