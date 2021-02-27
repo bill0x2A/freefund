@@ -3,6 +3,18 @@
     grid-template-columns: 1fr 1150px 1fr;
 }
 
+.LoadingContainer {
+    position: absolute;
+    top: 0;
+    left : 0;
+    width : 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
 .Layout {
     grid-column-start: 2;
     grid-column-end: 3;

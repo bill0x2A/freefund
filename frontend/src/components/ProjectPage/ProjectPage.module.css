@@ -2,6 +2,7 @@
     margin-bottom : 40px;
 }
 
+
 .ProjectPage p {
     font-size: 18px;
     text-align: justify;
@@ -168,38 +169,7 @@
     grid-column: 2 / span 1;
 }
 
-.RewardTier {
-    position: relative;
-    border: 5px dashed var(--bold);
-    height: auto;
-    padding: 20px 20px;
-    margin-bottom: 25px;
-}
 
-.RewardTier h3 {
-    color: var(--bold);
-    margin: 0;
-}
-
-.RewardTier span {
-    position: absolute;
-    display: flex;
-    align-items: center;
-    top: 0px;
-    right: 0px;
-    color: var(--accent);
-    font-size: 20px;
-    font-weight: 500;
-
-    background: #eaeaea;
-    padding: 5px 10px;
-    border-bottom-left-radius: 5px;
-}
-
-.RewardTier img {
-    height: 25px;
-    margin: 0 5px;
-}
 
 .TimeLeft {
     font-weight: 600;

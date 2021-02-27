@@ -8,7 +8,7 @@ export const login = async address => {
         body: JSON.stringify({ address })
       };
       console.log(requestOptions.body)
-      const response = await fetch(`https://dirt-noble-driver.glitch.me/login`, requestOptions)
+      const response = await fetch(`https://floating-temple-50905.herokuapp.com/login`, requestOptions)
       const responseCode = response.status;
       if (!response.ok) {
         // Not an OK reseponse
@@ -39,7 +39,7 @@ export const register = async userData => {
       };
   
       let responseCode;
-      fetch(`https://dirt-noble-driver.glitch.me/register`, requestOptions)
+      fetch(`https://floating-temple-50905.herokuapp.com/register`, requestOptions)
         .then(response => {
           responseCode = response.status;
           return(response.json());
@@ -72,7 +72,7 @@ export const addProject = async projectData => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(projectData)
       };
-      const response = await fetch(`https://dirt-noble-driver.glitch.me/addProject`, requestOptions)
+      const response = await fetch(`https://floating-temple-50905.herokuapp.com/addProject`, requestOptions)
       const responseCode = response.status;
       console.dir(response);
       if (!response.ok) {
@@ -100,7 +100,7 @@ export const loadProject = async id => {
     body: JSON.stringify({id}),
   };
   console.log(requestOptions.body);
-  const response = await fetch(`https://dirt-noble-driver.glitch.me/project`, requestOptions)
+  const response = await fetch(`https://floating-temple-50905.herokuapp.com/project`, requestOptions)
   const responseCode = response.status;
   if (!response.ok) {
     // Not an OK reseponse
@@ -126,7 +126,7 @@ export const loadProjects = async () => {
     headers: { 'Content-Type': 'application/json' },
     body: null,
   };
-  const response = await fetch(`https://dirt-noble-driver.glitch.me/listProjects`, requestOptions)
+  const response = await fetch(`https://floating-temple-50905.herokuapp.com/listProjects`, requestOptions)
   const responseCode = response.status;
   if (!response.ok){
     const data = await response.json()
@@ -138,21 +138,21 @@ export const loadProjects = async () => {
 
 }
 
-export const loadUserShort = async address => {
+export const loadUser = async address => {
   const requestOptions = {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json'},
-    body: {address},
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({address}),
   };
-  console.log(requestOptions.body)
-  const response = await fetch(`https://dirt-noble-driver.glitch.me/short`, requestOptions);
+  const response = await fetch(`https://floating-temple-50905.herokuapp.com/short`, requestOptions)
   const responseCode = response.status;
-  if (!response.ok){
+  if (!response.ok) {
+    // Not an OK reseponse
     const data = await response.json();
-    console.log(data.message)
-    throw new Error("HTTP error " + responseCode + "\n" + data.message);
-  }
+    throw new Error("HTTP ERROR : " + responseCode + "\n" + data.message);
+    }
 
+  // OK response
   const data = await response.json();
   return data;
 }

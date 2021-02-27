@@ -1,27 +1,36 @@
-import React, { useState } from 'react'
+import React from 'react'
 import classes from './AccountPage.module.css';
 
 import NoAddress from '../NoAddress/NoAddress';
 import ReactFlagsSelect from 'react-flags-select';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import ProjectCard from '../ProjectCard/ProjectCard';
+import ModalContainer from '../hoc/ModalContainer/ModalContainer';
+import ImgCropper from './ImgCropper/ImgCropper';
 import Loading from '../Loading/Loading';
 import ReactTooltip from 'react-tooltip';
-import ImgCropper from './ImgCropper/ImgCropper';
 import * as actionTypes from '../../store/actionTypes';
 
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { register } from '../../mongo/mongo';
-
-
+import { arrayBufferToBuffer, blobToURL, getCanvasBlob } from '../../util/imageProcessing';
 
 import ipfsClient from 'ipfs-http-client';
+import Information from '../ProjectPage/Information/Information';
 const ipfs = ipfsClient({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
 
 const Required = () => (
     <span data-tip="required field">*</span>
 )
+
+const fileToDataUri = (file) => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      resolve(event.target.result)
+    };
+    reader.readAsDataURL(file);
+    })
 
 class AccountPage extends React.Component {
     constructor(props){
@@ -37,33 +46,62 @@ class AccountPage extends React.Component {
         this.setState({[e.target.name] : e.target.value});
     }
 
-    handleCrop = crop => {
-        this.setState({crop});
+    captureFile = async e => {
+        e.preventDefault();
+        const file = e.target.files[0];
+        const reader = new window.FileReader();
+
+        const dataURL = await fileToDataUri(file);
+        reader.readAsArrayBuffer(file)
+    
+        reader.onloadend = () => {
+            this.setState({newImg : dataURL, imgBuffer : Buffer(reader.result), newProfilePicture : true, editing : true});
+        };
     }
 
-    handleNewImage = file => {
-        var fr = new FileReader();
-        fr.onload = () => {
-            this.setState({image : fr.result, newProfilePicture : true});
-        }
-        fr.readAsDataURL(file);
+    onSubmitCrop = async crop => {
+        let image = new Image();
+        image.src = this.state.newImg;
+        const canvas = document.createElement('canvas');
+        canvas.style.display = "none";
+        const scaleX = image.naturalWidth / image.width;
+        const scaleY = image.naturalHeight / image.height;
+        canvas.width = crop.width;
+        canvas.height = crop.height;
+        const ctx = canvas.getContext('2d');
+       
+        ctx.drawImage(
+          image,
+          crop.x * scaleX,
+          crop.y * scaleY,
+          crop.width * scaleX,
+          crop.height * scaleY,
+          0,
+          0,
+          crop.width,
+          crop.height,
+        );
+       
+        // As Base64 string
+        // const base64Image = canvas.toDataURL('image/jpeg');
+       
+        // As a blob
+        // return new Promise((resolve, reject) => {
+        //   canvas.toBlob(blob => {
+        //     resolve(blob);
+        //   }, 'image/jpeg', 1);
+        // });
+        const blob = await getCanvasBlob(canvas);
+        const url = await blobToURL(blob);
+        this.setState({processedImage : url});
+        const arrayBuffer = await blob.arrayBuffer()
+        console.log(arrayBuffer)
+        const buffer = Buffer.from(arrayBufferToBuffer(arrayBuffer));
+        this.setState({imgBuffer : buffer, editing : false}, console.log(this.state.imgBuffer));
     }
 
     uploadImage = async () => {
-        console.log("Uploading image")
-
-        const blob = await getCroppedImg(this.state.image, this.state.crop);
-        console.log(this.state.image)
-
-        // Testing only
-        // const img = await blobToURL(blob);
-        // this.setState({testImg : img});
-
-        const arrayBuffer = await blob.arrayBuffer()
-        const buffer = arrayBufferToBuffer(arrayBuffer);
-        console.log(buffer);
-
-        await ipfs.add(buffer)
+        await ipfs.add(this.state.imgBuffer)
                 .then((result, error) => {
                     if(!error){
                         this.setState({imgHash : result.path});
@@ -100,6 +138,10 @@ class AccountPage extends React.Component {
         this.props.history.push('/')
     }
 
+    cancelEditHandler = () => {
+        this.setState({editing : false, newImg : undefined, newProfilePicture : false})
+    }
+
     render = () => {
         let disabled = false;
         const {email, firstName, lastName, countryCode, submitting} = this.state;
@@ -111,16 +153,14 @@ class AccountPage extends React.Component {
             <div 
                 className={classes.SubmitButton}
                 onClick={this.onSubmit}
-                >Submit
-            </div>
+            >Submit</div>
         )
         if(disabled){
             submitButton = (
                 <div 
                     className={classes.SubmitButton}
                     style ={{background : "gray", cursor: "none"}}
-                    >Please fill out all required fields
-                </div>
+                >Please fill out all required fields</div>
             )
         }
         if(submitting){
@@ -128,8 +168,14 @@ class AccountPage extends React.Component {
         }
         return(
             <div className ={classes.AccountPage}>
+                {this.state.editing && (
+                    <ModalContainer>
+                        <ImgCropper square newImg={this.state.newImg} sendCrop={crop => this.setState({crop})} close = {this.cancelEditHandler} submit = {this.onSubmitCrop}/>
+                    </ModalContainer>
+                )}
                 {!this.props.user ? <NoAddress/> :
                     <React.Fragment>
+                        <img src ={`https://ipfs.infura.io/ipfs/${this.state.imgHash}`}/>
                         {this.state.errorMessage && <ErrorMessage message={this.state.errorMessage}/>}
                         <div className={classes.Box}>
                             <h2> Account Information </h2>
@@ -184,11 +230,17 @@ class AccountPage extends React.Component {
                         </div>
                         <div className={classes.Box}>
                             <h3>Profile Picture</h3>
-                            <ImgCropper
-                                imgHash={this.state.imgHash}
-                                sendCrop={this.handleCrop}
-                                handleNewImage={this.handleNewImage}
-                            />
+                            <div className={classes.ImageUploadContainer}>
+                                <img src = {this.state.processedImage || `https://ipfs.infura.io/ipfs/${this.state.imgHash}`}/>
+                                <div className={classes.ImageUpload}>
+                                    <input
+                                        type='file'
+                                        accept=".jpg, .jpeg, .png, .bmp, .gif"
+                                        onChange={this.captureFile}
+                                    />
+                                    <p>Drag image here</p>
+                                </div>
+                            </div>
                         </div>
                         <div className={classes.SubmitContainer}>
                             {submitButton}
@@ -205,66 +257,6 @@ class AccountPage extends React.Component {
         )
     }
 }
-
-// #### Image cropping code ####
-
-var isArrayBufferSupported = (new Buffer(new Uint8Array([1]).buffer)[0] === 1);
-
-var arrayBufferToBuffer = isArrayBufferSupported ? arrayBufferToBufferAsArgument : arrayBufferToBufferCycle;
-
-function arrayBufferToBufferAsArgument(ab) {
-  return new Buffer(ab);
-}
-
-function arrayBufferToBufferCycle(ab) {
-  var buffer = new Buffer(ab.byteLength);
-  var view = new Uint8Array(ab);
-  for (var i = 0; i < buffer.length; ++i) {
-      buffer[i] = view[i];
-  }
-  return buffer;
-}
-
-function getCroppedImg(imageSrc, crop) {
-    let image = new Image();
-    image.src = imageSrc;
-    const canvas = document.createElement('canvas');
-    canvas.style.display = "none";
-    const scaleX = image.naturalWidth / image.width;
-    const scaleY = image.naturalHeight / image.height;
-    canvas.width = crop.width;
-    canvas.height = crop.height;
-    const ctx = canvas.getContext('2d');
-   
-    ctx.drawImage(
-      image,
-      crop.x * scaleX,
-      crop.y * scaleY,
-      crop.width * scaleX,
-      crop.height * scaleY,
-      0,
-      0,
-      crop.width,
-      crop.height,
-    );
-   
-    // As Base64 string
-    // const base64Image = canvas.toDataURL('image/jpeg');
-   
-    // As a blob
-    return new Promise((resolve, reject) => {
-      canvas.toBlob(blob => {
-        resolve(blob);
-      }, 'image/jpeg', 1);
-    });
-  }
-
-  const blobToURL = (blob) => {
-    return new Promise(resolve => {
-      const url = URL.createObjectURL(blob)
-      resolve(url);
-    })
-  }
 
 const mapStateToProps = state => ({
     selectedAddress : state.selectedAddress,

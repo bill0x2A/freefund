@@ -38,7 +38,7 @@ input[type=number]::-webkit-outer-spin-button {
 /* Works on Firefox */
 * {
   scrollbar-width: thin;
-  scrollbar-color: blue white;
+  scrollbar-color: var(--bold) white;
 }
 
 /* Works on Chrome, Edge, and Safari */
@@ -51,7 +51,7 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 *::-webkit-scrollbar-thumb {
-  background-color: blue;
+  background-color: var(--bold);
   border-radius: 8px;
   border: 5px solid white;
 }

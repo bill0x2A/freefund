@@ -7,7 +7,7 @@ import MarkdownIt from 'markdown-it';
 
 const md = new MarkdownIt();
 
-const Information = ({project}) => {
+const Information = ({project, creatorData}) => {
 
     let [ tab, setTab ] = useState(0);
     let content;
@@ -29,8 +29,12 @@ const Information = ({project}) => {
             break;
         case 2:
             content = (
-                <div>Comments</div>
-            );
+                <div className={classes.CreatorInfo}>
+                    <h4>{creatorData?.firstName} {creatorData?.lastName}</h4>
+                    <img src={`https://ipfs.infura.io/ipfs/${creatorData?.imgHash}`}/>
+                    <p>{creatorData?.bio}</p>
+                </div>
+            )
             break;
     }
 
@@ -50,8 +54,13 @@ const Information = ({project}) => {
                 <span
                     className={tab == 2 ? classes.Selected : null}
                     onClick={() => setTab(2)}
-                    >Comments
+                    >Creator
                 </span>
+                {/* <span
+                    className={tab == 3 ? classes.Selected : null}
+                    onClick={() => setTab(3)}
+                    >Comments
+                </span> */}
             </div>
             <div className={classes.Main}>
                 {content}
@@ -63,7 +72,7 @@ const Information = ({project}) => {
 const CarouselDisplay = ({imageHashes}) => {
 
     // Fetch images from ipfs
-    const [autoplay, setAutoplay] = useState(false);
+    const [autoplay, setAutoplay] = useState(true);
 
     const images = imageHashes?.map(imgHash => (
         <div className={classes.Test} key={imgHash}>

@@ -5,7 +5,7 @@ import ReactPlayer from 'react-player/youtube';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Icon, InlineIcon } from '@iconify/react';
-import { loadProject, loadUserShort } from '../../mongo/mongo';
+import { loadProject, loadUser } from '../../mongo/mongo';
 import fileContract from '@iconify-icons/fa-solid/file-contract';
 import twitterBird from '@iconify-icons/brandico/twitter-bird';
 import facebookIcon from '@iconify-icons/brandico/facebook';
@@ -60,7 +60,7 @@ class ProjectPage extends React.Component {
     constructor(props){
         super(props)
         this.state ={
-            loading : false,
+            loading : true,
             pledging : false,
         }
     }  
@@ -73,13 +73,14 @@ class ProjectPage extends React.Component {
 
     loadData = async () => {
         const projectID = this.props.match.params.projectID;
-        console.log(projectID);
         const response = await loadProject(projectID);
         if(response === 404){
             this.props.history.push('/404')
         } else {
-            this.setState({ project : response.data, loading : false });
-            this.loadCreatorData(response.data.creatorAddress)
+            console.log(response.data);
+            this.setState({ project : response.data });
+            const address = response.data.creatorAddress;
+            this.loadCreatorData(address);
         }
     }
 
@@ -102,19 +103,18 @@ class ProjectPage extends React.Component {
     }
 
     loadCreatorData = async creatorAddress => {
-        const user = await loadUserShort(creatorAddress);
+        const user = await loadUser(creatorAddress);
+        console.log(user);
         this.setState({creatorData : user.data, loading : false})
     }
 
     render(){
         let { project, loading, pledging, pledge, creatorData } = this.state;
         project = {
-            title : "Test Project Title",
-            fundingLimit : "200",
-            funding: 70,
+            ...project,
             tagline : "This is the sweet tagline, something used to quickly explain the project",
             description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras pharetra, libero et gravida elementum, erat lacus maximus diam, id volutpat libero augue nec enim. Praesent sed lectus vitae nibh fermentum ornare. Fusce sit amet ex non tellus commodo luctus non id leo. Ut id sem nunc. Vivamus aliquam eget massa ut cursus. Nulla vitae nunc orci.\n Praesent ullamcorper sagittis tellus sed consequat. Sed in metus est. Donec facilisis maximus velit, a lobortis nibh consequat et. Ut mollis massa bibendum, maximus neque non, faucibus leo. Curabitur et orci eu purus congue volutpat id non justo. In molestie vitae orci non pellentesque. Aenean suscipit porta pharetra. Curabitur ac lacinia risus.\n Curabitur efficitur dui sed lorem efficitur placerat. Cras non sem tempor, bibendum eros consectetur, lacinia nisi. In accumsan quam finibus nibh convallis auctor. Vivamus magna turpis, dictum vitae aliquet vel, sodales a sem. Pellentesque at malesuada nisi, id hendrerit nisi. Phasellus sed porta est. Curabitur felis lacus, facilisis vel ante non, bibendum faucibus mauris. Aliquam sem nisl, lacinia eget blandit eget, lacinia eget sapien.\nCras dolor purus, laoreet sed lectus quis, maximus tristique sapien. Phasellus vitae laoreet purus. Ut eget nisl eu nisl malesuada ullamcorper eget sit amet est. Nulla iaculis efficitur sapien. Proin porttitor sapien sed massa semper mollis. Vivamus a consequat dui, eu ullamcorper ipsum. Etiam congue et turpis eget blandit. Phasellus vel mauris mi.",
-            images : ["QmUNSSAd6xJXjNmqRCCXpFmy9xNudpfjr9VcTMY92nYoA5"],
+            images : ["QmUNSSAd6xJXjNmqRCCXpFmy9xNudpfjr9VcTMY92nYoA5","QmUNSSAd6xJXjNmqRCCXpFmy9xNudpfjr9VcTMY92nYoA5","QmUNSSAd6xJXjNmqRCCXpFmy9xNudpfjr9VcTMY92nYoA5"],
             tiers : [
                 {funding : 10, description : "This is a test tier", index : 0 },
                 {funding : 20, description : "This is a test tier", index : 1 },
@@ -123,10 +123,11 @@ class ProjectPage extends React.Component {
                 {funding : 50, description : "This is a test tier", index : 4 },
             ]
         }
+
         const funding = parseFloat(project?.funding);
         return(
             <div className={classes.ProjectPage}>
-                {loading ? <Loading/> :
+                {loading ? <div className={classes.LoadingContainer}><Loading/></div> :
                     <React.Fragment>
 
                         {pledging && <ModalContainer>
@@ -147,7 +148,7 @@ class ProjectPage extends React.Component {
                                         <div className={classes.ImageContainer}>
                                             <img src = {testImg}/>
                                         </div>
-                                        <Information project={project}/>
+                                        <Information project={project} creatorData={creatorData}/>
                                     </div>
                                     <div className={classes.Right}>
                                         <div className={classes.Box}>
@@ -172,7 +173,7 @@ class ProjectPage extends React.Component {
                                                 <div className={classes.MoreInfo}>
                                                     <h3><span>20</span> days to go</h3>
                                                     <h3><span>304</span> backers</h3>
-                                                    <div className={classes.ViewContract}><InlineIcon icon={fileContract}/>View Contract</div>
+                                                    <a href={`https://rinkeby.etherscan.io/address/${project.fundingAddress}`}><div className={classes.ViewContract}><InlineIcon icon={fileContract}/>View Contract</div></a>
                                                 </div>
 
                                                 <div className={classes.PledgeContainer}>
