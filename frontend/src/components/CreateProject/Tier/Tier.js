@@ -1,6 +1,8 @@
 import React from 'react'
 import classes from './Tier.module.css';
 import sharedClasses from '../CreateProject.module.css';
+import { Icon, InlineIcon } from '@iconify/react';
+import closeLine from '@iconify-icons/clarity/close-line';
 
 import DAI from '../../../assets/DAI.png';
 
@@ -11,7 +13,7 @@ const Tier = ({tier, index, onChangeDesc, onChangeFund, onRemove})=> {
             <div
                 className={classes.DeleteTier}
                 onClick = {() => onRemove(index)}
-            >X</div>
+            >x</div>
             <textarea
                 placeholder="Tier Rewards Description"
                 onChange={ e => {onChangeDesc(e, index)}}

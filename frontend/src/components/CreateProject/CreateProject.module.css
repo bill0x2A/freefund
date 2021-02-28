@@ -66,6 +66,7 @@ textarea {
     color: white;
     border-left: 2px solid white;
     border-bottom: 2px solid white;
+    border-bottom-left-radius: 5px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -77,6 +78,16 @@ textarea {
 
 .AddTier:hover {
     filter: contrast(120%);
+}
+
+.NoTiersContainer {
+    grid-column-start: 2;
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    color: var(--bold);
+    font-weight: 600;
 }
 
 .Payment {
@@ -126,7 +137,44 @@ textarea {
     cursor: pointer;
 }
 
+.ImageUploadContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding-bottom : 50px;
+}
+
+.ImageUploadContainer img {
+    height: 180px;
+    width: 320px;
+    border-radius: 5px;
+}
+
 .ImageUpload {
+    position: relative;
+    width: 70%;
+    margin-left : 10px;
+    height: 180px;
+    border: 4px dashed var(--bold);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 300ms;
+
+}
+
+.ImageUpload:hover {
+    background: rgba(0,0,0,0.1);
+}
+
+.ImageUpload p{
+    margin: 0;
+    color: var(--bold);
+    font-weight: 700;
+    user-select: none;
+}
+
+.ImagesUpload {
     position: relative;
     height: 150px;
     border: 4px dashed var(--bold);
@@ -138,11 +186,11 @@ textarea {
 
 }
 
-.ImageUpload:hover {
+.ImagesUpload:hover {
     background: rgba(0,0,0,0.1);
 }
 
-.ImageUpload p{
+.ImagesUpload p{
     margin: 0;
     margin-right: 10px;
     padding: 2px 5px;
@@ -153,7 +201,7 @@ textarea {
     user-select: none;
 }
 
-.ImageUpload span {
+.ImagesUpload span {
     margin: 0;
     color: var(--bold);
     font-weight: 700;

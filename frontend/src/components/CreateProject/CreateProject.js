@@ -7,6 +7,12 @@ import MarkdownEditor from './MarkdownEditor/MarkdownEditor';
 import Tier from './Tier/Tier';
 import TxInfo from '../TxInfo/TxInfo';
 import DateTimePicker from 'react-datetime-picker'
+import Modal from '../hoc/ModalContainer/ModalContainer';
+import ImageCropper from '../ImgCropper/ImgCropper';
+import { arrayBufferToBuffer, blobToURL, getCanvasBlob, createCanvas, fileToDataUri } from '../../util/imageProcessing';
+import placeholderImage from '../../assets/placeholderImage.png';
+import { Icon, InlineIcon } from '@iconify/react';
+import closeLine from '@iconify-icons/clarity/close-line';
 
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
@@ -16,6 +22,7 @@ import { ethers } from 'ethers';
 import DAI from '../../assets/DAI.png';
 
 import ipfsClient from 'ipfs-http-client';
+import ImgCropper from '../ImgCropper/ImgCropper';
 const ipfs = ipfsClient({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
 
 // This is an error code that indicates that the user canceled a transaction
@@ -211,7 +218,7 @@ class CreateProject extends React.Component {
         this.setState({ txError: undefined });
     }  
 
-    captureFile = async (e) => {
+    captureFiles = async (e) => {
         e.preventDefault();
         const files = e.target.files;
         console.dir(files)
@@ -219,11 +226,10 @@ class CreateProject extends React.Component {
             const reader = new window.FileReader();
             reader.readAsArrayBuffer(file)
             reader.onloadend = () => {
-                let imgBuffers = this.state.imgBuffers;
-                let fileNames = this.state.fileNames;
-                imgBuffers.push(Buffer(reader.result))
-                fileNames.push(file.name);
-                this.setState({imgBuffers : imgBuffers, fileNames : fileNames});
+                this.setState(prevState => ({
+                    imgBuffers : prevState.imgBuffers.push(Buffer(reader.result)),
+                    filenames : prevState.fileNames.push(file.name),
+                }));
             };
         }
     };
@@ -246,6 +252,29 @@ class CreateProject extends React.Component {
 
     checkUser = () => {
         // Replace with token logic
+    }
+
+    captureFile = async e => {
+        e.preventDefault();
+        const file = e.target.files[0];
+        const reader = new window.FileReader();
+
+        const dataURL = await fileToDataUri(file);
+        reader.readAsArrayBuffer(file)
+    
+        reader.onloadend = () => {
+            console.log(dataURL)
+            this.setState({imgBuffer : Buffer(reader.result), editing : dataURL});
+        };
+    }
+
+    onSubmitCrop = async crop => {
+        const canvas = createCanvas(this.state.editing, crop);
+        const blob = await getCanvasBlob(canvas);
+        const url = await blobToURL(blob);
+        const arrayBuffer = await blob.arrayBuffer()
+        const buffer = Buffer.from(arrayBufferToBuffer(arrayBuffer));
+        this.setState({processedImage : url, imgBuffer : buffer, editing : undefined});
     }
 
     componentDidMount(){
@@ -302,9 +331,14 @@ class CreateProject extends React.Component {
         if(fileNames.length > 0){
             imageMessage = <React.Fragment>{fileNames.map(fileName => <p>{fileName}</p>)}</React.Fragment>
         }
-
+        console.log(this.state.editing);
         return (
             <div className={classes.CreateProject}>
+                {this.state.editing && (
+                    <Modal>
+                        <ImgCropper newImg={this.state.editing} close = {() => this.setState({editing : undefined})} submit = {this.onSubmitCrop}/>
+                    </Modal>
+                )}
                 {!this.props.selectedAddress ? <NoAddress/> : 
                     <React.Fragment>
                         <div className={classes.Box}>
@@ -355,7 +389,7 @@ class CreateProject extends React.Component {
                                 </div>
                                 <div className={classes.Tiers}>
                                    {!(tiers.length > 0) ?
-                                    <div style = {{display :"flex", alignItems : "center", justifyContent : "center"}}>
+                                    <div className={classes.NoTiersContainer}>
                                         <p>No Tiers Yet</p>
                                     </div> : 
                                     <React.Fragment>
@@ -372,13 +406,28 @@ class CreateProject extends React.Component {
                                 </div>
                             </div>
                             <div className={classes.Box}>
-                                <h3>Upload Some Images</h3>
-                                <div className={classes.ImageUpload}>
+                                <h3>Upload a Header Image</h3>
+                                <p>Make this the most exciting representation of your  project, it's the first impression your funders will have</p>
+                                <div className={classes.ImageUploadContainer}>
+                                    <img src = {this.state.processedImage || placeholderImage}/>
+                                    <div className={classes.ImageUpload}>
+                                        <input
+                                            type='file'
+                                            accept=".jpg, .jpeg, .png, .bmp, .gif"
+                                            onChange={this.captureFile}
+                                        />
+                                        <p>Drag image here</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className={classes.Box}>
+                                <h3>Upload More Images</h3>
+                                <div className={classes.ImagesUpload}>
                                     <input
                                         type='file'
                                         multiple
                                         accept=".jpg, .jpeg, .png, .bmp, .gif"
-                                        onChange={this.captureFile}
+                                        onChange={this.captureFiles}
                                     />
                                     {imageMessage}
                                 </div>

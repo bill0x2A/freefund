@@ -6,7 +6,7 @@ import ReactFlagsSelect from 'react-flags-select';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import ProjectCard from '../ProjectCard/ProjectCard';
 import ModalContainer from '../hoc/ModalContainer/ModalContainer';
-import ImgCropper from './ImgCropper/ImgCropper';
+import ImgCropper from '../ImgCropper/ImgCropper';
 import Loading from '../Loading/Loading';
 import ReactTooltip from 'react-tooltip';
 import * as actionTypes from '../../store/actionTypes';
@@ -14,23 +14,14 @@ import * as actionTypes from '../../store/actionTypes';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { register } from '../../mongo/mongo';
-import { arrayBufferToBuffer, blobToURL, getCanvasBlob } from '../../util/imageProcessing';
+import { arrayBufferToBuffer, blobToURL, getCanvasBlob, createCanvas, fileToDataUri } from '../../util/imageProcessing';
 
 import ipfsClient from 'ipfs-http-client';
-import Information from '../ProjectPage/Information/Information';
 const ipfs = ipfsClient({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
 
 const Required = () => (
     <span data-tip="required field">*</span>
 )
-
-const fileToDataUri = (file) => new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      resolve(event.target.result)
-    };
-    reader.readAsDataURL(file);
-    })
 
 class AccountPage extends React.Component {
     constructor(props){
@@ -60,44 +51,12 @@ class AccountPage extends React.Component {
     }
 
     onSubmitCrop = async crop => {
-        let image = new Image();
-        image.src = this.state.newImg;
-        const canvas = document.createElement('canvas');
-        canvas.style.display = "none";
-        const scaleX = image.naturalWidth / image.width;
-        const scaleY = image.naturalHeight / image.height;
-        canvas.width = crop.width;
-        canvas.height = crop.height;
-        const ctx = canvas.getContext('2d');
-       
-        ctx.drawImage(
-          image,
-          crop.x * scaleX,
-          crop.y * scaleY,
-          crop.width * scaleX,
-          crop.height * scaleY,
-          0,
-          0,
-          crop.width,
-          crop.height,
-        );
-       
-        // As Base64 string
-        // const base64Image = canvas.toDataURL('image/jpeg');
-       
-        // As a blob
-        // return new Promise((resolve, reject) => {
-        //   canvas.toBlob(blob => {
-        //     resolve(blob);
-        //   }, 'image/jpeg', 1);
-        // });
+        const canvas = createCanvas(this.state.newImg, crop);
         const blob = await getCanvasBlob(canvas);
         const url = await blobToURL(blob);
-        this.setState({processedImage : url});
         const arrayBuffer = await blob.arrayBuffer()
-        console.log(arrayBuffer)
         const buffer = Buffer.from(arrayBufferToBuffer(arrayBuffer));
-        this.setState({imgBuffer : buffer, editing : false}, console.log(this.state.imgBuffer));
+        this.setState({processedImage : url, imgBuffer : buffer, editing : false});
     }
 
     uploadImage = async () => {
@@ -132,7 +91,6 @@ class AccountPage extends React.Component {
         }
 
         const data = await register(userData);
-        console.log("TOKEN", data?.token);
         this.props.setToken(data?.token)
 
         this.props.history.push('/')
@@ -170,7 +128,7 @@ class AccountPage extends React.Component {
             <div className ={classes.AccountPage}>
                 {this.state.editing && (
                     <ModalContainer>
-                        <ImgCropper square newImg={this.state.newImg} sendCrop={crop => this.setState({crop})} close = {this.cancelEditHandler} submit = {this.onSubmitCrop}/>
+                        <ImgCropper square newImg={this.state.newImg} close = {this.cancelEditHandler} submit = {this.onSubmitCrop}/>
                     </ModalContainer>
                 )}
                 {!this.props.user ? <NoAddress/> :
