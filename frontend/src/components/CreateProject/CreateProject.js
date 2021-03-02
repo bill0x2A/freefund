@@ -11,8 +11,7 @@ import Modal from '../hoc/ModalContainer/ModalContainer';
 import ImageCropper from '../ImgCropper/ImgCropper';
 import { arrayBufferToBuffer, blobToURL, getCanvasBlob, createCanvas, fileToDataUri } from '../../util/imageProcessing';
 import placeholderImage from '../../assets/placeholderImage.png';
-import { Icon, InlineIcon } from '@iconify/react';
-import closeLine from '@iconify-icons/clarity/close-line';
+
 
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
@@ -52,8 +51,10 @@ class CreateProject extends React.Component {
             funding : undefined,
         };
         let tiers = [...this.state.tiers];
-        tiers.push(emptyTier);
-        this.setState({ tiers });
+        if(tiers.length < 9){
+            tiers.push(emptyTier);
+            this.setState({ tiers });
+        }
     }
 
     removeTierHandler = index => {
@@ -385,6 +386,7 @@ class CreateProject extends React.Component {
                                 <div
                                     className={classes.AddTier}
                                     onClick = {this.addTierHandler}
+                                    style = {(this.state.tiers.length >= 9) ? {background : "gray"} : null}
                                     >Add Tier
                                 </div>
                                 <div className={classes.Tiers}>

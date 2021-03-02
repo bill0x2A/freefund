@@ -111,7 +111,7 @@ class ProjectPage extends React.Component {
     render(){
         let { project, loading, pledging, pledge, creatorData } = this.state;
         project = {
-            ...project,
+            videoURL : "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
             tagline : "This is the sweet tagline, something used to quickly explain the project",
             description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras pharetra, libero et gravida elementum, erat lacus maximus diam, id volutpat libero augue nec enim. Praesent sed lectus vitae nibh fermentum ornare. Fusce sit amet ex non tellus commodo luctus non id leo. Ut id sem nunc. Vivamus aliquam eget massa ut cursus. Nulla vitae nunc orci.\n Praesent ullamcorper sagittis tellus sed consequat. Sed in metus est. Donec facilisis maximus velit, a lobortis nibh consequat et. Ut mollis massa bibendum, maximus neque non, faucibus leo. Curabitur et orci eu purus congue volutpat id non justo. In molestie vitae orci non pellentesque. Aenean suscipit porta pharetra. Curabitur ac lacinia risus.\n Curabitur efficitur dui sed lorem efficitur placerat. Cras non sem tempor, bibendum eros consectetur, lacinia nisi. In accumsan quam finibus nibh convallis auctor. Vivamus magna turpis, dictum vitae aliquet vel, sodales a sem. Pellentesque at malesuada nisi, id hendrerit nisi. Phasellus sed porta est. Curabitur felis lacus, facilisis vel ante non, bibendum faucibus mauris. Aliquam sem nisl, lacinia eget blandit eget, lacinia eget sapien.\nCras dolor purus, laoreet sed lectus quis, maximus tristique sapien. Phasellus vitae laoreet purus. Ut eget nisl eu nisl malesuada ullamcorper eget sit amet est. Nulla iaculis efficitur sapien. Proin porttitor sapien sed massa semper mollis. Vivamus a consequat dui, eu ullamcorper ipsum. Etiam congue et turpis eget blandit. Phasellus vel mauris mi.",
             images : ["QmUNSSAd6xJXjNmqRCCXpFmy9xNudpfjr9VcTMY92nYoA5","QmUNSSAd6xJXjNmqRCCXpFmy9xNudpfjr9VcTMY92nYoA5","QmUNSSAd6xJXjNmqRCCXpFmy9xNudpfjr9VcTMY92nYoA5"],
@@ -121,7 +121,8 @@ class ProjectPage extends React.Component {
                 {funding : 30, description : "This is a test tier", index : 2 },
                 {funding : 40, description : "This is a test tier", index : 3 },
                 {funding : 50, description : "This is a test tier", index : 4 },
-            ]
+            ],
+            ...project,
         }
 
         const funding = parseFloat(project?.funding);
@@ -146,7 +147,15 @@ class ProjectPage extends React.Component {
                                 <div className={classes.Main}>
                                     <div className={classes.Left}>
                                         <div className={classes.ImageContainer}>
-                                            <img src = {testImg}/>
+                                            { project.videoURL ? (
+                                                <ReactPlayer
+                                                    width = {"100%"}
+                                                    height = {"100%"}
+                                                    url={project.videoURL}
+                                                    fallback={<img src = {testImg}/>}
+                                                    controls
+                                                />
+                                                ) : <img src = {testImg}/> }
                                         </div>
                                         <Information project={project} creatorData={creatorData}/>
                                     </div>
