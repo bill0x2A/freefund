@@ -4,7 +4,7 @@ const secret = "Hellow Helllo Hellloo/\\"
 
 function verify(req, res, next){
     jwt.verify(req.body.token, secret, function(err, decoded) {
-        if (err) return res.status(400).send({ message: 'Failed to authenticate token.' });
+        if (err) return res.status(400).send({ message: err });
         
         req.user = decoded.address
         next()
@@ -15,6 +15,10 @@ module.exports = function (app, dbe){
     const db= dbe.collection('CrowdfundProject')
     const user = dbe.collection('CrowdfundUsers')
 
+    app.get('/', (req,res)=>{
+        res.send("Hello and Welcome to Freefund")
+    })
+    
     app.post('/login', (req, res)=>{
         const address = req.body.address
         if(address){
@@ -61,7 +65,7 @@ module.exports = function (app, dbe){
             funding, tiers, funders} = req.body
         
         if(title && imgHashes && description && fundingLimit && creatorAddress){
-            const id = shortId.generate()
+            const id = shortId.generate()+shortId.generate()
             //const address = null //generate address
             user.findOne({address: creatorAddress}, (err,doc)=>{
                 if(doc){
@@ -80,7 +84,7 @@ module.exports = function (app, dbe){
         }
     })
 
-    app.get('/listProjects',verify, async (req,res)=>{
+    app.get('/listProjects', async (req,res)=>{
         let data = await db.find()
         data = await data.toArray()
         
@@ -92,7 +96,7 @@ module.exports = function (app, dbe){
         res.json({projects: datum})
     })
 
-    app.post('/project', verify, (req,res)=>{
+    app.post('/project', (req,res)=>{
         const id = req.body.id
         if(id){
             db.findOne({id}, (err,doc)=>{
@@ -108,13 +112,30 @@ module.exports = function (app, dbe){
         }
     })
 
-    app.post('/user', verify, (req, res)=>{
+    app.post('/user', (req, res)=>{
         const address = req.body.address
         if(address){
             user.findOne({address}, (err,doc)=>{
                 if(doc){
                     delete doc._id
                     res.json({message: "User registered", data: doc})
+                }else{
+                    res.status(400).json({message:"User not yet registered"})
+                }
+            })
+        }else{
+            res.status(400).json({message:"Address missing", error:true})
+        }
+    })
+    
+    app.post('/short', (req, res)=>{
+        const address = req.body.address
+        if(address){
+            user.findOne({address}, (err,doc)=>{
+                if(doc){
+                    let {firstName, lastName, countryCode, bio, imgHash, address} = doc
+                    let data = {firstName, lastName, bio, imgHash, countryCode, address}
+                    res.json({message: "User registered", data})
                 }else{
                     res.status(400).json({message:"User not yet registered"})
                 }

@@ -7,7 +7,7 @@
   },
   "scripts": {
     "test": "hardhat test",
-    "start": "cd backend && npm run start"
+    "start": "cd backend && npm install && npm run start"
   },
   "repository": {
     "type": "git",
