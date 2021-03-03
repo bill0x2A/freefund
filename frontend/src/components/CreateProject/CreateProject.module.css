@@ -11,24 +11,26 @@ textarea {
 
 .CreateProject p {
     font-size: 18px;
+    margin-bottom : 10px;
 }
 
 .Box{
     position: relative;
     padding: 10px 30px;
+    padding-bottom : 30px;
     background: #eaeaea;
     box-shadow: var(--bold) 1px 1px, var(--bold) 2px 2px, var(--bold) 3px 3px, var(--bold) 4px 4px, var(--bold) 5px 5px ;
     margin-bottom : 25px;
 }
 
-.Box h2 {
+.CreateProject h2 {
     color: var(--bold);
     font-weight: 700;
 }
 
 .Box h3 {
     margin: 0;
-    margin-top: 5px;
+    margin-top: 30px;
     margin-bottom : 15px; 
     color: var(--bold);
 }
@@ -59,21 +61,20 @@ textarea {
 }
 
 .AddTier {
-    position: absolute;
-    top: 0;
-    right: 0;
-    padding : 5px 10px;
+    width: 110px;
+    height: 35px;
     color: white;
-    border-left: 2px solid white;
-    border-bottom: 2px solid white;
-    border-bottom-left-radius: 5px;
-    display: flex;
+    border: 2px solid white;
+    margin-left : 20px;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
     background: var(--accent);
     transition: all 300ms;
     cursor: pointer;
     user-select: none;
+    font-weight: 600;
+    font-size: 18px;
 }
 
 .AddTier:hover {
@@ -88,6 +89,12 @@ textarea {
     justify-content: center;
     color: var(--bold);
     font-weight: 600;
+    margin-bottom: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border : 4px dashed var(--bold);
+    padding-bottom : 10px;
 }
 
 .Payment {
@@ -108,7 +115,7 @@ textarea {
 }
 
 .Payment span {
-    width : 20%;
+    width : 100px;
     display: flex;
     align-items: center;
     justify-content: center;

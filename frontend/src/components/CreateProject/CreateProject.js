@@ -8,9 +8,12 @@ import Tier from './Tier/Tier';
 import TxInfo from '../TxInfo/TxInfo';
 import DateTimePicker from 'react-datetime-picker'
 import Modal from '../hoc/ModalContainer/ModalContainer';
-import ImageCropper from '../ImgCropper/ImgCropper';
+import TagsInput from 'react-tagsinput'
+import './react-tagsinput.css'
 import { arrayBufferToBuffer, blobToURL, getCanvasBlob, createCanvas, fileToDataUri } from '../../util/imageProcessing';
 import placeholderImage from '../../assets/placeholderImage.png';
+import { Icon, InlineIcon } from '@iconify/react';
+import keyboardTab24Filled from '@iconify-icons/fluent/keyboard-tab-24-filled';
 
 
 import { connect } from 'react-redux';
@@ -36,6 +39,7 @@ class CreateProject extends React.Component {
             imgBuffers: [],
             fileNames : [],
             tiers : [],
+            tags : [],
             submitting : false,
             test : false,
         }
@@ -171,7 +175,7 @@ class CreateProject extends React.Component {
             // ~~~ TX SUCCESSFUL ~~~
 
             // Format variables for database
-            const { title, imgHashes, description, fundingLimit, tiers } = this.state;
+            const { title, imgHashes, description, fundingLimit, tiers, tags, videoUrl, headerHash } = this.state;
             const project = {
                     title : title,
                     creatorAddress : this.props.user.address,
@@ -183,8 +187,10 @@ class CreateProject extends React.Component {
                     tiers : tiers,
                     funders : [],
                     token : this.props.token,
+                    headerHash,
+                    videoUrl,
+                    tags,
                 }
-            console.dir(project);
             // Send project data to backend
             const { data, response } = await addProject(project);
             if(response.ok){
@@ -227,10 +233,13 @@ class CreateProject extends React.Component {
             const reader = new window.FileReader();
             reader.readAsArrayBuffer(file)
             reader.onloadend = () => {
-                this.setState(prevState => ({
-                    imgBuffers : prevState.imgBuffers.push(Buffer(reader.result)),
-                    filenames : prevState.fileNames.push(file.name),
-                }));
+                this.setState(prevState => {
+                    let imgBuffers = prevState.imgBuffers;
+                    let fileNames = prevState.fileNames;
+                    imgBuffers.push(Buffer(reader.result));
+                    fileNames.push(file.name);
+                    return ({imgBuffers, fileNames});
+                });
             };
         }
     };
@@ -278,6 +287,21 @@ class CreateProject extends React.Component {
         this.setState({processedImage : url, imgBuffer : buffer, editing : undefined});
     }
 
+    validateYouTubeUrl = () => {    
+        const url = this.state.videoUrl;
+        if (url != undefined && url != '') {        
+            var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|\?v=)([^#\&\?]*).*/;
+            var match = url.match(regExp);
+            if (match && match[2].length == 11) {
+                return true
+            } else {
+                return false
+            }
+        } else {
+            return undefined
+        }
+    }
+
     componentDidMount(){
         this.checkUser();
     }
@@ -300,6 +324,8 @@ class CreateProject extends React.Component {
                 projectID,
             } = this.state;
 
+        const validLink = this.validateYouTubeUrl();
+
         if(!title || !description || !tags || !fundingLimit, !endTime){
             disabled = true;
         }
@@ -319,7 +345,7 @@ class CreateProject extends React.Component {
             submitButton = (
                 <div 
                     className={classes.SubmitButton}
-                    style ={{background : "gray", cursor: "none"}}
+                    style ={{background : "gray", cursor: "default"}}
                     >Please fill out all fields
                 </div>
             )
@@ -332,7 +358,6 @@ class CreateProject extends React.Component {
         if(fileNames.length > 0){
             imageMessage = <React.Fragment>{fileNames.map(fileName => <p>{fileName}</p>)}</React.Fragment>
         }
-        console.log(this.state.editing);
         return (
             <div className={classes.CreateProject}>
                 {this.state.editing && (
@@ -346,6 +371,7 @@ class CreateProject extends React.Component {
                             <h2>Create New Project</h2>
                             <p>This is how you're going to sell your idea to the world! Make sure to include a comprehensive, well formatted description and add some great images to get your funders excited.</p>
                         </div>
+                        <h2>Basic Info</h2>
                         <div className={classes.Box}>
                             <h3>Title</h3>
                             <input
@@ -354,21 +380,18 @@ class CreateProject extends React.Component {
                                 name="title"
                                 onChange={this.onChange}
                             />
-                        </div>
-                        <div className={classes.Box}>
                             <h3>Tagline</h3>
-                            <p>One sentence to summarise your project.</p>
+                            <p>One sentence to summarise your project</p>
                             <input
                                 type='text'
                                 placeholder="Tagline"
                                 name="tagline"
                                 onChange={this.onChange}
                             />
-                        </div>
-                        <div className={classes.Box}>
                             <h3>Description</h3>
                             <MarkdownEditor handleEditorChange={(html, text) => this.handleEditorChange(html, text)}/>
                         </div>
+                        <h2>Funding and Rewards</h2>
                         <div className={classes.Box}>
                             <h3>How much are you asking for?</h3>
                             <div className={classes.Payment}>
@@ -377,94 +400,104 @@ class CreateProject extends React.Component {
                                     name="fundingLimit"
                                     placeholder="Funding"
                                     onChange={this.onChange}
+                                    style={{maxWidth : "300px"}}
                                 />
                                 <span>DAI <img src={DAI}/></span>
                             </div>
-                            </div>
-                            <div className={classes.Box}>
-                                <h3>Contribution Tiers</h3>
+                            <h3>Contribution Tiers
                                 <div
                                     className={classes.AddTier}
                                     onClick = {this.addTierHandler}
-                                    style = {(this.state.tiers.length >= 9) ? {background : "gray"} : null}
-                                    >Add Tier
+                                    style = {(this.state.tiers.length >= 9) ? {background : "gray", cursor : "default"} : null}
+                                    >+ Add Tier
                                 </div>
-                                <div className={classes.Tiers}>
-                                   {!(tiers.length > 0) ?
-                                    <div className={classes.NoTiersContainer}>
-                                        <p>No Tiers Yet</p>
-                                    </div> : 
-                                    <React.Fragment>
-                                        {tiers.map((tier, index) => <Tier
-                                                onRemove = {this.removeTierHandler}
-                                                onChangeDesc = {this.onChangeDesc}
-                                                onChangeFund = {this.onChangeFunding}
-                                                tier = {tier}
-                                                index = {index}
-                                                key = {index}
-                                            />)}
-                                    </React.Fragment>
-                                    }
-                                </div>
-                            </div>
-                            <div className={classes.Box}>
-                                <h3>Upload a Header Image</h3>
-                                <p>Make this the most exciting representation of your  project, it's the first impression your funders will have</p>
-                                <div className={classes.ImageUploadContainer}>
-                                    <img src = {this.state.processedImage || placeholderImage}/>
-                                    <div className={classes.ImageUpload}>
-                                        <input
-                                            type='file'
-                                            accept=".jpg, .jpeg, .png, .bmp, .gif"
-                                            onChange={this.captureFile}
-                                        />
-                                        <p>Drag image here</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className={classes.Box}>
-                                <h3>Upload More Images</h3>
-                                <div className={classes.ImagesUpload}>
-                                    <input
-                                        type='file'
-                                        multiple
-                                        accept=".jpg, .jpeg, .png, .bmp, .gif"
-                                        onChange={this.captureFiles}
-                                    />
-                                    {imageMessage}
-                                </div>
-                            </div>
-                            <div className={classes.Box}>
-                                <h3>End of funding period</h3>  
-                                <DateTimePicker
-                                    onChange = {this.dateTimeChangeHandler}
-                                    value = {this.state.endTime && new Date(this.state.endTime)}
-                                    className={classes.DateTime}
-                                />
-                            </div>
-                            {/* <div className={classes.Box}>
-                                <h3>Add Some Tags</h3>
-                                <input
-                                    type='text'
-                                    placeholder="Separate your tags with a comma"
-                                    name="tags"
-                                    onChange={this.onChange}
-                                />
-                            </div> */}
-                            <div className={classes.SubmitContainer}>
-                                { ((!txBeingSent && !txSuccess && !sentTx) || txError) && 
-                                    submitButton
+                            </h3>
+                            <div className={classes.Tiers}>
+                                {!(tiers.length > 0) ?
+                                <div className={classes.NoTiersContainer}>
+                                    <p>No Tiers Yet</p>
+                                </div> : 
+                                <React.Fragment>
+                                    {tiers.map((tier, index) => <Tier
+                                            onRemove = {this.removeTierHandler}
+                                            onChangeDesc = {this.onChangeDesc}
+                                            onChangeFund = {this.onChangeFunding}
+                                            tier = {tier}
+                                            index = {index}
+                                            key = {index}
+                                        />)}
+                                </React.Fragment>
                                 }
                             </div>
-                            <TxInfo 
-                                    txError={txError}
-                                    address={this.props.user?.address}
-                                    txBeingSent={txBeingSent}
-                                    txSuccess={txSuccess}
-                                    sentTx={sentTx}
-                                    projectID={projectID}
-                                    create
+                            <h3>End of funding period</h3>  
+                            <DateTimePicker
+                                onChange = {this.dateTimeChangeHandler}
+                                value = {this.state.endTime && new Date(this.state.endTime)}
+                                className={classes.DateTime}
                             />
+                        </div>
+                        <h2>Branding</h2>
+                        <div className={classes.Box}>
+                            <h3>Video URL</h3>
+                            <input
+                                type='text'
+                                placeholder="Video link"
+                                name="videoUrl"
+                                onChange={this.onChange}
+                                style = {validLink ? {background : "var(--accent)", color: "var(--bold)"} : {}}
+                            />
+                            <h3>Upload a Header Image</h3>
+                            <p style={{marginBottom: "30px"}}>Make this the most exciting representation of your  project, it's the first impression your funders will have</p>
+                            <div className={classes.ImageUploadContainer}>
+                                <img src = {this.state.processedImage || placeholderImage}/>
+                                <div className={classes.ImageUpload}>
+                                    <input
+                                        type='file'
+                                        accept=".jpg, .jpeg, .png, .bmp, .gif"
+                                        onChange={this.captureFile}
+                                    />
+                                    <p>Drag image here</p>
+                                </div>
+                            </div>
+                            <h3>Upload More Images</h3>
+                            <div className={classes.ImagesUpload}>
+                                <input
+                                    type='file'
+                                    multiple
+                                    accept=".jpg, .jpeg, .png, .bmp, .gif"
+                                    onChange={this.captureFiles}
+                                />
+                                {imageMessage}
+                            </div>
+                            <h3>Add Some Tags</h3>
+                            {this.state.tags.length === 0 && (
+                                <p>Hit
+                                    <span style={{border : "2px solid black",borderRadius : "4px", padding: "1px 4px", margin: "0 5px"}}>
+                                        <strong>tab</strong>
+                                        <InlineIcon icon={keyboardTab24Filled}/>
+                                    </span>
+                                    to separate tags
+                                </p>
+                            )}
+                            <TagsInput
+                                value={this.state.tags}
+                                onChange={tags => this.setState({tags})}
+                            />
+                        </div>
+                        <div className={classes.SubmitContainer}>
+                            { ((!txBeingSent && !txSuccess && !sentTx) || txError) && 
+                                submitButton
+                            }
+                        </div>
+                        <TxInfo 
+                                txError={txError}
+                                address={this.props.user?.address}
+                                txBeingSent={txBeingSent}
+                                txSuccess={txSuccess}
+                                sentTx={sentTx}
+                                projectID={projectID}
+                                create
+                        />
                     </React.Fragment>
                 }
             </div>

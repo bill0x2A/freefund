@@ -16,8 +16,7 @@ const Information = ({project, creatorData}) => {
             content = (
                 <div className={classes.Description}>
                     <div>
-                    {/* {(typeof(project.description) == "string") ? project.description : ReactHtmlParser(md.render(project.description?.text))} */}
-                    {project.description}""
+                    {(typeof(project.description) == "string") ? project.description : ReactHtmlParser(md.render(project.description?.text))}
                     </div>
                 </div>
             );

@@ -69,7 +69,7 @@ const WalletInfo = ({user}) => {
     return (
             <React.Fragment>
                 {
-                    !user ? <Loading/> : 
+                    !user ? (window.ethereum ? <Loading/> : null) : 
                         <Link
                             className={classes.WalletInfo}
                             to={ROUTES.ACCOUNT}
@@ -100,7 +100,7 @@ const Navigation = props => {
                     <Link to = {ROUTES.PROJECTS} className={classes.NavItem}>Browse Projects</Link>
                     {user &&
                         <Link to = {ROUTES.CREATE} className={classes.NavItem}>Create Project</Link>}
-                    {!props.selectedAddress ? <div onClick={connectWallet}
+                    {(!selectedAddress && window.ethereum) ? <div onClick={connectWallet}
                                               className = {classes.ConnectWallet}
                                               >Connect Wallet</div> :
                                         <WalletInfo 

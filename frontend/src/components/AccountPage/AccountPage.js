@@ -133,7 +133,6 @@ class AccountPage extends React.Component {
                 )}
                 {!this.props.user ? <NoAddress/> :
                     <React.Fragment>
-                        <img src ={`https://ipfs.infura.io/ipfs/${this.state.imgHash}`}/>
                         {this.state.errorMessage && <ErrorMessage message={this.state.errorMessage}/>}
                         <div className={classes.Box}>
                             <h2> Account Information </h2>
