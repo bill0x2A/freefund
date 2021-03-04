@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@iconify-icons/ant-design": "^1.1.0",
     "@iconify-icons/brandico": "^1.1.0",
     "@iconify-icons/clarity": "^1.1.0",
     "@iconify-icons/fa-solid": "^1.1.0",

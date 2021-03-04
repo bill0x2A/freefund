@@ -51,7 +51,7 @@
 }
 
 .Main {
-    min-height: 500px;
+    min-height: 450px;
     display: flex;
     border : 4px solid var(--bold);
     background: #eaeaea;

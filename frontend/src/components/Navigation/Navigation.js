@@ -6,6 +6,7 @@ import * as ROUTES from '../../constants/routes';
 import { connect } from 'react-redux';
 import defaultpp from '../../assets/defaultpp.png';
 import svgLogo from '../../assets/logo.svg';
+import alpha from '../../assets/alpha.png';
 import Loading from '../Loading/Loading';
 
 
@@ -93,8 +94,8 @@ const Navigation = props => {
                     className={classes.Logo}
                     to={ROUTES.LANDING}
                 >
-                    <img src={svgLogo}/>
-                    <h2>FREEFUND</h2>
+                    <img src={alpha}/>
+                    {/* <h2>FREEFUND</h2> */}
                 </Link>
                 <div className={classes.RightNav}>
                     <Link to = {ROUTES.PROJECTS} className={classes.NavItem}>Browse Projects</Link>

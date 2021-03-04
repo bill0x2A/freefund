@@ -1,13 +1,22 @@
-export default function(endTime) {
-    const now = new Date();
-    const end = new Date(endTime);
-    const daysLeft =  Math.floor((Date.UTC(end.getFullYear(), end.getMonth(), end.getDate()) - Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) ) /(1000 * 60 * 60 * 24));
-    if(daysLeft < 0){
-        return "Funding period ended";
-    }
-    if(daysLeft <= 1){
-        return `${daysLeft} day remaining`;
-    } else {
-        return `${daysLeft} days remaining`;
-    }
-}
+const timeDifference = (dateFuture, dateNow) => {
+    let diffInMilliSeconds = Math.abs(dateFuture - dateNow) / 1000;
+
+    // calculate days
+    const days = Math.floor(diffInMilliSeconds / 86400);
+    diffInMilliSeconds -= days * 86400;
+
+    // calculate hours
+    const hours = Math.floor(diffInMilliSeconds / 3600) % 24;
+    diffInMilliSeconds -= hours * 3600;
+
+    // calculate minutes
+    // const minutes = Math.floor(diffInMilliSeconds / 60) % 60;
+    // diffInMilliSeconds -= minutes * 60;
+
+    return ({
+        days,
+        hours
+    })
+  }
+
+  export default timeDifference;

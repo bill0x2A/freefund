@@ -48,7 +48,6 @@ const ProjectCard = props => {
                         </div>
                         <div>{(typeof(project.description) == "string") ? project.description : ReactHtmlParser(md.render(project.description.text))}</div>
                         <div className={classes.TimeLeft}>
-                            <span>{timeLeft(project.createdAt)}</span>
                         </div>
                         <div className = {classes.FadeOut}/>
                         <Link 

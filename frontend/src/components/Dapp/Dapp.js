@@ -21,6 +21,7 @@ import AccountPage from '../AccountPage/AccountPage';
 import ProjectPage from '../ProjectPage/ProjectPage';
 import MobileMessage from '../MobileMessage/MobileMessage';
 import MissingPage from '../MissingPage/MissingPage';
+import Home from '../Home/Home.js';
 // import FundingDao from '../FundingDao/FundingDao';
 
 import onMobile from '../../util/detectMobile';
@@ -56,6 +57,7 @@ class Dapp extends React.Component {
               <div className={classes.Main}>
                 <Switch>
                   <Route exact path={ROUTES.LANDING} component={LandingPage}/>
+                  <Route path={ROUTES.HOME} component={Home}/>
                   <Route exact path={ROUTES.PROJECTS} component={ProjectBrowser}/>
                   <Route path={ROUTES.PROJECT} component={ProjectPage}/>
                   <Route path={ROUTES.CREATE} component = {CreateProject}/>

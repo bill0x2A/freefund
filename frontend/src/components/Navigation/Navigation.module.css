@@ -17,7 +17,9 @@
 }
 
 .Logo img {
-    height: 55px;
+    /* height: 55px; */
+    height: 75px;
+    padding-top : 5px;
     user-select: none;
     -webkit-user-drag: none;
 }

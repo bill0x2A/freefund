@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import classes from './ProjectPageRestyle.module.css';
+import classes from './ProjectPage.module.css';
 
 import ReactPlayer from 'react-player/youtube';
 import { withRouter } from 'react-router-dom';
@@ -10,10 +10,11 @@ import fileContract from '@iconify-icons/fa-solid/file-contract';
 import twitterBird from '@iconify-icons/brandico/twitter-bird';
 import facebookIcon from '@iconify-icons/brandico/facebook';
 import emailSolid from '@iconify-icons/clarity/email-solid';
+import tagIcon from '@iconify-icons/ant-design/tag-outlined';
+import clock16Regular from '@iconify-icons/fluent/clock-16-regular';
+
 
 import testImg from '../../assets/yosemite.png';
-
-import timeLeft from '../../util/timeDifferece';
 
 import ModalContainer from '../hoc/ModalContainer/ModalContainer';
 import Fund from '../Fund/Fund';
@@ -22,6 +23,7 @@ import Information from './Information/Information';
 
 import DAI from '../../assets/DAI.png'
 import MarkdownIt from 'markdown-it';
+import timeDifference from '../../util/timeDifferece';
 
 const md = new MarkdownIt();
 // ############## SUBCOMPONENTS ##############
@@ -81,6 +83,7 @@ class ProjectPage extends React.Component {
             this.setState({ project : response.data });
             const address = response.data.creatorAddress;
             this.loadCreatorData(address);
+            this.calculateTimeLeft();
         }
     }
 
@@ -108,6 +111,27 @@ class ProjectPage extends React.Component {
         this.setState({creatorData : user.data, loading : false})
     }
 
+    calculateTimeLeft = () => {
+        const timeNow = new Date();
+        // TESTING DATE
+        const endTime = new Date(2021, 3, 20, 10, 33, 30, 0);
+        const {days, hours} = timeDifference(timeNow, endTime);
+        let difference = [];
+        if (days > 0) {
+            difference.push((days === 1) ? <h3><span>{days}</span> day</h3> : <h3><span>{days}</span> days</h3>); 
+          }
+      
+          difference.push((hours === 0 || hours === 1) ? <h3><span>{hours}</span> hour</h3> : <h3><span>{hours}</span> hours</h3>);
+
+        const timeDisplay = (
+            <React.Fragment>
+                {difference}
+            </React.Fragment>
+        )
+        console.log(timeDisplay)
+        this.setState({remaining : timeDisplay});
+    }
+
     render(){
         let { project, loading, pledging, pledge, creatorData } = this.state;
         project = {
@@ -122,6 +146,8 @@ class ProjectPage extends React.Component {
                 {funding : 40, description : "This is a test tier", index : 3 },
                 {funding : 50, description : "This is a test tier", index : 4 },
             ],
+            tags : ["test", "tag", "tagtest"],
+            timeLeft : this.state.remaining,
             ...project,
         }
 
@@ -157,10 +183,13 @@ class ProjectPage extends React.Component {
                                                 />
                                                 ) : <img src = {testImg}/> }
                                         </div>
+                                        <div className={classes.Tags}>
+                                            {project.tags?.map(tag => <span><InlineIcon icon={tagIcon}/>{tag}</span>)}
+                                        </div>
                                         <Information project={project} creatorData={creatorData}/>
                                     </div>
                                     <div className={classes.Right}>
-                                        <div className={classes.Box}>
+                                        <div className={classes.Box} style = {{height : "411px"}}>
                                             <div className={classes.InfoBox}>
                                                 <div className={classes.Funding}>
                                                     <div className={classes.FundingTopline}>
@@ -180,7 +209,10 @@ class ProjectPage extends React.Component {
                                                     </div>
                                                 </div>
                                                 <div className={classes.MoreInfo}>
-                                                    <h3><span>20</span> days to go</h3>
+                                                    <div className={classes.TimeRemaining}>
+                                                        <Icon icon = {clock16Regular}/>
+                                                        {this.state.remaining}
+                                                    </div>
                                                     <h3><span>304</span> backers</h3>
                                                     <a href={`https://rinkeby.etherscan.io/address/${project.fundingAddress}`}><div className={classes.ViewContract}><InlineIcon icon={fileContract}/>View Contract</div></a>
                                                 </div>
@@ -197,12 +229,18 @@ class ProjectPage extends React.Component {
                                         <div className={classes.Box} style = {{padding:0}}>
                                             <div className={classes.Share}>
                                                 <span>SHARE</span>
-                                                <InlineIcon icon={facebookIcon}/>
-                                                <InlineIcon icon={twitterBird}/>
-                                                <InlineIcon icon={emailSolid}/>
+                                                <a>
+                                                    <InlineIcon icon={facebookIcon}/>
+                                                </a>
+                                                <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(project.title)}%20is%20looking%20for%20funding%20now%20on%20Freefund%20${encodeURIComponent(window.location.href)}&original_referer=https://www.freefund.io`}>
+                                                    <InlineIcon icon={twitterBird}/>
+                                                </a>
+                                                <a>
+                                                    <InlineIcon icon={emailSolid}/>
+                                                </a>
                                             </div>
                                         </div>
-                                        <h3 style={{height: "38px", marginTop: "45px", marginBottom : "0", color : "var(--bold)"}}>Reward Tiers</h3>
+                                        <h3 style={{height: "38px", marginBottom : "0", color : "var(--bold)"}}>Reward Tiers</h3>
                                         <div className={classes.Tiers}>
                                             {project.tiers?.map((tier, index) => (
                                                 <RewardTier
@@ -224,6 +262,7 @@ class ProjectPage extends React.Component {
     }
 
 }
+
 
 const mapStateToProps = state => ({
     token : state.token,

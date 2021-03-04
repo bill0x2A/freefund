@@ -1,114 +1,181 @@
 .ProjectPage {
-    margin-bottom : 40px;
+    display: grid;
+    grid-template-columns: 1fr 1150px 1fr;
 }
 
-
-.ProjectPage p {
-    font-size: 18px;
-    text-align: justify;
-}
-
-.Main {
-    display: flex;
-    flex-direction: column;
-    --gap : 30px;
-}
-
-.Test {
-    height: 100%;
+.LoadingContainer {
+    position: absolute;
+    top: 0;
+    left : 0;
+    width : 100vw;
+    height: 100vh;
     display: flex;
     align-items: center;
-    background: #eaeaea;
+    justify-content: center;
 }
 
-.ProjectPage h2 {
+.Layout {
+    grid-column-start: 2;
+    grid-column-end: 3;
+}
+
+.Title {
     color: var(--bold);
     font-size: 30px;
+    font-weight: 800;
+    margin-bottom : 4px;
 }
 
 .Tagline {
-    font-weight: 400;
-    margin-top : 0px;
-    margin-bottom: 30px;
-}
+    color : #606060;
+    font-size: 18px;
+    font-weight: 500;
+    margin-top : 4px;
+    margin-bottom : 25px;
+}   
 
-.ImageCarouselContainer{
-    grid-row: 2 / span 1;
-    grid-column: 1 / span 1;
+.Main {
+    display: flex;
+
+    --gap : 30px;
+    min-height: calc(100vh - 200px);
     width: 100%;
-    max-height: 100%;
-    overflow: hidden;
+    justify-content: space-between;
+    margin-bottom: 50px;
 }
 
-.ImageCarouselContainer img {
-    max-height: 100%;
+.Right {
+    min-height: 100%;
+    width: 400px;
 }
 
-.CreatorInfo{
-    position: relative;
-    height: auto;
-    grid-row: 2 / span 1;
-    grid-column: 2 / span 1;
-    width: 100%;
-    background: #eaeaea;
-    padding: 20px 20px;
+.ImageContainer {
+    height: 415px;
+    width : 738px;
+    text-align: center;
+    border : 4px dashed var(--bold);
     margin-bottom : var(--gap);
-    overflow: hidden;
-    box-shadow: var(--bold) 1px 1px, var(--bold) 2px 2px, var(--bold) 3px 3px, var(--bold) 4px 4px, var(--bold) 5px 5px ;
+    background: rgba(0,0,0,.2);
 }
 
-.CreatorInfo h4 {
-    color: var(--bold);
-    margin-top : 0;
-    font-size: 22px;
+.ImageContainer img {
+    height: 100%;
+    width: 100%;
 }
 
-.CreatorInfo img {
-    float: right;
-    border-radius: 3px;
-    width: 180px;
-    height: 180px;
-    margin : 0 0 10px 20px;
-}
-
-.FundingTopline {
+.TimeRemaining {
     display: flex;
-    justify-content: space-between;
-}
-
-.Funding {
-    display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
-    grid-row : 2 / span 1;
-    grid-column: 1 / span 2;
+    border : 4px dashed var(--accent);
+    padding : 0 20px;
+    margin : 20px 0;
+    margin-top : 50px;
+    max-width: 280px;
+}
+
+.TimeRemaining span {
+    margin-left : 10px;
+}
+
+.TimeRemaining svg {
+    color: var(--accent);
+    height: 40px;
+    width: 40px;
+}
+
+.Left {
+    margin-right: var(--gap);
+    width: 740px;
+}
+
+.Box{
+    position: relative;
+    padding: 10px 20px;
     background: #eaeaea;
     box-shadow: var(--bold) 1px 1px, var(--bold) 2px 2px, var(--bold) 3px 3px, var(--bold) 4px 4px, var(--bold) 5px 5px ;
-    padding: 20px 20px;
-    padding-right : 40px;
-    margin-bottom : var(--gap);
+    margin-bottom : 25px;
 }
-.FundingLeft{
-    width: calc(100% - 150px);
+
+.InfoBox {
+    display: flex;
+    flex-direction: column;
+}
+
+.FundingTopline, .FundingBottomLine {
+    display: flex;
+}
+
+.FundingBottomLine {
+    justify-content: flex-end;
 }
 
 .FundingInfo {
     display: flex;
     align-items: center;
-    font-size: 22px;
+    font-size: 20px;
+    font-weight: 600;
     color: var(--accent);
-    margin: 5px 10px;
+    margin: 5px 0px;
 }
 
 .FundingInfo img {
-    height: 25px;
+    height: 19px;
     margin: 0 5px;
 }
 
-.PledgeContainer {
+.ProgressBar {
+    height: 20px;
+    border-radius: 100px;
+    border: 2px solid white;
+    overflow: hidden;
+    background: #606060;
+}
+
+.MoreInfo h3 {
+    font-size: 18px;
+    font-weight: 500;
+    color: #606060;
+    margin: 10px 0;
     display: flex;
-    justify-content: center;
+    align-items: baseline;
+}
+
+.MoreInfo span {
+    color: var(--accent);
+    font-size: 30px;
+    font-weight: 800;
+    margin-right : 7px;
+}
+
+.ViewContract {
+    color: white;
+    position: absolute;
+    bottom : 15px;
+    background: var(--accent);
+    border: 2px solid #40b574;
+    display: inline-block;
+    padding: 5px 10px;
+    margin-top: 20px;
+    width: 150px;
+    border-radius: 5px;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.ViewContract:hover {
+    font-weight: 600;
+}
+
+.ViewContract svg {
+    margin-right : 10px;
+}
+
+.PledgeContainer, .RewardFundContainer {
+    display: flex;
+    justify-content: flex-end;
     align-items: center;
+    padding-bottom: 5px;
 }
 
 .PledgeButton, .RewardFund {
@@ -118,65 +185,136 @@
     align-items: center;
     color: white;
     background: var(--accent);
-    padding: 10px 20px;
-    font-size: 30px;
+    padding: 8px 15px;
+    margin-right : -5px;
+    font-size: 25px;
     box-shadow: #606060 1px 1px, #606060 2px 2px, #606060 3px 3px, #606060 4px 4px, #606060 5px 5px ;
     user-select: none;
     cursor: pointer;
     transition: all 300ms;
 }
 
-.PledgeButton:hover, .RewardFund:Hover {
+.PledgeButton {
+    position: absolute;
+    bottom : 15px
+}
+
+.RewardFund {
+    font-size : 16px;
+    font-weight: 600;
+    margin-bottom : -8px;
+}
+
+.PledgeButton:hover, .RewardFund:hover {
     filter: contrast(120%);
     bottom: -2px;
     right: -2px;
     box-shadow: #606060 3px 3px, #606060 4px 4px, #606060 5px 5px ;
 }
 
-.RewardFundContainer {
-    display: flex;
-    justify-content: flex-end;
+.PledgeButton:hover {
+    bottom : 13px;
+    right : 19px;
 }
 
-.RewardFund {
-    font-size: 20px;
+.Tags {
+    height: 50px;
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.Tags span {
     padding: 5px 10px;
-}
-
-.ProgressBar {
-    height: 40px;
-    width: 100%;
-    border-radius: 100px;
-    border: 4px solid white;
-    overflow: hidden;
-    background: #606060;
-}
-
-.Description {
+    padding-left : 5px;
+    min-width: 70px;
+    margin-right : 20px;
     display: flex;
-    flex-direction: column;
-    grid-row: 3 / span 1;
-    grid-column: 1 / span 1;
-    min-height: 300px;
+    justify-content: center;
+    align-items: center;
+    height: 35px;
+    border-radius: 1000px;
     background: #eaeaea;
-    box-shadow: var(--bold) 1px 1px, var(--bold) 2px 2px, var(--bold) 3px 3px, var(--bold) 4px 4px, var(--bold) 5px 5px ;
-    padding: 20px 20px;
-    margin-top : var(--gap);
-}
-
-.RewardTiers {
-    grid-row : 3 / span 1;
-    grid-column: 2 / span 1;
-}
-
-
-
-.TimeLeft {
+    color: var(--bold);
     font-weight: 600;
-    display: inline-block;
-    padding: 8px 12px;
-    background: #eaeaea;
+    font-size: 16px;
+    border : 3px dashed var(--bold);
+    user-select: none;
+}
+
+.Tags svg {
+    margin-right : 7px;
+}
+
+.Share {
+    display: flex;
+    height: 50px;
+    align-items: center;
+    justify-content: space-between;
+    padding-right : 50px;
+    font-size : 30px;
     color: var(--accent);
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
+}
+
+.Share span{
+    height: 50px;
+    width : 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bold);
+    color: white;
+    font-size : 17px;
+    font-weight: 600;
+    user-select: none;
+}
+
+.Share a {
+    transition: all 300ms;
+    cursor: pointer;
+    width: 50px;
+    color: var(--accent);
+}
+
+.Share a:hover {
+    color: var(--bold);
+}
+
+.Tiers {
+    max-height: calc(100% - 490px);
+    width : 420px;
+    max-height: 800px;
+    overflow-y: scroll;
+}
+
+.RewardTier {
+    position: relative;
+    border: 5px dashed var(--bold);
+    height: auto;
+    padding: 20px 20px;
+    margin-bottom: 25px;
+}
+
+.RewardTier h3 {
+    color: var(--bold);
+    margin: 0;
+}
+
+.RewardTier span {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    top: 0px;
+    right: 0px;
+    color: var(--accent);
+    font-size: 20px;
+    font-weight: 500;
+
+    background: #eaeaea;
+    padding: 5px 10px;
+    border-bottom-left-radius: 5px;
+}
+
+.RewardTier img {
+    height: 25px;
+    margin: 0 5px;
 }

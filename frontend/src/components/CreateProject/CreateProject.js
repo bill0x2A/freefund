@@ -190,6 +190,7 @@ class CreateProject extends React.Component {
                     headerHash,
                     videoUrl,
                     tags,
+                    endTime,
                 }
             // Send project data to backend
             const { data, response } = await addProject(project);
