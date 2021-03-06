@@ -240,7 +240,7 @@ class ProjectPage extends React.Component {
                                                 </a>
                                             </div>
                                         </div>
-                                        <h3 style={{height: "38px", marginBottom : "0", color : "var(--bold)"}}>Reward Tiers</h3>
+                                        <h3 style={{height: "40px", marginBottom : "0", color : "var(--bold)"}}>Reward Tiers</h3>
                                         <div className={classes.Tiers}>
                                             {project.tiers?.map((tier, index) => (
                                                 <RewardTier

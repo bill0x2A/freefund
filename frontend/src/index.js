@@ -7,18 +7,6 @@ import {createStore} from 'redux';
 import { Provider } from 'react-redux';
 import reducer from './store/reducer';
 
-const loadState = () => {
-  try {
-    const serializedState = getCookie('state');
-    if(serializedState === null) {
-      return undefined;
-    }
-    return JSON.parse(serializedState);
-  } catch (e) {
-    return undefined;
-  }
-};
-
 const getCookie=(name)=>{
   var ident
   let t = decodeURIComponent(document.cookie).split(';')
@@ -38,6 +26,18 @@ const setCookie=(token)=>{
   document.cookie = `state=${token || ""}${expires}; Path=/`
 }
 
+const loadState = () => {
+  try {
+    const serializedState = getCookie('state');
+    if(serializedState === null) {
+      return undefined;
+    }
+    return JSON.parse(serializedState);
+  } catch (e) {
+    return undefined;
+  }
+};
+
 const saveState = (state) => {
   try {
     const serializedState = JSON.stringify(state);
@@ -49,12 +49,11 @@ const saveState = (state) => {
 
 const debug = window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__();
 const peristedState = loadState();
-const store = createStore(reducer, debug);
+const store = createStore(reducer, peristedState, debug);
 
-// store.subscribe(() => {
-//   saveState(store.getState());
-// });
-
+store.subscribe(() => {
+  saveState(store.getState());
+});
 
 ReactDOM.render(
   <Provider store ={store}> 

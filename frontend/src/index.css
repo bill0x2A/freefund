@@ -7,8 +7,9 @@
   font-family: 'Open Sans', sans-serif;
 }
 
-body {
+body, html {
   margin: 0;
+  min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: white;
@@ -54,4 +55,34 @@ input[type=number]::-webkit-outer-spin-button {
   background-color: var(--bold);
   border-radius: 8px;
   border: 5px solid white;
+}
+
+button {
+  display: inline-block;
+  border: none;
+  padding: 10px 20px;
+  margin: 0;
+  text-decoration: none;
+  background: var(--bold);
+  color: #ffffff;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 1rem;
+  cursor: pointer;
+  text-align: center;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+button:hover,
+button:focus {
+  background: var(--bold);
+}
+
+button:focus {
+  outline: none;
+  outline-offset: none;
+}
+
+button:active {
+  transform: none;
 }

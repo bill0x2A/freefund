@@ -8,6 +8,8 @@ import defaultpp from '../../assets/defaultpp.png';
 import svgLogo from '../../assets/logo.svg';
 import alpha from '../../assets/alpha.png';
 import Loading from '../Loading/Loading';
+import homeFilled from '@iconify-icons/ant-design/home-filled';
+import { InlineIcon } from '@iconify/react';
 
 
 const NoWalletDetected = () => (
@@ -98,7 +100,7 @@ const Navigation = props => {
                     {/* <h2>FREEFUND</h2> */}
                 </Link>
                 <div className={classes.RightNav}>
-                    <Link to = {ROUTES.PROJECTS} className={classes.NavItem}>Browse Projects</Link>
+                    <Link to = {ROUTES.HOME} className={classes.NavItem}><InlineIcon icon={homeFilled}/></Link>
                     {user &&
                         <Link to = {ROUTES.CREATE} className={classes.NavItem}>Create Project</Link>}
                     {(!selectedAddress && window.ethereum) ? <div onClick={connectWallet}

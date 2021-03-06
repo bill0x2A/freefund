@@ -1,5 +1,6 @@
 .Home {
     margin-top : 20px;
+    margin-bottom : 120px;
     padding: 0 calc( (100% - 1300px) / 2);
 }
 
@@ -22,11 +23,15 @@
 }
 
 .Featured:hover, .ProjectSmall:hover {
-    background: rgba(0,0,0,0.08);
+    background: rgba(0,0,0,0.1);
     filter : contrast(107%);
     box-shadow: var(--bold) 1px 1px, var(--bold) 2px 2px, var(--bold) 3px 3px, var(--bold) 4px 4px, var(--bold) 5px 5px, var(--bold) 6px 6px;
     top : -6px;
     left : -6px;
+}
+
+.ProjectSmall:hover {
+    box-shadow: var(--bold) 1px 1px, var(--bold) 2px 2px, var(--bold) 3px 3px, var(--bold) 4px 4px;
 }
 
 .Featured h4 {
@@ -58,11 +63,11 @@
 
 .NewProjects {
     flex : 2;
-    margin-top : 50px;
+    margin-top : 40px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: 420px;
+    height: 527px;
 }
 
 .ProjectSmall {
@@ -77,6 +82,8 @@
     text-decoration: none;
     transition: all 250ms;
     padding-right: 20px;
+    background: rgba(0,0,0,0.05);
+    border-right: 3px solid var(--bold);
 }
 
 .ProjectSmall h3 {
@@ -88,10 +95,9 @@
 .ProjectSmall img {
     width: 200px;
     height: 113px;
-    margin-right : 15px;
 }
 
-.FundingInfo, .TimeInfo, .FundingInfoSmall, .TimeInfoSmall {
+.FundingInfo, .TimeInfo {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -106,7 +112,7 @@
     margin-right : 5px;
 }
 
-.TimeInfo, .TimeInfoSmall {
+.TimeInfo{
     margin-top : 10px;
     justify-content: space-around;
     color: white;
@@ -122,13 +128,27 @@
 
 .TextContainer {
     display: flex;
+    width: 100%;
+    min-width: 195px;
     flex-direction: column;
     height: 100%;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: flex-end;
+    padding: 10px 0;
 }
 
-.FundingInfo img, .FundingInfoSmall img {
+.TextContainer h3 {
+    color: var(--bold);
+    font-size: 18px;
+}
+
+.TextContainer p {
+    margin : 0;
+    color: black;
+    font-size: 14px;
+}
+
+.FundingInfo img{
     height: 20px;
     width: 20px;
     border: none;
@@ -137,12 +157,78 @@
 
 .FundingInfoSmall {
     margin: 0;
+    margin-right : 15px;
+    background: none;
 }
 
 .TimeInfoSmall {
     margin-left : 0;
     margin-bottom : 5px;
+    background: none;
+    color: #242424;
 }
 
+.FundingInfoSmall, .TimeInfoSmall {
+    font-weight: 600;
+}
+
+.MoreInformation {
+    margin-top : 80px;
+}
+
+hr {
+    height: 3px;
+    color: var(--accent);
+    background: var(--accent);
+    font-size: 0;
+    border: 0;
+    border-radius: 1000px;
+    margin: 40px 0;
+}
+
+.Buttons {
+    display: flex;
+    justify-content: space-between;
+}
+
+.Buttons button {
+    border-radius: 1000px;
+    background: white;
+    color: var(--bold);
+    font-weight: 600;
+    border : 3px solid var(--bold);
+    width: 200px;
+    margin: 0 20px;
+    transition: all 200ms;
+}
+
+.Buttons button:hover {
+    background: var(--bold);
+    color: white;
+}
+
+.Section h2 {
+    color: var(--bold);
+    font-size: 40px;
+    margin-top: 0;
+    text-shadow: var(--accent) 1px 1px, var(--accent) 2px 2px, var(--accent) 3px 3px;
+}
+
+.Section h3 {
+    font-size: 18px;
+    max-width: 600px;
+    margin-left : 25px;
+}
+
+.Section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 50px;
+}
+
+.Section img {
+    height: 250px;
+}
 
 

@@ -21,7 +21,8 @@ import AccountPage from '../AccountPage/AccountPage';
 import ProjectPage from '../ProjectPage/ProjectPage';
 import MobileMessage from '../MobileMessage/MobileMessage';
 import MissingPage from '../MissingPage/MissingPage';
-import Home from '../Home/Home.js';
+import Home from '../Home/Home';
+import Footer from '../Footer/Footer';
 // import FundingDao from '../FundingDao/FundingDao';
 
 import onMobile from '../../util/detectMobile';
@@ -47,27 +48,31 @@ class Dapp extends React.Component {
     const { mobile } = this.state;
     return (
       <React.Fragment>
-        { mobile ? <MobileMessage/> :
-          <div className={classes.Dapp}>
-            <Navigation
-              selectedAddress={this.state.selectedAddress}
-              connectWallet = {this._connectWallet}
-            />
-            <div className={classes.Layout}>
-              <div className={classes.Main}>
-                <Switch>
-                  <Route exact path={ROUTES.LANDING} component={LandingPage}/>
-                  <Route path={ROUTES.HOME} component={Home}/>
-                  <Route exact path={ROUTES.PROJECTS} component={ProjectBrowser}/>
-                  <Route path={ROUTES.PROJECT} component={ProjectPage}/>
-                  <Route path={ROUTES.CREATE} component = {CreateProject}/>
-                  <Route path={ROUTES.ACCOUNT} component = {AccountPage}/>
-                  <Route component = {MissingPage}/>
-                </Switch>
+        <div className={classes.Wrapper}>
+          { mobile ? <MobileMessage/> :
+            <div className={classes.Dapp}>
+              <Navigation
+                selectedAddress={this.state.selectedAddress}
+                connectWallet = {this._connectWallet}
+              />
+              <div className={classes.Layout}>
+                <div className={classes.Main}>
+                  <Switch>
+                    <Route exact path={ROUTES.LANDING} component={Home}/>
+                    <Route path={ROUTES.HOME} component={Home}/>
+                    <Route exact path={ROUTES.PROJECTS} component={ProjectBrowser}/>
+                    <Route path={ROUTES.PROJECT} component={ProjectPage}/>
+                    <Route path={ROUTES.CREATE} component = {CreateProject}/>
+                    <Route path={ROUTES.ACCOUNT} component = {AccountPage}/>
+                    <Route component = {MissingPage}/>
+                  </Switch>
+                </div>
               </div>
             </div>
-          </div>
-        }
+          }
+        </div>
+        <div className={classes.Push}/>
+        {/* <Footer/> */}
       </React.Fragment>
     );
   }
