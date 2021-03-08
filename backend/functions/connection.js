@@ -31,12 +31,12 @@ module.exports = function(io, dbe){
 
         // notification on payment made to a project
         socket.on("fund", (data)=>{
-            socket.to(data.owner).emit("projectFunded", data)
+            socket.to(data.room).emit("projectFunded", data)
         })
 
         // payment notifications for other contributors on a project
         socket.on("funded", (data)=>{
-            socket.broadcast.to(data.room).emit("newContributor", data)
+            socket.broadcast.to(data.room).emit("aNewContributor", data)
         })
 
         // Notifications for project goal reached
@@ -46,7 +46,7 @@ module.exports = function(io, dbe){
 
         //project added on the platform
         socket.on("add", (data)=>{
-            io.emit("newProject", data)
+            io.emit("newProjectAdded", data)
         })
 
         // disconnection listener
