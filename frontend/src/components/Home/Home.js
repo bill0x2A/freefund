@@ -67,7 +67,7 @@ const Home = props => {
                 <div className={classes.NewProjects}>
                     {otherProjects.map( project => (
                         <Link className={classes.ProjectSmall}>
-                            <img src={project.headerImg}/>
+                            <div className={classes.SmallImg} style={{backgroundImage: `url(${testImage})`}}/>
                             <div className={classes.TextContainer}>
                                 <h3>{project.title}</h3>
                                 <div style={{display:"flex"}}>

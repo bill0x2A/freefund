@@ -26,3 +26,10 @@
         grid-template-columns: 1fr 2000px 1fr;
     }
 }
+
+@media only screen and (max-width : 650px){
+    .Layout {
+        display: grid;
+        grid-template-columns: 10px 1fr 10px;
+    }
+}
