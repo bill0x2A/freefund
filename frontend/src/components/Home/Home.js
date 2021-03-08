@@ -4,6 +4,7 @@ import testImage from '../../assets/yosemite.png';
 import timeDifferece from '../../util/timeDifferece';
 import DAI from '../../assets/DAI.png';
 import clock16Regular from '@iconify-icons/fluent/clock-16-regular';
+import pathDuotone from '@iconify-icons/ph/path-duotone';
 import world from '../../assets/world.png';
 import community from '../../assets/community.png';
 import ethereum from '../../assets/ethereum.png';
@@ -109,7 +110,7 @@ const Home = props => {
                 </div>
 
                 <div className={classes.Buttons}>
-                    <button>Roadmap</button>
+                    <button><InlineIcon icon ={pathDuotone}/>Roadmap</button>
                     <button>Join our Alpha</button>
                     <button>Contact Us</button>
                 </div>

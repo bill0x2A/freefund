@@ -5,9 +5,11 @@
   "dependencies": {
     "@iconify-icons/ant-design": "^1.1.0",
     "@iconify-icons/brandico": "^1.1.0",
+    "@iconify-icons/carbon": "^1.1.2",
     "@iconify-icons/clarity": "^1.1.0",
     "@iconify-icons/fa-solid": "^1.1.0",
     "@iconify-icons/fluent": "^1.1.7",
+    "@iconify-icons/ph": "^1.1.1",
     "@iconify-icons/simple-line-icons": "^1.1.0",
     "@iconify/react": "^1.1.4",
     "@metamask/detect-provider": "^1.2.0",
