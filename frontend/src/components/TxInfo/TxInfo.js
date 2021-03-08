@@ -4,7 +4,7 @@ import Loading from '../Loading/Loading';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-const TxInfo = ({txError, address, txBeingSent, txSuccess, sentTx, create, projectID}) => {
+const TxInfo = ({txError, address, txBeingSent, txSuccess, sentTx, create, projectID, mobile}) => {
     let txInfo = null;
     if(mobile){
         txInfo = (
