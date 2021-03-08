@@ -121,7 +121,7 @@ class ProjectPage extends React.Component {
             difference.push((days === 1) ? <h3><span>{days}</span> day</h3> : <h3><span>{days}</span> days</h3>); 
           }
       
-          difference.push((hours === 0 || hours === 1) ? <h3><span>{hours}</span> hour</h3> : <h3><span>{hours}</span> hours</h3>);
+        difference.push((hours === 0 || hours === 1) ? <h3><span style={{marginLeft: "6px"}}>{hours}</span> hour</h3> : <h3><span style={{marginLeft: "6px"}}>{hours}</span> hours</h3>);
 
         const timeDisplay = (
             <React.Fragment>
@@ -139,6 +139,9 @@ class ProjectPage extends React.Component {
             tagline : "This is the sweet tagline, something used to quickly explain the project",
             description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras pharetra, libero et gravida elementum, erat lacus maximus diam, id volutpat libero augue nec enim. Praesent sed lectus vitae nibh fermentum ornare. Fusce sit amet ex non tellus commodo luctus non id leo. Ut id sem nunc. Vivamus aliquam eget massa ut cursus. Nulla vitae nunc orci.\n Praesent ullamcorper sagittis tellus sed consequat. Sed in metus est. Donec facilisis maximus velit, a lobortis nibh consequat et. Ut mollis massa bibendum, maximus neque non, faucibus leo. Curabitur et orci eu purus congue volutpat id non justo. In molestie vitae orci non pellentesque. Aenean suscipit porta pharetra. Curabitur ac lacinia risus.\n Curabitur efficitur dui sed lorem efficitur placerat. Cras non sem tempor, bibendum eros consectetur, lacinia nisi. In accumsan quam finibus nibh convallis auctor. Vivamus magna turpis, dictum vitae aliquet vel, sodales a sem. Pellentesque at malesuada nisi, id hendrerit nisi. Phasellus sed porta est. Curabitur felis lacus, facilisis vel ante non, bibendum faucibus mauris. Aliquam sem nisl, lacinia eget blandit eget, lacinia eget sapien.\nCras dolor purus, laoreet sed lectus quis, maximus tristique sapien. Phasellus vitae laoreet purus. Ut eget nisl eu nisl malesuada ullamcorper eget sit amet est. Nulla iaculis efficitur sapien. Proin porttitor sapien sed massa semper mollis. Vivamus a consequat dui, eu ullamcorper ipsum. Etiam congue et turpis eget blandit. Phasellus vel mauris mi.",
             images : ["QmUNSSAd6xJXjNmqRCCXpFmy9xNudpfjr9VcTMY92nYoA5","QmUNSSAd6xJXjNmqRCCXpFmy9xNudpfjr9VcTMY92nYoA5","QmUNSSAd6xJXjNmqRCCXpFmy9xNudpfjr9VcTMY92nYoA5"],
+            tags : ["test", "tag", "tagtest"],
+            timeLeft : this.state.remaining,
+            ...project,
             tiers : [
                 {funding : 10, description : "This is a test tier", index : 0 },
                 {funding : 20, description : "This is a test tier", index : 1 },
@@ -146,9 +149,6 @@ class ProjectPage extends React.Component {
                 {funding : 40, description : "This is a test tier", index : 3 },
                 {funding : 50, description : "This is a test tier", index : 4 },
             ],
-            tags : ["test", "tag", "tagtest"],
-            timeLeft : this.state.remaining,
-            ...project,
         }
 
         const funding = parseFloat(project?.funding);
@@ -165,14 +165,14 @@ class ProjectPage extends React.Component {
                                             fundingAddress = {project.fundingAddress}
                                         />
                                      </ModalContainer>}
-                            <div className={classes.Layout}>
 
                                 <h2 className={classes.Title}>{project.title}</h2>
                                 <h3 className={classes.Tagline}>{project.tagline}</h3>
 
                                 <div className={classes.Main}>
-                                    <div className={classes.Left}>
+                                    <div className={classes.Top}>
                                         <div className={classes.ImageContainer}>
+                                            <div style ={{position: "relative", paddingBottom : "56.25%", width:"100%"}}>
                                             { project.videoURL ? (
                                                 <ReactPlayer
                                                     width = {"100%"}
@@ -180,16 +180,11 @@ class ProjectPage extends React.Component {
                                                     url={project.videoURL}
                                                     fallback={<img src = {testImg}/>}
                                                     controls
+                                                    style={{position : "absolute", top : 0, bottom : 0, right: 0, left: 0}}
                                                 />
                                                 ) : <img src = {testImg}/> }
+                                            </div>
                                         </div>
-                                        <div className={classes.Tags}>
-                                            {project.tags?.map(tag => <span><InlineIcon icon={tagIcon}/>{tag}</span>)}
-                                        </div>
-                                        <Information project={project} creatorData={creatorData}/>
-                                    </div>
-                                    <div className={classes.Right}>
-                                        <div className={classes.Box} style = {{height : "411px"}}>
                                             <div className={classes.InfoBox}>
                                                 <div className={classes.Funding}>
                                                     <div className={classes.FundingTopline}>
@@ -210,25 +205,25 @@ class ProjectPage extends React.Component {
                                                 </div>
                                                 <div className={classes.MoreInfo}>
                                                     <div className={classes.TimeRemaining}>
-                                                        <Icon icon = {clock16Regular}/>
                                                         {this.state.remaining}
                                                     </div>
                                                     <h3><span>304</span> backers</h3>
                                                     <a href={`https://rinkeby.etherscan.io/address/${project.fundingAddress}`}><div className={classes.ViewContract}><InlineIcon icon={fileContract}/>View Contract</div></a>
                                                 </div>
-
-                                                <div className={classes.PledgeContainer}>
-                                                    <div
-                                                        className={classes.PledgeButton}
-                                                        onClick={() => this.pledgeHandler(0)}
-                                                        >Fund
-                                                    </div>
+                                                <div
+                                                    className={classes.PledgeButton}
+                                                    onClick={() => this.pledgeHandler(0)}
+                                                    >Fund
                                                 </div>
                                             </div>
+                                    </div>
+                                    <div className={classes.TagsShare}>
+                                        <div className={classes.Tags}>
+                                                {project.tags?.map(tag => <span><InlineIcon icon={tagIcon}/>{tag}</span>)}
                                         </div>
-                                        <div className={classes.Box} style = {{padding:0}}>
-                                            <div className={classes.Share}>
-                                                <span>SHARE</span>
+                                        <div className={classes.Share}>
+                                            <span>SHARE</span>
+                                            <div className={classes.SocialIcons}>
                                                 <a>
                                                     <InlineIcon icon={facebookIcon}/>
                                                 </a>
@@ -240,7 +235,9 @@ class ProjectPage extends React.Component {
                                                 </a>
                                             </div>
                                         </div>
-                                        <h3 style={{height: "40px", marginBottom : "0", color : "var(--bold)"}}>Reward Tiers</h3>
+                                    </div>
+                                    <div className={classes.Bottom}>
+                                        <Information project={project} creatorData={creatorData}/>
                                         <div className={classes.Tiers}>
                                             {project.tiers?.map((tier, index) => (
                                                 <RewardTier
@@ -253,7 +250,6 @@ class ProjectPage extends React.Component {
                                         </div>
                                     </div>
                                 </div>
-                            </div>
                     </React.Fragment>
                 }
                 

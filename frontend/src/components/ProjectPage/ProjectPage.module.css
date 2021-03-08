@@ -1,6 +1,5 @@
 .ProjectPage {
-    display: grid;
-    grid-template-columns: 1fr 1150px 1fr;
+    padding : 0 calc((100% - 1150px)/2);
 }
 
 .LoadingContainer {
@@ -12,11 +11,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-}
-
-.Layout {
-    grid-column-start: 2;
-    grid-column-end: 3;
 }
 
 .Title {
@@ -36,27 +30,139 @@
 
 .Main {
     display: flex;
-
+    flex-direction: column;
     --gap : 30px;
     min-height: calc(100vh - 200px);
     width: 100%;
-    justify-content: space-between;
     margin-bottom: 50px;
 }
 
-.Right {
-    min-height: 100%;
-    width: 400px;
+.Top, .TagsShare {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
 }
 
-.ImageContainer {
-    height: 415px;
-    width : 738px;
-    text-align: center;
-    border : 4px dashed var(--bold);
-    margin-bottom : var(--gap);
-    background: rgba(0,0,0,.2);
+.TagsShare {
+    margin-top : var(--gap);
 }
+
+@media only screen and (max-width : 630px){
+    .TagsShare {
+        flex-direction: column;
+    }
+
+    .Share {
+        width: 100% !important;
+        margin-bottom : var(--gap);
+    }
+}
+
+
+.Tags {
+    height: 50px;
+    display: flex;
+    width : calc(70% - var(--gap)/2);
+    margin-bottom: 20px;
+}
+
+.Tags span {
+    padding: 5px 10px;
+    padding-left : 5px;
+    min-width: 70px;
+    margin-right : 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 35px;
+    border-radius: 1000px;
+    background: #eaeaea;
+    color: var(--bold);
+    font-weight: 600;
+    font-size: 16px;
+    border : 3px dashed var(--bold);
+    user-select: none;
+}
+
+.Tags svg {
+    margin-right : 7px;
+}
+
+.Share {
+    position: relative;
+    min-width: 250px;
+    background: #eaeaea;
+    box-shadow: var(--bold) 1px 1px, var(--bold) 2px 2px, var(--bold) 3px 3px, var(--bold) 4px 4px, var(--bold) 5px 5px ;
+    display: flex;
+    height: 50px;
+    align-items: center;
+    width: calc(30% - var(--gap)/2);
+    justify-content: space-between;
+    font-size : 30px;
+    color: var(--accent);
+}
+
+.Share span{
+    height: 50px;
+    width : 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bold);
+    color: white;
+    font-size : 17px;
+    font-weight: 600;
+    user-select: none;
+}
+
+.SocialIcons {
+    width: calc(100% - 80px);
+    display: flex;
+    justify-content: space-around;
+}
+
+.SocialIcons a {
+    transition: all 300ms;
+    cursor: pointer;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    width: 50px;
+    color: var(--accent);
+}
+
+.SocialIcons a:hover {
+    color: var(--bold);
+}
+
+.Bottom {
+    display: flex;
+    justify-content: space-between;
+}
+
+
+.ImageContainer {
+    text-align: center;
+    width: fit-content;
+    border : 4px dashed var(--bold);
+    background: rgba(0,0,0,.2);
+    margin-right: var(--gap);
+    width : calc(70% - var(--gap)/2);
+}
+
+.InfoBox {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: calc(30% - var(--gap)/2);
+    padding: 10px 20px;
+    background: #eaeaea;
+    box-shadow: var(--bold) 1px 1px, var(--bold) 2px 2px, var(--bold) 3px 3px, var(--bold) 4px 4px, var(--bold) 5px 5px ;
+    display: flex;
+    flex-direction: column;
+}
+
 
 .ImageContainer img {
     height: 100%;
@@ -65,28 +171,30 @@
 
 .TimeRemaining {
     display: flex;
-    justify-content: space-around;
     align-items: center;
-    border : 4px dashed var(--accent);
-    padding : 0 20px;
-    margin : 20px 0;
-    margin-top : 50px;
+    margin-top : 10px;
     max-width: 280px;
-}
-
-.TimeRemaining span {
-    margin-left : 10px;
 }
 
 .TimeRemaining svg {
     color: var(--accent);
-    height: 40px;
-    width: 40px;
+    height: 40px !important;
+    width: 40px !important;
 }
 
-.Left {
-    margin-right: var(--gap);
-    width: 740px;
+.Hours {
+    margin-left : 1000px;
+}
+
+@media only screen and (max-width: 1130px){
+    .TimeRemaining svg {
+        display: none;
+    }
+
+    .InfoBox {
+        padding: 10px;
+        padding-right : 15px;
+    }
 }
 
 .Box{
@@ -97,10 +205,6 @@
     margin-bottom : 25px;
 }
 
-.InfoBox {
-    display: flex;
-    flex-direction: column;
-}
 
 .FundingTopline, .FundingBottomLine {
     display: flex;
@@ -132,25 +236,28 @@
     background: #606060;
 }
 
+.MoreInfo {
+    margin-top : -40px;
+}
+
 .MoreInfo h3 {
     font-size: 18px;
     font-weight: 500;
     color: #606060;
-    margin: 10px 0;
+    margin: 5px 0;
     display: flex;
     align-items: baseline;
 }
 
 .MoreInfo span {
     color: var(--accent);
-    font-size: 30px;
+    font-size: 25px;
     font-weight: 800;
     margin-right : 7px;
 }
 
 .ViewContract {
     color: white;
-    position: absolute;
     bottom : 15px;
     background: var(--accent);
     border: 2px solid #40b574;
@@ -161,26 +268,29 @@
     border-radius: 5px;
     font-size: 15px;
     cursor: pointer;
+    transition: all 300ms;
 }
 
 .ViewContract:hover {
-    font-weight: 600;
+    filter : contrast(110%);
 }
 
 .ViewContract svg {
     margin-right : 10px;
 }
 
-.PledgeContainer, .RewardFundContainer {
+.RewardFundContainer {
     display: flex;
+    position: relative;
     justify-content: flex-end;
     align-items: center;
-    padding-bottom: 5px;
 }
 
 .PledgeButton, .RewardFund {
-    position: relative;
     display: flex;
+    position: relative;
+    right : 0;
+    bottom : 0;
     justify-content: center;
     align-items: center;
     color: white;
@@ -191,12 +301,24 @@
     box-shadow: #606060 1px 1px, #606060 2px 2px, #606060 3px 3px, #606060 4px 4px, #606060 5px 5px ;
     user-select: none;
     cursor: pointer;
-    transition: all 300ms;
+    transition: all 100ms;
 }
 
-.PledgeButton {
-    position: absolute;
-    bottom : 15px
+
+@media only screen and (max-width: 1120px){
+    .PledgeButton {
+        font-size : 20px;
+        padding: 4px 7px;
+        font-weight: 600;
+    }
+
+    .FundingInfo {
+        font-size : 16px;
+    }
+
+    .ProgressBar {
+        height: 15px;
+    }
 }
 
 .RewardFund {
@@ -209,81 +331,16 @@
     filter: contrast(120%);
     bottom: -2px;
     right: -2px;
-    box-shadow: #606060 3px 3px, #606060 4px 4px, #606060 5px 5px ;
+    box-shadow: #606060 1px 1px, #606060 2px 2px,#606060 3px 3px ;
 }
 
-.PledgeButton:hover {
-    bottom : 13px;
-    right : 19px;
-}
-
-.Tags {
-    height: 50px;
-    display: flex;
-    margin-bottom: 20px;
-}
-
-.Tags span {
-    padding: 5px 10px;
-    padding-left : 5px;
-    min-width: 70px;
-    margin-right : 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 35px;
-    border-radius: 1000px;
-    background: #eaeaea;
-    color: var(--bold);
-    font-weight: 600;
-    font-size: 16px;
-    border : 3px dashed var(--bold);
-    user-select: none;
-}
-
-.Tags svg {
-    margin-right : 7px;
-}
-
-.Share {
-    display: flex;
-    height: 50px;
-    align-items: center;
-    justify-content: space-between;
-    padding-right : 50px;
-    font-size : 30px;
-    color: var(--accent);
-}
-
-.Share span{
-    height: 50px;
-    width : 80px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--bold);
-    color: white;
-    font-size : 17px;
-    font-weight: 600;
-    user-select: none;
-}
-
-.Share a {
-    transition: all 300ms;
-    cursor: pointer;
-    width: 50px;
-    color: var(--accent);
-}
-
-.Share a:hover {
-    color: var(--bold);
-}
 
 .Tiers {
     max-height: calc(100% - 490px);
-    width : 420px;
+    width : calc(30% - var(--gap)/2 + 22px);
     max-height: 800px;
     overflow-y: scroll;
+    margin-right : -22px;
 }
 
 .RewardTier {
@@ -317,4 +374,44 @@
 .RewardTier img {
     height: 25px;
     margin: 0 5px;
+}
+
+@media only screen and (max-width : 950px){
+    .Top {
+        flex-direction: column;
+    }
+
+    .ImageContainer {
+        width: 100%;
+    }
+
+    .InfoBox {
+        width: 100%;
+        margin-top : var(--gap);
+    }
+
+    .PledgeButton {
+        width: 150px;
+        height: 50px;
+        align-self: flex-end;
+        font-size : 25px;
+    }
+
+    .MoreInfo {
+        margin-top : 5px;
+    }
+
+    .ViewContract {
+        margin-bottom : 10px;
+    }
+
+    .Bottom {
+        flex-direction: column;
+    }
+    
+    .Tiers {
+        margin-top : var(--gap);
+        width: 100%;
+        overflow-y: default;
+    }
 }
