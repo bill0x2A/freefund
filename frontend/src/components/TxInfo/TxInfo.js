@@ -1,11 +1,18 @@
 import React from 'react';
 import classes from './TxInfo.module.css';
 import Loading from '../Loading/Loading';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 const TxInfo = ({txError, address, txBeingSent, txSuccess, sentTx, create, projectID}) => {
     let txInfo = null;
-    if(txSuccess){
+    if(mobile){
+        txInfo = (
+            <div className={classes.TxMessage} style={{color : "orange", border : "3px dashed orange", alignItems: "center", justifyContent: "center"}}>
+                <p>This feature is not available on mobile</p>
+            </div>
+        )
+    } else if(txSuccess){
         // Transaction success message
         if(create){
             txInfo = (
@@ -52,4 +59,8 @@ const TxInfo = ({txError, address, txBeingSent, txSuccess, sentTx, create, proje
     return txInfo;
 }
 
-export default TxInfo
+const mapStateToProps = state => ({
+    mobile : state.mobile,
+});
+
+export default connect(mapStateToProps)(TxInfo);

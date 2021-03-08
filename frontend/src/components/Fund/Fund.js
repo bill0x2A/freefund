@@ -155,7 +155,7 @@ class Fund extends React.Component {
                 </div>
                 <div className={classes.Balance}>
                     <span
-                        data-tip={" ! This value may not update immediately, this is a bug in MetaMask !"}
+                        data-tip={"May not update immediately, this is a MetaMask bug!"}
                     >
                         <InlineIcon icon={walletIcon}/>
                         {balance ? parseFloat(balance).toFixed(2) : "-" }
@@ -168,7 +168,7 @@ class Fund extends React.Component {
                     {txError && <div 
                                     className={classes.Submit} 
                                     style = {{marginLeft : "5px"}}
-          f              onClick = {() => this._transferTokens("0xa53f2C25278E515851DB513f6C990681429f9a4a", pledge)}
+                                    onClick = {() => this._transferTokens("0xa53f2C25278E515851DB513f6C990681429f9a4a", pledge)}
                                 >Fund</div>
                     }
                 </div>

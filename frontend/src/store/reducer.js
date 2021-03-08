@@ -12,6 +12,12 @@ const initialState = {
 const reducer = ( state = initialState, action ) => {
     switch(action.type){
 
+        case actionTypes.onMobile:
+            return {
+                ...state,
+                mobile : action.mobile,
+            }
+
         case actionTypes.connectWallet:
             return {
                 ...state,

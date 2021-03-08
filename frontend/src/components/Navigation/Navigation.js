@@ -27,7 +27,11 @@ const NoWalletDetected = () => (
     </div>
 )
 
-const NetworkAlert = ({networkID}) => {
+const NetworkAlert = ({networkID, mobile}) => {
+
+    if(mobile){
+        return null;
+    }
 
     let alertText;
 
@@ -58,6 +62,7 @@ const NetworkAlert = ({networkID}) => {
             alertText = `Connected to network with ID : ${id}`;
             break;                
     }
+
     return(
         <div className={classes.Alert}>
             {alertText}
@@ -86,11 +91,11 @@ const WalletInfo = ({user}) => {
 }
 
 const Navigation = props => {
-    const {selectedAddress, connectWallet, user} = props;
+    const {selectedAddress, connectWallet, user, mobile} = props;
     return (
         <div className={classes.Navigation}>
             {window.ethereum === undefined && <NoWalletDetected/>}
-            <NetworkAlert networkID={props.networkID}/>
+            <NetworkAlert networkID={props.networkID} mobile={mobile}/>
             <div className ={classes.Navbar}>
                 <Link
                     className={classes.Logo}
@@ -100,7 +105,7 @@ const Navigation = props => {
                     {/* <h2>FREEFUND</h2> */}
                 </Link>
                 <div className={classes.RightNav}>
-                    <Link to = {ROUTES.HOME} className={classes.NavItem}><InlineIcon icon={homeFilled}/></Link>
+                    {!mobile && <Link to = {ROUTES.HOME} className={classes.NavItem}><InlineIcon icon={homeFilled}/></Link>}
                     {user &&
                         <Link to = {ROUTES.CREATE} className={classes.NavItem}>Create Project</Link>}
                     {(!selectedAddress && window.ethereum) ? <div onClick={connectWallet}
@@ -121,6 +126,7 @@ const mapStateToProps = state => ({
     selectedAddress : state.selectedAddress,
     networkID       : state.networkID,
     user           : state.user,
+    mobile : state.mobile,
 })
 
 const mapDispatchToProps = dispatch => ({

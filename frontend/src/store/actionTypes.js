@@ -7,3 +7,4 @@ export const setNetworkID = "SET_NETWORK_ID";
 export const setUser = "SET_USER";
 export const setToken = "SET_TOKEN";
 export const connectFactory = "CONNECT_FACTORY";
+export const onMobile = "ON_MOBILE";

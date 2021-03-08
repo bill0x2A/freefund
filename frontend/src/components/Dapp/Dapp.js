@@ -39,17 +39,15 @@ class Dapp extends React.Component {
     super(props);
     this.initialState = {
       selectedAddress: undefined,
-      mobile: false,
     };
     this.state = this.initialState;
   }
 
   render() {
-    const { mobile } = this.state;
+    const { mobile } = this.props;
     return (
       <React.Fragment>
         <div className={classes.Wrapper}>
-          { mobile ? <MobileMessage/> :
             <div className={classes.Dapp}>
               <Navigation
                 selectedAddress={this.state.selectedAddress}
@@ -69,7 +67,6 @@ class Dapp extends React.Component {
                 </div>
               </div>
             </div>
-          }
         </div>
         <div className={classes.Push}/>
         {/* <Footer/> */}
@@ -78,7 +75,7 @@ class Dapp extends React.Component {
   }
 
   componentDidMount(){
-    this.setState({mobile : onMobile()});
+    this.props.setMobile(onMobile());
     // this.checkConnection();
   }
 
@@ -226,6 +223,7 @@ class Dapp extends React.Component {
 // Redux connection
 const mapStateToProps = state => ({
   user : state.user,
+  mobile : state.mobile,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -238,6 +236,7 @@ const mapDispatchToProps = dispatch => ({
   setToken            : tokenId         => dispatch({type : actionTypes.setToken, token : tokenId}),
   setUser             : userData        => dispatch({type : actionTypes.setUser, user : userData}),
   connectFactory      : factory         => dispatch({type : actionTypes.connectFactory, factory : factory}),
+  setMobile           : mobile          => dispatch({type : actionTypes.onMobile, mobile : mobile}),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dapp);
