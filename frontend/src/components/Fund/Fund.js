@@ -142,26 +142,30 @@ class Fund extends React.Component {
         }
         return(
             <div className={classes.Fund}>
+
                 <div  className={classes.Close} onClick={dismiss}>X</div>
-                <h3>Great! How much would you like to give?</h3>
-                <div className={classes.Payment}>
-                    <input 
-                        type="number"
-                        name="pledge"
-                        value={pledge}
-                        onChange={this.onChange}
-                    />
-                    <span>DAI <img src={DAI}/></span>
-                </div>
-                <div className={classes.Balance}>
-                    <span
-                        data-tip={"May not update immediately, this is a MetaMask bug!"}
-                    >
-                        <InlineIcon icon={walletIcon}/>
-                        {balance ? parseFloat(balance).toFixed(2) : "-" }
-                        <img src={DAI}/>
-                    </span>
-                </div>
+                { !this.props.mobile && (
+                <React.Fragment>
+                    <h3>Great! How much would you like to give?</h3>
+                    <div className={classes.Payment}>
+                        <input 
+                            type="number"
+                            name="pledge"
+                            value={pledge}
+                            onChange={this.onChange}
+                        />
+                        <span>DAI <img src={DAI}/></span>
+                    </div>
+                    <div className={classes.Balance}>
+                        <span
+                            data-tip={"May not update immediately, this is a MetaMask bug!"}
+                        >
+                            <InlineIcon icon={walletIcon}/>
+                            {balance ? parseFloat(balance).toFixed(2) : "-" }
+                            <img src={DAI}/>
+                        </span>
+                    </div>
+                </React.Fragment>)}
                 <div className={classes.SubmitContainer}>
                     {/* Conditional rendering function for transaction state */}
                     {txInfo}
@@ -182,6 +186,7 @@ const mapStateToProps = state => ({
     daiContract : state.daiContract,
     selectedAddress : state.selectedAddress,
     user : state.user,
+    mobile : state.mobile,
 })
 
 const mapDispatchToProps = null;

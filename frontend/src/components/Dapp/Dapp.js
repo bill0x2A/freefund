@@ -76,11 +76,12 @@ class Dapp extends React.Component {
 
   componentDidMount(){
     this.props.setMobile(onMobile());
-    // this.checkConnection();
+    this.checkConnection();
   }
 
   // ####### METAMASK API #######
-  // Would preferably handle this in it's own file but it needs to dispatch Redux state changes
+  // Would preferably handle this in it's own file but it needs to dispatch Redux state changes,
+  // so must be included in a React component.
   
   checkConnection = async () => {
     // This is run every time the Dapp component is mounted (i.e. on page reload),
@@ -135,17 +136,21 @@ class Dapp extends React.Component {
       this._initialize(accounts[0]);
     } else {
       console.log("STATE = METAMASK, ALL GOOD!")
+      if(!this.props.provider){
+        this._initialize(accounts[0]);
+      }
     }
     // Check login token here
   }
 
   _connectWallet =  async () => {
-    // This method is run when the user clicks the Connect. It connects the
+    // This method is run when the user clicks Connect. It connects the
     // dapp to the user's wallet, and initializes it.
 
     const [selectedAddress] = await window.ethereum.enable();
 
     if (!this._checkNetwork()) {
+      // If the current network is not in the list of approved network, do not connect the wallet
       return;
     }
 
@@ -153,6 +158,7 @@ class Dapp extends React.Component {
   }
 
   _initialize = async userAddress => {
+    console.log("RUNNING  _initialize")
     this.props.resetState();
     this.props.connectWallet(userAddress);
 
@@ -177,11 +183,14 @@ class Dapp extends React.Component {
 
   async _intializeEthers() {
     // We first initialize ethers by creating a provider using window.ethereum
-    // console.dir(window.ethereum);
+    console.log("RUNNING _initializeEthers()");
+    console.dir(window.ethereum);
     const provider = new ethers.providers.Web3Provider(window.ethereum);
+    console.log("Provider : ", provider);
     this.props.connectProvider(provider);
 
     const signer = provider.getSigner();
+    console.log("Signer : ", signer);
 
     const rinkebyDai = new ethers.Contract(rinkebyDaiAddress, daiAbi);
     const rinkebyDaiWithSigner = rinkebyDai.connect(signer);
@@ -224,6 +233,7 @@ class Dapp extends React.Component {
 const mapStateToProps = state => ({
   user : state.user,
   mobile : state.mobile,
+  provider : state.provider,
 });
 
 const mapDispatchToProps = dispatch => ({

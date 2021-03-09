@@ -7,6 +7,12 @@
     padding: 0 30px;
 }
 
+@media only screen and (max-width : 650px){
+    .Navbar {
+        padding : 0 5px;
+    }
+}
+
 .Logo {
     position: relative;
     display: flex;

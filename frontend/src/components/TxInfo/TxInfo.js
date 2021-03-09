@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 const TxInfo = ({txError, address, txBeingSent, txSuccess, sentTx, create, projectID, mobile}) => {
     let txInfo = null;
     if(mobile){
+        return null;
         txInfo = (
             <div className={classes.TxMessage} style={{color : "orange", border : "3px dashed orange", alignItems: "center", justifyContent: "center"}}>
                 <p>This feature is not available on mobile</p>

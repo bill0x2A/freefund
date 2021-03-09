@@ -28,16 +28,12 @@ const NoWalletDetected = () => (
 )
 
 const NetworkAlert = ({networkID, mobile}) => {
-
-    if(mobile){
+    
+    if(!networkID || mobile){
         return null;
     }
 
     let alertText;
-
-    if(!networkID){
-        return null;
-    }
     const id = parseInt(networkID);
 
     switch(id){
@@ -94,28 +90,30 @@ const Navigation = props => {
     const {selectedAddress, connectWallet, user, mobile} = props;
     return (
         <div className={classes.Navigation}>
-            {window.ethereum === undefined && <NoWalletDetected/>}
+            {(window.ethereum === undefined && !mobile) && <NoWalletDetected/>}
             <NetworkAlert networkID={props.networkID} mobile={mobile}/>
-            <div className ={classes.Navbar}>
+            <div className ={classes.Navbar} style ={mobile ? {paddingLeft : "5px"} : null }>
                 <Link
                     className={classes.Logo}
                     to={ROUTES.LANDING}
                 >
-                    <img src={alpha}/>
+                    <img src={alpha} style ={mobile ? {height : "60px"} : null }/>
                     {/* <h2>FREEFUND</h2> */}
                 </Link>
                 <div className={classes.RightNav}>
                     {!mobile && <Link to = {ROUTES.HOME} className={classes.NavItem}><InlineIcon icon={homeFilled}/></Link>}
                     {user &&
                         <Link to = {ROUTES.CREATE} className={classes.NavItem}>Create Project</Link>}
-                    {(!selectedAddress && window.ethereum) ? <div onClick={connectWallet}
-                                              className = {classes.ConnectWallet}
-                                              >Connect Wallet</div> :
-                                        <WalletInfo 
-                                            user={user}
-                                            selectedAddress={selectedAddress}
-                                        />
-                                        }
+                    {(!selectedAddress && window.ethereum) ? (
+                        <div onClick={connectWallet}
+                            className = {classes.ConnectWallet}
+                            >Connect Wallet</div>
+                        ) : (
+                        <WalletInfo 
+                            user={user}
+                            selectedAddress={selectedAddress}
+                        />)
+                    }
                 </div>
             </div>
         </div>

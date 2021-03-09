@@ -10,7 +10,7 @@
 }
 
 .TxMessage p {
-    margin-top : 0;
+    margin: 10px;
 }
 
 .TxMessage a {
@@ -19,7 +19,7 @@
     font-weight: bold;
     color : var(--accent)
 }
-s
+
 .TxMessage a:hover {
     background: rgba(0,0,0,0.1);
     left: -2px;

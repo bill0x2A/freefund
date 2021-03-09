@@ -274,10 +274,22 @@ hr {
         transition: all 200ms;
     }
     
-
     .Section {
         flex-direction: column-reverse !important;
         text-align: center;
+    }
+
+    .Section img {
+        width: 100px;
+        height: 100px;
+    }
+
+    .Section h2 {
+        font-size : 30px;
+    }
+
+    .Section h3 {
+        margin-left : 0;
     }
 }
 

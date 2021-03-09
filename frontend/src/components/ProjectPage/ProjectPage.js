@@ -24,6 +24,7 @@ import Information from './Information/Information';
 import DAI from '../../assets/DAI.png'
 import MarkdownIt from 'markdown-it';
 import timeDifference from '../../util/timeDifferece';
+import csv from '../../util/commaSeparation';
 
 const md = new MarkdownIt();
 // ############## SUBCOMPONENTS ##############
@@ -81,6 +82,8 @@ class ProjectPage extends React.Component {
         } else {
             console.log(response.data);
             this.setState({ project : response.data });
+            console.log("DATA:")
+            console.dir(response.data);
             const address = response.data.creatorAddress;
             this.loadCreatorData(address);
             this.calculateTimeLeft();
@@ -134,21 +137,10 @@ class ProjectPage extends React.Component {
 
     render(){
         let { project, loading, pledging, pledge, creatorData } = this.state;
+        
         project = {
-            videoURL : "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-            tagline : "This is the sweet tagline, something used to quickly explain the project",
-            description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras pharetra, libero et gravida elementum, erat lacus maximus diam, id volutpat libero augue nec enim. Praesent sed lectus vitae nibh fermentum ornare. Fusce sit amet ex non tellus commodo luctus non id leo. Ut id sem nunc. Vivamus aliquam eget massa ut cursus. Nulla vitae nunc orci.\n Praesent ullamcorper sagittis tellus sed consequat. Sed in metus est. Donec facilisis maximus velit, a lobortis nibh consequat et. Ut mollis massa bibendum, maximus neque non, faucibus leo. Curabitur et orci eu purus congue volutpat id non justo. In molestie vitae orci non pellentesque. Aenean suscipit porta pharetra. Curabitur ac lacinia risus.\n Curabitur efficitur dui sed lorem efficitur placerat. Cras non sem tempor, bibendum eros consectetur, lacinia nisi. In accumsan quam finibus nibh convallis auctor. Vivamus magna turpis, dictum vitae aliquet vel, sodales a sem. Pellentesque at malesuada nisi, id hendrerit nisi. Phasellus sed porta est. Curabitur felis lacus, facilisis vel ante non, bibendum faucibus mauris. Aliquam sem nisl, lacinia eget blandit eget, lacinia eget sapien.\nCras dolor purus, laoreet sed lectus quis, maximus tristique sapien. Phasellus vitae laoreet purus. Ut eget nisl eu nisl malesuada ullamcorper eget sit amet est. Nulla iaculis efficitur sapien. Proin porttitor sapien sed massa semper mollis. Vivamus a consequat dui, eu ullamcorper ipsum. Etiam congue et turpis eget blandit. Phasellus vel mauris mi.",
-            images : ["QmUNSSAd6xJXjNmqRCCXpFmy9xNudpfjr9VcTMY92nYoA5","QmUNSSAd6xJXjNmqRCCXpFmy9xNudpfjr9VcTMY92nYoA5","QmUNSSAd6xJXjNmqRCCXpFmy9xNudpfjr9VcTMY92nYoA5"],
-            tags : ["test", "tag", "tagtest"],
-            timeLeft : this.state.remaining,
             ...project,
-            tiers : [
-                {funding : 10, description : "This is a test tier", index : 0 },
-                {funding : 20, description : "This is a test tier", index : 1 },
-                {funding : 30, description : "This is a test tier", index : 2 },
-                {funding : 40, description : "This is a test tier", index : 3 },
-                {funding : 50, description : "This is a test tier", index : 4 },
-            ],
+            tagline : "This is a test of the tagline to see if it works and how it looks even when its quite long, It should probably be even longer incase someone is really bad a summing up their project quickly and they insist on typing lots and lots of text to explain it.",
         }
 
         const funding = parseFloat(project?.funding);
@@ -173,11 +165,11 @@ class ProjectPage extends React.Component {
                                     <div className={classes.Top}>
                                         <div className={classes.ImageContainer}>
                                             <div style ={{position: "relative", paddingBottom : "56.25%", width:"100%"}}>
-                                            { project.videoURL ? (
+                                            { project.videoUrl ? (
                                                 <ReactPlayer
                                                     width = {"100%"}
                                                     height = {"100%"}
-                                                    url={project.videoURL}
+                                                    url={project.videoUrl}
                                                     fallback={<img src = {testImg}/>}
                                                     controls
                                                     style={{position : "absolute", top : 0, bottom : 0, right: 0, left: 0}}
@@ -189,7 +181,7 @@ class ProjectPage extends React.Component {
                                                 <div className={classes.Funding}>
                                                     <div className={classes.FundingTopline}>
                                                         <div className={classes.FundingInfo}>
-                                                            <span>{funding.toFixed(2)}</span>
+                                                            <span>{csv(funding.toFixed(2))}</span>
                                                             <img src = {DAI}/>
                                                             <span>raised</span>
                                                         </div>
@@ -197,7 +189,7 @@ class ProjectPage extends React.Component {
                                                     <ProgressBar funding={project.funding} fundingLimit={project.fundingLimit}/>
                                                     <div className={classes.FundingBottomLine}>
                                                         <div className={classes.FundingInfo}>
-                                                            <span style={{color: "#606060"}}>{project.fundingLimit}</span>
+                                                            <span style={{color: "#606060"}}>{csv(project.fundingLimit)}</span>
                                                             <img src = {DAI}/>
                                                             <span style={{color: "#606060"}}>goal</span>
                                                         </div>
@@ -207,7 +199,7 @@ class ProjectPage extends React.Component {
                                                     <div className={classes.TimeRemaining}>
                                                         {this.state.remaining}
                                                     </div>
-                                                    <h3><span>304</span> backers</h3>
+                                                    <h3><span>{project.funders.length}</span> backers</h3>
                                                     <a href={`https://rinkeby.etherscan.io/address/${project.fundingAddress}`}><div className={classes.ViewContract}><InlineIcon icon={fileContract}/>View Contract</div></a>
                                                 </div>
                                                 <div

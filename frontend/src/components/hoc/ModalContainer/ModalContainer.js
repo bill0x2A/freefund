@@ -5,7 +5,10 @@ import classes from './ModalContainer.module.css';
 const ModalContainer = props => {
 
     return(
-        <div className={classes.ModalContainer}>
+        <div
+            className={classes.ModalContainer}
+            onClick={props.click}
+        >
             {props.children}
         </div>
     )

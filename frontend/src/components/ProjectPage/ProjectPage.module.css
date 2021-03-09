@@ -15,9 +15,20 @@
 
 .Title {
     color: var(--bold);
-    font-size: 30px;
-    font-weight: 800;
+    font-size: 26px;
+    font-weight: 600;
     margin-bottom : 4px;
+}
+
+@media only screen and (max-width : 650px){
+    .Title {
+        font-weight: 700;
+        font-size : 22px;
+    }
+    
+    .Tagline {
+        font-size : 16px;
+    }
 }
 
 .Tagline {
@@ -60,8 +71,8 @@
 
 
 .Tags {
-    height: 50px;
     display: flex;
+    flex-wrap : wrap;
     width : calc(70% - var(--gap)/2);
     margin-bottom: 20px;
 }
@@ -71,10 +82,12 @@
     padding-left : 5px;
     min-width: 70px;
     margin-right : 20px;
+    margin-bottom : 8px;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 35px;
+    text-align: center;
+    min-height: 35px;
     border-radius: 1000px;
     background: #eaeaea;
     color: var(--bold);
@@ -336,10 +349,10 @@
 
 
 .Tiers {
-    max-height: calc(100% - 490px);
+    max-height: inherit;
     width : calc(30% - var(--gap)/2 + 22px);
-    max-height: 800px;
     overflow-y: scroll;
+    margin-top : 35px;
     margin-right : -22px;
 }
 
@@ -376,7 +389,18 @@
     margin: 0 5px;
 }
 
+@media only screen and (max-width : 1135px){
+    .Main {
+        --gap : 20px;
+    }
+}
+
 @media only screen and (max-width : 950px){
+
+    .Main {
+        --gap : 40px;
+    }
+
     .Top {
         flex-direction: column;
     }
@@ -411,7 +435,8 @@
     
     .Tiers {
         margin-top : var(--gap);
+        max-height: fit-content;
         width: 100%;
-        overflow-y: default;
+        overflow-y: visible;
     }
 }

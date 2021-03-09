@@ -23,7 +23,7 @@ const Information = ({project, creatorData}) => {
             break;
         case 1:
             content = (
-                <CarouselDisplay imageHashes = {project.images}/>
+                <CarouselDisplay imageHashes = {project.imgHashes}/>
             );
             break;
         case 2:
