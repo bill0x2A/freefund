@@ -75,7 +75,7 @@ class Dapp extends React.Component {
   }
 
   componentDidMount(){
-    this.props.setMobile(onMobile());
+    this.props.setMobile( onMobile() );
     this.checkConnection();
   }
 
@@ -186,20 +186,17 @@ class Dapp extends React.Component {
     console.log("RUNNING _initializeEthers()");
     console.dir(window.ethereum);
     const provider = new ethers.providers.Web3Provider(window.ethereum);
-    console.log("Provider : ", provider);
     this.props.connectProvider(provider);
 
     const signer = provider.getSigner();
-    console.log("Signer : ", signer);
-
     const rinkebyDai = new ethers.Contract(rinkebyDaiAddress, daiAbi);
     const rinkebyDaiWithSigner = rinkebyDai.connect(signer);
 
-    this.props.connectDaiContract(rinkebyDaiWithSigner);
+
+    this.props.connectDaiContract(signer ? rinkebyDaiWithSigner : rinkebyDai);
 
     const scInterface = new ethers.utils.Interface(artifacts.abi);
     const freefundFactory  = new ethers.ContractFactory(scInterface, artifacts.bytecode, signer);
-    console.log(freefundFactory);
     this.props.connectFactory(freefundFactory);
 
     // INITIALISE CONTRACTS HERE

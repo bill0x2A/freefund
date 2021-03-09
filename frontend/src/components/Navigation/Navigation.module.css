@@ -7,11 +7,7 @@
     padding: 0 30px;
 }
 
-@media only screen and (max-width : 650px){
-    .Navbar {
-        padding : 0 5px;
-    }
-}
+
 
 .Logo {
     position: relative;
@@ -147,4 +143,49 @@
     overflow: hidden;
     margin: 0;
     font-weight: 500;
+}
+
+@media only screen and (max-width : 680px){
+    .Navbar {
+        padding : 0 5px;
+    }
+}
+
+@media only screen and (max-width : 620px){
+    .WalletInfo p {
+        display: none;
+    }
+    
+    .WalletInfo {
+        transition: none;
+        display: initial;
+        align-items: center;
+        border: initial;
+        padding-left: initial;
+        border-radius: initial;
+        border-top-right-radius: initial;
+        border-bottom-right-radius: initial;
+        overflow: initial;
+        justify-content: initial;
+        width: initial;
+        transition: initial;
+    }
+
+    .WalletInfo img {
+        border : 3px solid var(--bold);
+        height: 50px;
+        width: 50px;
+    }
+
+    .WalletInfo img:hover {
+        border: 3px solid var(--accent);
+    }
+    
+    .WalletInfo:hover {
+        background: none;
+    }
+
+    .NavItem {
+        display: none;
+    }
 }

@@ -62,6 +62,10 @@
     margin-bottom: 25px;
 }
 
+.TitleTagline {
+    max-width: 70%;
+}
+
 .NewProjects {
     flex : 2;
     margin-top : 40px;

@@ -13,12 +13,12 @@ import { Icon, InlineIcon } from '@iconify/react';
 import { Link } from 'react-router-dom';
 
 const project = {
-    title : "Test Project Title",
-    tagline : "This is a test tagline for a test project",
-    id : "spGAQPteC",
+    title : "New Test",
+    tagline : "This is a test of the tagline to see if it works and how it looks even when its quite long, It should probably be even longer incase someone is really bad a summing up their project quickly and they insist on typing lots and lots of text to explain it.",
+    id : "JhIjNtUYTQUfdWqAM4O",
     headerImg : testImage,
-    funding: 10,
-    fundingLimit : 50,
+    funding: 0,
+    fundingLimit : 40000,
     endTime : new Date(2021, 3, 20, 10, 33, 30, 0),
 }
 
@@ -47,11 +47,11 @@ const Home = props => {
                     <h4>Featured Project</h4>
                     <img src={project.headerImg}/>
                     <div style={{display:"flex", justifyContent:"space-between"}}>
-                        <div>
+                        <div className={classes.TitleTagline}>
                             <h3>{project.title}</h3>
                             <p>{project.tagline}</p>
                         </div>
-                        <div>
+                        <div style={{alignSelf: "flex-end", marginBottom : "15px"}}>
                             <div className = {classes.FundingInfo}>
                                 <span style ={{color:"#5CDB95"}}>{project.funding.toFixed(0)} </span>
                                 <span style ={{color:"white"}}> / {project.fundingLimit}</span>
@@ -96,15 +96,15 @@ const Home = props => {
                 <div className={classes.Section} style={{flexDirection:"row-reverse"}}>
                     <div>
                         <h2>Each Project, a Community</h2>
-                        <h3>Feedback from your community of investors, as standard</h3>
-                        <h3>Lowest commision fee of any crowdfunding platform</h3>
+                        <h3>Feedback from your community of investors, as standard.</h3>
+                        <h3>Lowest commision fee of any crowdfunding platform.</h3>
                     </div>
                     <img src={community}/>
                 </div>
                 <div className={classes.Section}>
                     <div>
                         <h2>Global Crowds</h2>            
-                        <h3>By harnessing the power of payments on Ethereum, Freefund enables the connection of creators and investors worldwide</h3>
+                        <h3>By harnessing the power of payments on Ethereum, Freefund enables the connection of creators and investors worldwide.</h3>
                     </div>
                     <img src={world}/>
                 </div>

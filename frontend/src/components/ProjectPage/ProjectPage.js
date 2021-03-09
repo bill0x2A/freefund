@@ -164,7 +164,7 @@ class ProjectPage extends React.Component {
                                 <div className={classes.Main}>
                                     <div className={classes.Top}>
                                         <div className={classes.ImageContainer}>
-                                            <div style ={{position: "relative", paddingBottom : "56.25%", width:"100%"}}>
+                                            <div style ={ project.videoUrl ? {position: "relative", paddingBottom : "56.25%", width:"100%"} : {marginBottom : "-5px" }}>
                                             { project.videoUrl ? (
                                                 <ReactPlayer
                                                     width = {"100%"}
@@ -199,7 +199,7 @@ class ProjectPage extends React.Component {
                                                     <div className={classes.TimeRemaining}>
                                                         {this.state.remaining}
                                                     </div>
-                                                    <h3><span>{project.funders.length}</span> backers</h3>
+                                                    <h3><span>{project.funders?.length}</span> backers</h3>
                                                     <a href={`https://rinkeby.etherscan.io/address/${project.fundingAddress}`}><div className={classes.ViewContract}><InlineIcon icon={fileContract}/>View Contract</div></a>
                                                 </div>
                                                 <div

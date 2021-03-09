@@ -102,8 +102,7 @@ const Navigation = props => {
                 </Link>
                 <div className={classes.RightNav}>
                     {!mobile && <Link to = {ROUTES.HOME} className={classes.NavItem}><InlineIcon icon={homeFilled}/></Link>}
-                    {user &&
-                        <Link to = {ROUTES.CREATE} className={classes.NavItem}>Create Project</Link>}
+                    {user && <Link to = {ROUTES.CREATE} className={classes.NavItem}>Create Project</Link>}
                     {(!selectedAddress && window.ethereum) ? (
                         <div onClick={connectWallet}
                             className = {classes.ConnectWallet}
