@@ -61,7 +61,7 @@ module.exports = function (app, dbe){
     })
 
     app.post('/addProject',verify, (req, res)=>{
-        const {title, creatorAddress, fundingAddress, imgHashes, description, reason, fundingLimit, 
+        const {title, tagline, creatorAddress, fundingAddress, imgHashes, description, fundingLimit, 
             funding, tiers, funders, headerHash, videoUrl, tags, endTime} = req.body
         
         if(title && imgHashes && description && fundingLimit && creatorAddress){
@@ -70,9 +70,9 @@ module.exports = function (app, dbe){
             user.findOne({address: creatorAddress}, (err,doc)=>{
                 if(doc){
                     user.findOneAndUpdate({address: creatorAddress}, {$set: {updatedAt: new Date()}, 
-                    $push :{ createdProjects: {title, id, description, reason, fundingAddress, imgHashes, fundingLimit} }} )
-                    db.insertOne({title, user: req.user, id, description, reason, creatorAddress, fundingAddress,
-                        imgHashes, fundingLimit, funding: funding?funding:0, tiers, funders,headerHash,
+                    $push :{ createdProjects: {title, tagline, id, description, fundingAddress, imgHashes, fundingLimit} }} )
+                    db.insertOne({title, tagline, user: req.user, id, description, creatorAddress, fundingAddress,
+                        imgHashes, fundingLimit, funding: funding?funding:0, tiers, funders, headerHash,
                          videoUrl, tags, endTime, createdAt: new Date(), updatedAt: new Date() }, (err,doc)=>{
                             res.json({message:"Project created successfully",title, id, creatorAddress, fundingAddress })
                     })
