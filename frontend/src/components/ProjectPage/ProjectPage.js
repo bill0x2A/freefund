@@ -231,14 +231,16 @@ class ProjectPage extends React.Component {
                                     <div className={classes.Bottom}>
                                         <Information project={project} creatorData={creatorData}/>
                                         <div className={classes.Tiers}>
-                                            {project.tiers?.map((tier, index) => (
-                                                <RewardTier
-                                                    index={index + 1}
-                                                    amount={tier.funding}
-                                                    pledgeHandler={() => this.pledgeHandler(tier.funding)}
-                                                    description={tier.description}
-                                                />
-                                            ))}
+                                            <div style={{height: 0, minHeight: "100%"}}>
+                                                {project.tiers?.map((tier, index) => (
+                                                    <RewardTier
+                                                        index={index + 1}
+                                                        amount={tier.funding}
+                                                        pledgeHandler={() => this.pledgeHandler(tier.funding)}
+                                                        description={tier.description}
+                                                    />
+                                                ))}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

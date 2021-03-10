@@ -151,8 +151,8 @@
 .Bottom {
     display: flex;
     justify-content: space-between;
+    min-height: 700px;
 }
-
 
 .ImageContainer {
     text-align: center;
@@ -349,7 +349,7 @@
 
 
 .Tiers {
-    max-height: inherit;
+    position: relative;
     width : calc(30% - var(--gap)/2 + 22px);
     overflow-y: scroll;
     margin-top : 35px;
