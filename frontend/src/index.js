@@ -8,7 +8,7 @@ import { Provider } from 'react-redux';
 import reducer from './store/reducer';
 import { io } from 'socket.io-client'
 
-const socket = io("https://floating-temple-50905.herokuapp.com")
+// const socket = io("https://floating-temple-50905.herokuapp.com")
 
 const getCookie=(name)=>{
   var ident

@@ -8,6 +8,7 @@ import walletIcon from '@iconify-icons/simple-line-icons/wallet';
 
 
 import DAI from '../../assets/DAI.png';
+import close from '../../assets/close.png';
 import transakLogo from '../../assets/transak-logo.png';
 import { ethers } from 'ethers';
 import Loading from '../Loading/Loading';
@@ -53,7 +54,7 @@ class Fund extends React.Component {
                     email: 'billysmith1998@live.com', // Your customer's email address
                     redirectURL: '',
                     hostURL: window.location.origin,
-                    widgetHeight: '550px',
+                    widgetHeight: '650px',
                     widgetWidth: '450px',
                     defaultNetwork : ['matic'],
                     defaultCryptoAmount : pledge / 1000000000000000000,
@@ -182,10 +183,12 @@ class Fund extends React.Component {
         return(
             <div className={classes.Fund}>
 
-                <div  className={classes.Close} onClick={dismiss}>X</div>
+                <div  className={classes.Close} onClick={dismiss}>
+                    <img src={close}/>
+                </div>
                 { !this.props.mobile && (
                 <React.Fragment>
-                    <h3>Great! How much would you like to give?</h3>
+                    <h3>Fund this project</h3>
                     <div className={classes.Payment}>
                         <input 
                             type="number"

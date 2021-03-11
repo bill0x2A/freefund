@@ -3,10 +3,10 @@
     display: flex;
     flex-direction: column;
     padding: 30px 40px;
-    /* min-width: 500px; */
+    min-width: 450px;
     background: white;
+    border : 3px solid var(--bold);
     border-radius: 4px;
-    box-shadow: var(--bold) 1px 1px, var(--bold) 2px 2px, var(--bold) 3px 3px, var(--bold) 4px 4px, var(--bold) 5px 5px ;
 }
 
 .Fund h3 {
@@ -16,21 +16,31 @@
 
 .Close {
     position: absolute;
-    top: 0;
-    right: 0;
-    padding: 0 6px;
+    top: -9px;
+    right: -12px;
     color: var(--bold);
+    width : 30px;
+    height: 30px;
     font-weight: bold;
     font-size: 20px;
     cursor: pointer;
     user-select: none;
+    background: white;
+    border: 3px solid var(--bold);
     transition: all 300ms;
-    border-bottom-left-radius: 5px;
+    border-radius: 100%;
+}
+
+.Close img {
+    height: 15px;
+    width: 15px;
+    margin-bottom : 1px;
+    margin-left : 4px;
 }
 
 .Close:hover {
     filter: contrast(120%);
-    background: rgba(0,0,0,0.15);
+    background: lightgray;
 }
 
 .Payment {
@@ -97,17 +107,16 @@
     flex-direction: column;
     justify-content: space-between;
     align-items: flex-end;
-    padding: 10px 5px;
+    padding: 10px 0;
 }
 
 .Submit {
     position: relative;
-    background: rgba(0,0,0,0.05);
+    background: var(--accent);
     display: flex;
     justify-content: center;
     align-items: center;
-    color: var(--accent);
-    border : 3px solid var(--accent);
+    color: white;
     border-radius: 4px;
     padding: 5px 15px;
     margin-bottom : 10px;
@@ -115,6 +124,10 @@
     user-select: none;
     cursor: pointer;
     transition: all 300ms;
+}
+
+.Submit:hover {
+    filter : contrast(130%);
 }
 
 .BuyDai {
@@ -132,7 +145,7 @@
     transition: all 300ms;
 }
 
-.Submit:hover, .BuyDai:hover {
+.BuyDai:hover {
     background: rgba(0,0,0,0.1);
 }
 
