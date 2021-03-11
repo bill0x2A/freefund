@@ -88,8 +88,24 @@
     margin : 0 0 10px 20px;
 }
 
-.Description {
+.Description blockquote, .Description pre>code {
+    background: rgba(255,255,255,.6);
+    padding: 10px 20px;
+    border-radius: 5px;
+    margin-left: 5px;
+}
 
+.Description h1, .Description h2, .Description h3, .Description h4, .Description h5, .Description h6{
+    color: var(--bold);
+}
+
+.Description a {
+    color: var(--bold);
+    text-decoration: none;
+}
+
+.Description a:hover {
+    color: var(--accent);
 }
 
 .Description img {

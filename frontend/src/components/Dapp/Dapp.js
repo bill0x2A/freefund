@@ -33,6 +33,8 @@ import * as artifacts from '../../artifacts/contracts/FreeFund.sol/FreeFund.json
 const HARDHAT_NETWORK_ID = '31337'
 const MAINNET_NETWORK_ID = '42'
 const RINKEBY_NETWORK_ID = '4'
+const MUMBAI_NETWORK_ID = '80001'
+const MATIC_NETWORK_ID = '137'
 
 class Dapp extends React.Component {
   constructor(props) {
@@ -211,9 +213,9 @@ class Dapp extends React.Component {
     return error.message;
   }
 
-  // This method checks if Metamask selected network is Localhost:8545 / Kovan Testnet
+  // This method checks if Metamask selected network is Localhost:8545 / Rinkeby Testnet / Mumbai Testnet / Matic Testnet.
   _checkNetwork() {
-    if ([HARDHAT_NETWORK_ID, RINKEBY_NETWORK_ID].includes(window.ethereum.networkVersion)) {
+    if ([HARDHAT_NETWORK_ID, RINKEBY_NETWORK_ID, MUMBAI_NETWORK_ID, MATIC_NETWORK_ID].includes(window.ethereum.networkVersion)) {
       return true;
     }
 

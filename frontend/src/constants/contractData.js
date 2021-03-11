@@ -1,4 +1,4 @@
-export const rinkebyDaiAddress = "0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa";
+export const rinkebyDaiAddress = "0x2d7882beDcbfDDce29Ba99965dd3cdF7fcB10A1e";
 
 export const daiAbi = [
     // Some details about the token

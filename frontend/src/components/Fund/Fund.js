@@ -8,9 +8,12 @@ import walletIcon from '@iconify-icons/simple-line-icons/wallet';
 
 
 import DAI from '../../assets/DAI.png';
+import transakLogo from '../../assets/transak-logo.png';
 import { ethers } from 'ethers';
 import Loading from '../Loading/Loading';
 import TxInfo from '../TxInfo/TxInfo';
+
+import transakSDK from '@transak/transak-sdk'
 
 // This is an error code that indicates that the user canceled a transaction
 const ERROR_CODE_TX_REJECTED_BY_USER = 4001;
@@ -39,12 +42,38 @@ class Fund extends React.Component {
             this.setState({pledge});
         }
 
+        this.setState({
+            transak : new transakSDK({
+                    apiKey: 'cb4cbbbc-4cf3-445e-9f2e-c6f1e6d7f50f',  // Your API Key
+                    environment: 'STAGING', // STAGING/PRODUCTION
+                    defaultCryptoCurrency: 'DAI',
+                    walletAddress: selectedAddress, // Your customer's wallet address
+                    themeColor: '000000', // App theme color
+                    fiatCurrency: 'GBP', // INR/GBP
+                    email: 'billysmith1998@live.com', // Your customer's email address
+                    redirectURL: '',
+                    hostURL: window.location.origin,
+                    widgetHeight: '550px',
+                    widgetWidth: '450px',
+                    defaultNetwork : ['matic'],
+                    defaultCryptoAmount : pledge / 1000000000000000000,
+            })
+        }, () => {
+            let { transak } = this.state;
+            transak.on(transak.EVENTS.TRANSAK_WIDGET_CLOSE, (data) => {
+                this.setState({transakOpen : false});
+                transak.close();
+            });
+        })
+
         this.loadProjectData();
     }
 
     loadProjectData = () => {
         // Convert to mongo
     }
+
+    
 
     async _transferTokens(to, amount) {
         if(!(amount > 0)){
@@ -108,9 +137,14 @@ class Fund extends React.Component {
     }
 
     updateUserBalance = async () => {
-        const balance = await this.props.daiContract?.balanceOf(this.props.user?.address);
+        let balance = await this.props.daiContract?.balanceOf(this.props.user?.address);
+        balance = balance / 1000000000000000000;
+        this.setState({balance});
+    }
 
-        this.setState({balance : ethers.utils.formatUnits(balance, 18)});
+    openTransak = () => {
+        this.setState({transakOpen : true});
+        this.state.transak.init();
     }
 
     render(){
@@ -140,6 +174,11 @@ class Fund extends React.Component {
                 >Fund</div>
             )
         }
+
+        if(this.state.transakOpen){
+            return <div className={classes.Fund}/>
+        }
+
         return(
             <div className={classes.Fund}>
 
@@ -175,6 +214,7 @@ class Fund extends React.Component {
                                     onClick = {() => this._transferTokens("0xa53f2C25278E515851DB513f6C990681429f9a4a", pledge)}
                                 >Fund</div>
                     }
+                    <div className={classes.BuyDai} onClick={this.openTransak}>Purchase DAI with <img src={transakLogo}/></div>
                 </div>
             <ReactTooltip/>
             </div>

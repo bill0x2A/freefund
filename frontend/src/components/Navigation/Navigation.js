@@ -38,21 +38,25 @@ const NetworkAlert = ({networkID, mobile}) => {
 
     switch(id){
         case 1:
-            alertText = "WARNING : Connected to Ethereum Mainnet, please switch to Rinkeby Testnet";
+            alertText = "WARNING : Connected to Ethereum Mainnet, please switch to Mumbai Testnet";
+            break;
+        case 137:
+            alertText = "WARNING : Connected to Matic Mainnet, please switch to Mumbai Testnet";
             break;
         case 3:
-            alertText = "Connected to Ropsten Testnet, please switch to Rinkeby Testnet";
+            alertText = "Connected to Ropsten Testnet, please switch to Mumbai Testnet";
             break;
         case 5:
-            alertText = "Connected to Goerli Testnet, please switch to Rinkeby Testnet";
+            alertText = "Connected to Goerli Testnet, please switch to Mumbai Testnet";
             break;       
         case 4:
+        case 80001:
             return null; 
         case 2018:
-            alertText = "Connected to Dev Testnet, please switch to Rinkeby Testnet";
+            alertText = "Connected to Dev Testnet, please switch to Mumbai Testnet";
             break;
         case 42:
-            alertText = "Connected to Kovan Testnet, please switch to Rinkeby Testnet";
+            alertText = "Connected to Kovan Testnet, please switch to Mumbai Testnet";
             break;
         default:
             alertText = `Connected to network with ID : ${id}`;

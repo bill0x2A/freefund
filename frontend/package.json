@@ -17,6 +17,7 @@
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
     "@testing-library/user-event": "^12.6.3",
+    "@transak/transak-sdk": "^1.0.28",
     "bootstrap": "^4.6.0",
     "ethereum-blockies": "^0.1.1",
     "ethers": "^5.0.29",

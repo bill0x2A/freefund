@@ -200,7 +200,7 @@ class ProjectPage extends React.Component {
                                                         {this.state.remaining}
                                                     </div>
                                                     <h3><span>{project.funders?.length}</span> backers</h3>
-                                                    <a href={`https://rinkeby.etherscan.io/address/${project.fundingAddress}`}><div className={classes.ViewContract}><InlineIcon icon={fileContract}/>View Contract</div></a>
+                                                    <a href={`https://explorer-mumbai.maticvigil.com/address/${project.fundingAddress}`}><div className={classes.ViewContract}><InlineIcon icon={fileContract}/>View Contract</div></a>
                                                 </div>
                                                 <div
                                                     className={classes.PledgeButton}
