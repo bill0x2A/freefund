@@ -3,12 +3,14 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import classes from './Messages.module.sass';
 import { DateTime } from 'luxon';
+import testpp from '../../assets/defaultpp.png';
 
 class Messages extends React.Component {
     constructor(props){
        super(props);
        this.state = {
            loading : true,
+           newMessage : "",
            messageSenders : [
                {
                    name : "Elon Musk",
@@ -91,7 +93,7 @@ class Messages extends React.Component {
                     sender : "Me"
                 },{
                     timeSent : DateTime.fromISO("2021-03-15T08:30:00"),
-                    message : "This is a test message This is a test message",
+                    message : "This is a test message This is a test message This is a test message This is a test message This is a test message This is a test message This is a test message This is a test message This is a test message This is a test message This is a test message This is a test message This is a test message This is a test message This is a test message This is a test message This is a test message This is a test message This is a test message This is a test message This is a test message ",
                     sender : "Elon Moosk"
                 },{
                     timeSent : DateTime.fromISO("2021-03-15T10:30:00"),
@@ -110,6 +112,7 @@ class Messages extends React.Component {
         if(!this.props.user?.address){
             this.props.history.push('/home');
         }
+        this.loadData();
         this.setState({loading: false});
     }
 
@@ -118,15 +121,25 @@ class Messages extends React.Component {
     }
 
     handleKeyPress = e => {
-        if(e.keyCode === 13){
+        if(e.charCode === 13 && !e.shiftKey){
+            e.preventDefault();
             this.sendMessage();
         }
     }
 
+    loadData = () => {
+        // Load all required data here
+    }
+
     sendMessage(){
         const {newMessage, selectedSender} = this.state;
-
+        this.setState({newMessage : ""})
+        console.log(newMessage)
         // Send message here
+    }
+
+    onChange = e => {
+        this.setState({[e.target.name] : e.target.value});
     }
 
     render(){
@@ -141,6 +154,7 @@ class Messages extends React.Component {
                             className={classes.messageSender}
                             onClick = {() => this.selectSender(messageSender)}
                         >
+                            <img src={testpp}/>
                             {messageSender.name}
                         </div>
                     ))}
@@ -153,10 +167,11 @@ class Messages extends React.Component {
                     </div>
                     {
                         selectedSender &&
-                            <input
+                            <textarea
                                 placeholder ="Send a new message"
-                                type="text"
-                                onChange = {e => this.setState({newMessage : e.target.value})}
+                                value={this.state.newMessage}
+                                name="newMessage"
+                                onChange = {this.onChange}
                                 onKeyPress = {this.handleKeyPress}
                             />
                     }
@@ -171,7 +186,6 @@ const Message = ({message, user}) => {
     const userSent = message.sender === "Me";
     const now = DateTime.now();
     const diff = now.diff(message.timeSent, ["months", "days", "hours", "minutes"]);
-    console.log(diff);
     let timeString = [];
     if(diff.months > 0){
         if(diff.months == 1){

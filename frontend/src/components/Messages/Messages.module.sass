@@ -15,6 +15,19 @@ sidebar
 .wrapper
     flex: 4
 
+    textarea
+        width : calc(100%)
+        outline : none
+        border : 2px solid gray
+        padding : 20px
+        margin-top : 5px
+        border-radius: 8px
+        font-family: 'Open Sans', sans-serif
+        font-size : 16px
+        height: 50px
+        min-height: 60px
+        margin-bottom: 50px
+        transition: all 0ms
 .main
     width : 100%
     position: relative
@@ -22,14 +35,6 @@ sidebar
     height: calc(100vh - 220px)
     overflow-y: scroll
 
-input
-    width : calc(100%)
-    outline : none
-    border : 2px solid gray
-    height : 50px
-    padding : 20px
-    margin-top : 5px
-    border-radius: 8px
 
 .messageContainer
     display: flex
@@ -42,8 +47,8 @@ input
 .messageSender
     width : 100%
     display: flex
+    justify-items: space-between
     align-items: center
-    padding : 10px 20px
     height : 60px
     border-radius: 5px
     font-weight: 600
@@ -55,12 +60,17 @@ input
     &:hover
         background: rgba(0,0,0,0.2)
 
+    img
+        height: 100%
+        margin-right : 20px
+        border-right : 3px solid var(--bold)
 .message
     display: flex
     flex-direction: column
     align-self: flex-start
     margin-bottom : 22px
     min-width : 250px
+    max-width: 70%
 
     p
         background: #eaeaea
