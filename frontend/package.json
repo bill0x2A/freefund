@@ -5,8 +5,10 @@
   "dependencies": {
     "@iconify-icons/ant-design": "^1.1.0",
     "@iconify-icons/brandico": "^1.1.0",
+    "@iconify-icons/bx": "^1.1.0",
     "@iconify-icons/carbon": "^1.1.2",
     "@iconify-icons/clarity": "^1.1.0",
+    "@iconify-icons/entypo": "^1.1.0",
     "@iconify-icons/fa-solid": "^1.1.0",
     "@iconify-icons/fluent": "^1.1.7",
     "@iconify-icons/ph": "^1.1.1",
@@ -22,8 +24,11 @@
     "ethereum-blockies": "^0.1.1",
     "ethers": "^5.0.29",
     "identicon": "^3.0.1",
+    "identicon.js": "^2.3.3",
     "ipfs-http-client": "^49.0.1",
+    "luxon": "^1.26.0",
     "markdown-it": "^12.0.4",
+    "node-sass": "^5.0.0",
     "pure-react-carousel": "^1.27.6",
     "react": "^17.0.1",
     "react-country-flag": "^2.3.0",
@@ -44,6 +49,7 @@
     "react-tooltip": "^4.2.13",
     "redux": "^4.0.5",
     "socket.io-client": "^3.1.2",
+    "timeago.js": "^4.0.2",
     "web-vitals": "^1.1.0"
   },
   "scripts": {

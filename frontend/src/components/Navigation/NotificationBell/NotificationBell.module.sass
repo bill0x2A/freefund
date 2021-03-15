@@ -1,0 +1,70 @@
+.bell
+    position: relative
+    border: 2px solid var(--bold)
+    padding: 5px 10px
+    border-radius: 50px
+    color: var(--bold)
+    height: 44px
+    margin-right: 20px
+    min-width: 50px
+
+    text-decoration: none
+    font-weight: 500
+
+    display: flex
+    align-items: center
+    justify-content: center
+
+    cursor: pointer
+    transition: all 200ms
+
+    &:hover
+        background: rgba(40,17,214,1)
+        color: white
+
+.messages
+    position: absolute
+    overflow-y: scroll
+    z-index: 100
+    bottom : -280px
+    left : -330px
+    height : 300px
+    width : 350px
+    background: white
+    border : 2px solid var(--bold)
+    border-radius : 5px
+    padding : 10px
+
+    h2
+        margin: 0
+        font-size : 16px
+        color: #3e3e3e
+        width: 100%
+        padding-bottom : 5px
+        border-bottom : 2px solid var(--bold)
+
+.notification
+    overflow: hidden
+    height: 50px
+    color : #1f1f1f
+    border-bottom : 2px solid var(--bold)
+    display: flex
+    align-items: center
+    text-decoration: none
+    padding : 0 5px
+    transition : all 200ms
+
+    h3  
+        margin: 0
+        font-size: 13px
+
+    &:hover
+        background: rgba(0,0,0,0.2)
+    span
+        display: flex
+        svg
+            margin-right : 5px
+            color : var(--accent)
+            transform : scale(1.2)
+            font-size : 18px
+            

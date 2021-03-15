@@ -105,7 +105,9 @@
     position: relative;
     min-width: 250px;
     background: #eaeaea;
-    box-shadow: var(--bold) 1px 1px, var(--bold) 2px 2px, var(--bold) 3px 3px, var(--bold) 4px 4px, var(--bold) 5px 5px ;
+    /* box-shadow: var(--bold) 1px 1px, var(--bold) 2px 2px, var(--bold) 3px 3px, var(--bold) 4px 4px, var(--bold) 5px 5px ; */
+    border-bottom : 3px solid var(--bold);
+    border-right : 3px solid var(--bold);
     display: flex;
     height: 50px;
     align-items: center;
@@ -171,7 +173,9 @@
     width: calc(30% - var(--gap)/2);
     padding: 10px 20px;
     background: #eaeaea;
-    box-shadow: var(--bold) 1px 1px, var(--bold) 2px 2px, var(--bold) 3px 3px, var(--bold) 4px 4px, var(--bold) 5px 5px ;
+    /* box-shadow: var(--bold) 1px 1px, var(--bold) 2px 2px, var(--bold) 3px 3px, var(--bold) 4px 4px, var(--bold) 5px 5px ; */
+    border-bottom : 3px solid var(--bold);
+    border-right : 3px solid var(--bold);
     display: flex;
     flex-direction: column;
 }
@@ -315,6 +319,11 @@
     user-select: none;
     cursor: pointer;
     transition: all 100ms;
+}
+
+.PledgeButton {
+    margin-bottom : 16px;
+    margin-right : 5px;
 }
 
 

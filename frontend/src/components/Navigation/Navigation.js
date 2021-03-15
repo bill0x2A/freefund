@@ -10,6 +10,7 @@ import alpha from '../../assets/alpha.png';
 import Loading from '../Loading/Loading';
 import homeFilled from '@iconify-icons/ant-design/home-filled';
 import { InlineIcon } from '@iconify/react';
+import NotificationBell from './NotificationBell/NotificationBell';
 
 
 const NoWalletDetected = () => (
@@ -106,6 +107,7 @@ const Navigation = props => {
                 </Link>
                 <div className={classes.RightNav}>
                     {!mobile && <Link to = {ROUTES.HOME} className={classes.NavItem}><InlineIcon icon={homeFilled}/></Link>}
+                    {user && <NotificationBell/>}
                     {user && <Link to = {ROUTES.CREATE} className={classes.NavItem}>Create Project</Link>}
                     {(!selectedAddress && window.ethereum) ? (
                         <div onClick={connectWallet}
@@ -117,6 +119,7 @@ const Navigation = props => {
                             selectedAddress={selectedAddress}
                         />)
                     }
+
                 </div>
             </div>
         </div>

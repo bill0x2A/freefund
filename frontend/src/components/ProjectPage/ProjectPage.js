@@ -11,8 +11,6 @@ import twitterBird from '@iconify-icons/brandico/twitter-bird';
 import facebookIcon from '@iconify-icons/brandico/facebook';
 import emailSolid from '@iconify-icons/clarity/email-solid';
 import tagIcon from '@iconify-icons/ant-design/tag-outlined';
-import clock16Regular from '@iconify-icons/fluent/clock-16-regular';
-
 
 import testImg from '../../assets/yosemite.png';
 
