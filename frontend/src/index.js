@@ -85,13 +85,30 @@ const saveState = (state) => {
 //     // this adds to the notification box of everyone that a new project has been added and can be checked out (beta/alpha)
 //   })
 
+//    socket.on("send", data=>{
+//    This is an event listener for message received for first Time
+//    data composes of chatId, message, userId
+//})
+
+//    socket.on("accepted", data=>{
+//    This is an event listener to notify the user that the recipient has accepted the chat request
+//    data composes of chatId
+//})
+
+//    socket.on("chatted", data=>{
+//    This is an event listener for message received after the first Time
+//    data composes of chatId, message
+//})
+
 //   function emitTriggers(){
 //     // These are the triggers that will be sent to the event listeners in the backend
 //     // The places or reasons to use them have been explained a bit above them
 //     // They can be used anywhere in the frontend just required io which can be stored in the redux
 //     // They were placed in the function emitTriggers to avoid triggering unexpectedly or unintentionally
 //     // You'll have to pick them and place them where needed, the needed data was specified and explained
-
+       // Join your personalised room in socket
+//       socket.emit('join', {_id: "id of the user from the db"})
+//
 //     //new project by creator
 //     socket.emit("newProject", {id:"id of project created, gotten from the backend"})
 
@@ -113,8 +130,19 @@ const saveState = (state) => {
 //     // send trigger that a new project has been successfully added to the platform
 //     socket.emit("add", "arbitrary data can be put here")
 
+//     // Initialise a chat with a user
+//     // socket.emit('createChat', {userAddress: "address of present user for identification",
+ //                                   name:"name of recipient", _id: "id of user", message:"intended chat" })
+
+ //    // accept chat for first time recipient
+ //     socket.emit("accept", {_id: "id of other user", address:userAddress, name:"name of user", chatId: "id of chat store"})
+
+ //    // normal chat emit event
+ //     socket.emit("chat", {chatId: "id of chat store", mesage:"message sent by user", _id:"id of recipient"})
+
 //     }
 
+//     
     
   
 //}
