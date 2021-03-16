@@ -4,6 +4,9 @@ import { withRouter } from 'react-router';
 import classes from './Messages.module.sass';
 import { DateTime } from 'luxon';
 import testpp from '../../assets/defaultpp.png';
+import { io } from 'socket.io-client'
+
+const socket = io("https://floating-temple-50905.herokuapp.com")
 
 class Messages extends React.Component {
     constructor(props){
@@ -11,6 +14,8 @@ class Messages extends React.Component {
        this.state = {
            loading : true,
            newMessage : "",
+           chatId: 1, //id of chat to help store the chat
+           _id: this.props.id || 2, // id of person chatting with,
            messageSenders : [
                {
                    name : "Elon Musk",
@@ -114,6 +119,20 @@ class Messages extends React.Component {
         }
         this.loadData();
         this.setState({loading: false});
+        socket.on("send", data=>{
+            const {chatId, message, temp, userId, userName} = data
+            //    This is an event listener for message received for first Time
+            //    data composes of chatId, message, userId
+            this.setState({chatId, _id: userId, name:userName, messageSender: [...this.state.messageSenders,{name:userName, message:[{timeSent: new Date(), message}] }] })
+            socket.emit("accept", {chatId, _id: userId})
+        })
+
+        socket.on("accepted", data=>{
+            //    This is an event listener to notify the user that the recipient has accepted the chat request
+            //    data composes of chatId
+            this.setState({chatId: data})
+            //console.log("Chat Accepted")
+        })
     }
 
     selectSender = (sender) => {
@@ -132,10 +151,19 @@ class Messages extends React.Component {
     }
 
     sendMessage(){
-        const {newMessage, selectedSender} = this.state;
+        const {newMessage, selectedSender, chatId, messageSenders, _id} = this.state;
         this.setState({newMessage : ""})
-        console.log(newMessage)
+        //console.log(newMessage)
         // Send message here
+        if(messageSenders.length>0){
+            // continue chat with user
+            socket.emit("chat", {chatId, mesage:newMessage, _id})
+        }else{
+            // Initialise a chat with a user
+            socket.emit('createChat', {userAddress:this.props.user.address,
+                                  name:"Elon Musk", _id, message:newMessage })
+        }
+        
     }
 
     onChange = e => {
