@@ -16,6 +16,21 @@ class Messages extends React.Component {
            newMessage : "",
            chatId: 1, //id of chat to help store the chat
            _id: this.props.id || 2, // id of person chatting with,
+           chat: [{
+               name: "Elon Musk",
+               messages:{
+                   time: DateTime.fromISO("2021-05-15T08:30:00"),
+                   message: "This is a test message"
+               }
+           },
+           {
+            name: "Me",
+            messages:{
+                time: DateTime.fromISO("2021-05-15T08:30:00"),
+                message: "This is a test message"
+            }
+            }],
+
            messageSenders : [
                {
                    name : "Elon Musk",
@@ -119,6 +134,7 @@ class Messages extends React.Component {
         }
         this.loadData();
         this.setState({loading: false});
+        
         socket.on("send", data=>{
             const {chatId, message, temp, userId, userName} = data
             //    This is an event listener for message received for first Time
@@ -131,6 +147,13 @@ class Messages extends React.Component {
             //    This is an event listener to notify the user that the recipient has accepted the chat request
             //    data composes of chatId
             this.setState({chatId: data})
+            //console.log("Chat Accepted")
+        })
+
+        socket.on("chatted", data=>{
+            //    This is an event listener to notify the user that the recipient has accepted the chat request
+            //    data composes of chatId
+            this.setState({chatId: data.chatId, newMessage: data.message})
             //console.log("Chat Accepted")
         })
     }

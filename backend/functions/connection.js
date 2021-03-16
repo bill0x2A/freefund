@@ -61,7 +61,10 @@ module.exports = function(io, dbe){
             user.findOneAndUpdate({address:data.userAddress}, {$push: {$chats: {id,name: data.name} }})
             chats.insertOne({id, message:[{time:new Date(), chat: data.message}]})
             user.findOne({address: data.userAddress}, doc =>{
-                socket.to(data._id).emit("send", {chatId:id, message:data.message, temp:socket.id, userId: doc._id, userName: doc.firstName+" "+doc.lastName})
+                user.fineOne({address: data.address}, docs =>{
+                    socket.to(docs._id).emit("send", {chatId:id, message:data.message, temp:socket.id, userId: doc._id, userName: doc.firstName+" "+doc.lastName})
+                })
+                
             })
             
         })
