@@ -139,7 +139,7 @@ class Messages extends React.Component {
             const {chatId, message, temp, userId, userName} = data
             //    This is an event listener for message received for first Time
             //    data composes of chatId, message, userId
-            this.setState({chatId, _id: userId, name:userName, messageSender: [...this.state.messageSenders,{name:userName, message:[{timeSent: new Date(), message}] }] })
+            this.setState({chatId, _id: userId, name:userName, messageSender: [...this.state.messageSenders,{name:userName, messages:[{timeSent: new Date(), message}] }] })
             socket.emit("accept", {chatId, _id: userId})
         })
 
