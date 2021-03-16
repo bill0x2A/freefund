@@ -17,18 +17,14 @@ class Messages extends React.Component {
            chatId: 1, //id of chat to help store the chat
            _id: this.props.id || 2, // id of person chatting with,
            chat: [{
-               name: "Elon Musk",
-               messages:{
-                   time: DateTime.fromISO("2021-05-15T08:30:00"),
-                   message: "This is a test message"
-               }
+                name: "Elon Musk",
+                time: DateTime.fromISO("2021-05-15T08:30:00"),
+                message: "This is a test message"
            },
            {
             name: "Me",
-            messages:{
-                time: DateTime.fromISO("2021-05-15T08:30:00"),
-                message: "This is a test message"
-            }
+            time: DateTime.fromISO("2021-05-15T08:30:00"),
+            message: "This is a test message"
             }],
 
            messageSenders : [
