@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import classes from './Fund.module.css';
+import classes from './Fund.module.sass';
 
 import { connect } from 'react-redux';
 import ReactTooltip from 'react-tooltip';

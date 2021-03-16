@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import classes from './ImgCropper.module.css';
+import classes from './ImgCropper.module.sass';
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 

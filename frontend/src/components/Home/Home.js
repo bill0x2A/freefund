@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import classes from './Home.module.css';
+import classes from './Home.module.sass';
 import testImage from '../../assets/yosemite.png';
 import timeDifferece from '../../util/timeDifferece';
 import DAI from '../../assets/DAI.png';

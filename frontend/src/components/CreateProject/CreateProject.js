@@ -1,5 +1,5 @@
 import React from 'react';
-import classes from './CreateProject.module.css';
+import classes from './CreateProject.module.sass';
 
 import NoAddress from '../NoAddress/NoAddress';
 import Loading from '../Loading/Loading';

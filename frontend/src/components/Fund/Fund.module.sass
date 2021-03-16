@@ -1,0 +1,178 @@
+.Fund  
+    position: relative 
+    display: flex 
+    flex-direction: column 
+    padding: 30px 40px 
+    min-width: 450px 
+    background: white 
+    border : 3px solid var(--bold) 
+    border-radius: 4px 
+ 
+    h3  
+        color: var(--bold) 
+        margin-top : 5px 
+ 
+.Close  
+    position: absolute 
+    top: -9px 
+    right: -12px 
+    color: var(--bold) 
+    width : 30px 
+    height: 30px 
+    font-weight: bold 
+    font-size: 20px 
+    cursor: pointer 
+    user-select: none 
+    background: white 
+    border: 3px solid var(--bold) 
+    transition: all 300ms 
+    border-radius: 100% 
+ 
+    img  
+        height: 15px 
+        width: 15px 
+        margin-bottom : 1px 
+        margin-left : 4px 
+    
+    &:hover  
+        filter: contrast(120%) 
+        background: lightgray 
+ 
+
+.Payment  
+    width: 100% 
+    display: flex 
+    height: 50px 
+    align-items: center 
+ 
+    input
+        &[type=number]  
+            width: 80% 
+            border : 3px solid var(--bold) 
+            border-right : none 
+            color: black 
+            padding : 10px 10px 
+            font-size: 16px 
+            font-weight: 600 
+ 
+    span  
+        width : 20% 
+        display: flex 
+        align-items: center 
+        justify-content: center 
+        font-weight: bold 
+        background: var(--bold) 
+        height: calc(100% - 2px) 
+        border : 3px solid var(--bold) 
+        border-left : none 
+        color: white 
+        user-select: none 
+        border-top-right-radius: 5px 
+        border-bottom-right-radius: 5px 
+ 
+    img 
+        height: 18px 
+        margin-left: 5px 
+ 
+.Balance 
+    svg  
+        margin-right : 5px!important 
+
+    img
+        height: 18px 
+        margin-left: 5px
+ 
+    span 
+        display: inline-flex 
+        width: auto 
+        min-width: 130px 
+        background: var(--bold) 
+        border-bottom-right-radius: 5px 
+        border-bottom-left-radius: 5px 
+        justify-content: space-around 
+        color: white 
+        padding: 5px 10px 
+        margin-top : -2px 
+        align-items: center 
+        user-select: none 
+ 
+.SubmitContainer  
+    width: 100% 
+    display: flex 
+    flex-direction: column 
+    justify-content: space-between 
+    align-items: flex-end 
+    padding: 10px 0 
+ 
+.Submit  
+    position: relative 
+    background: var(--accent) 
+    display: flex 
+    justify-content: center 
+    align-items: center 
+    color: white 
+    border-radius: 4px 
+    padding: 5px 15px 
+    margin-bottom : 10px 
+    font-size: 18px 
+    user-select: none 
+    cursor: pointer 
+    transition: all 300ms 
+ 
+    &:hover  
+        filter : contrast(130%) 
+ 
+.BuyDai  
+    position: relative 
+    display: flex 
+    justify-content: center 
+    align-items: center 
+    color: #006ff5 
+    border : 3px solid #006ff5 
+    border-radius: 4px 
+    padding: 0px 10px 
+    font-size: 17px 
+    user-select: none 
+    cursor: pointer 
+    transition: all 300ms 
+ 
+    &:hover  
+        background: rgba(0,0,0,0.1) 
+ 
+
+    img  
+        height: 32px 
+        margin-left: 5px 
+ 
+
+.SendingTx  
+    display: flex 
+    align-items: center 
+ 
+    p  
+        margin-right : 10px 
+ 
+.TxMessage  
+    width: 100% 
+    display: flex 
+    flex-direction: column 
+    padding : 10px 10px 
+    border: 3px dashed var(--accent) 
+    color: var(--accent) 
+    background : #eaeaea 
+    position: relative 
+ 
+    p  
+        margin-top : 0 
+ 
+    a  
+        position: relative 
+        text-decoration: none 
+        font-weight: bold 
+        color : var(--accent)
+ 
+        &:hover  
+            background: rgba(0,0,0,0.1) 
+            left: -2px 
+            padding: 2px 5px 
+ 

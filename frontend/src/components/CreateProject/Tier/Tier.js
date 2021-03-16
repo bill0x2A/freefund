@@ -1,6 +1,6 @@
 import React from 'react'
-import classes from './Tier.module.css';
-import sharedClasses from '../CreateProject.module.css';
+import classes from './Tier.module.sass';
+import sharedClasses from '../CreateProject.module.sass';
 import { Icon, InlineIcon } from '@iconify/react';
 import closeLine from '@iconify-icons/clarity/close-line';
 

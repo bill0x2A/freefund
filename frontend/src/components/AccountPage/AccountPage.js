@@ -1,5 +1,5 @@
 import React from 'react'
-import classes from './AccountPage.module.css';
+import classes from './AccountPage.module.sass';
 
 import NoAddress from '../NoAddress/NoAddress';
 import ReactFlagsSelect from 'react-flags-select';

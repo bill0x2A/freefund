@@ -1,5 +1,5 @@
 import React from 'react';
-import classes from './ErrorMessage.module.css';
+import classes from './ErrorMessage.module.sass';
 
 const ErrorMessage = props => {
     return(

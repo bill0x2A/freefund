@@ -1,5 +1,5 @@
 import React from 'react';
-import classes from './ModalContainer.module.css';
+import classes from './ModalContainer.module.sass';
 
 
 const ModalContainer = props => {

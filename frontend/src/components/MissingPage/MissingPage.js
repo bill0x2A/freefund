@@ -1,5 +1,5 @@
 import React from 'react';
-import classes from './MissingPage.module.css';
+import classes from './MissingPage.module.sass';
 
 import { Link } from 'react-router-dom';
 

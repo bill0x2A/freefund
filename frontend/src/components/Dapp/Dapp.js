@@ -1,5 +1,5 @@
 import React from "react";
-import classes from './Dapp.module.css';
+import classes from './Dapp.module.sass';
 import * as ROUTES from '../../constants/routes';
 import * as actionTypes from '../../store/actionTypes';
 import { connect } from 'react-redux';
