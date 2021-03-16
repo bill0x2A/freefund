@@ -14,16 +14,15 @@ import { BrowserRouter as Router,
 import { ethers } from "ethers";
 
 import Navigation from '../Navigation/Navigation';
-import LandingPage from '../LandingPage/LandingPage';
 import ProjectBrowser from '../ProjectBrowser/ProjectBrowser';
 import CreateProject from '../CreateProject/CreateProject';
 import AccountPage from '../AccountPage/AccountPage';
 import ProjectPage from '../ProjectPage/ProjectPage';
-import MobileMessage from '../MobileMessage/MobileMessage';
 import MissingPage from '../MissingPage/MissingPage';
 import Messages from '../Messages/Messages';
 import Home from '../Home/Home';
 import Footer from '../Footer/Footer';
+import ContactPage from '../Contact/Contact';
 // import FundingDao from '../FundingDao/FundingDao';
 
 import onMobile from '../../util/detectMobile';
@@ -65,6 +64,7 @@ class Dapp extends React.Component {
                     <Route path={ROUTES.PROJECT} component={ProjectPage}/>
                     <Route path={ROUTES.CREATE} component = {CreateProject}/>
                     <Route path={ROUTES.ACCOUNT} component = {AccountPage}/>
+                    <Route path={ROUTES.CONTACT} component = {ContactPage}/>
                     <Route path={ROUTES.MESSAGES} component = {Messages}/>
                     <Route component = {MissingPage}/>
                   </Switch>

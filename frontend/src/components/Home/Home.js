@@ -8,9 +8,10 @@ import pathDuotone from '@iconify-icons/ph/path-duotone';
 import world from '../../assets/world.png';
 import community from '../../assets/community.png';
 import ethereum from '../../assets/ethereum.png';
-
+import { withRouter } from 'react-router-dom';
 import { Icon, InlineIcon } from '@iconify/react';
 import { Link } from 'react-router-dom';
+import * as ROUTES from '../../constants/routes';
 
 const project = {
     title : "New Test",
@@ -112,11 +113,11 @@ const Home = props => {
                 <div className={classes.Buttons}>
                     <button><InlineIcon icon ={pathDuotone}/>Roadmap</button>
                     <button>Join our Alpha</button>
-                    <button>Contact Us</button>
+                    <button onClick={() => props.history.push(ROUTES.CONTACT)}>Contact Us</button>
                 </div>
             </div>
         </div>
     )
 }
 
-export default Home;
+export default withRouter(Home);
