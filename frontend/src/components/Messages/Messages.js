@@ -184,7 +184,7 @@ class Messages extends React.Component {
         }else{
             // Initialise a chat with a user
             socket.emit('createChat', {userAddress:this.props.user.address,
-                                  name:"Elon Musk", _id, message:newMessage })
+                                  name:"Elon Musk", address: this.props.userAddress, message:newMessage })
         }
         
     }
