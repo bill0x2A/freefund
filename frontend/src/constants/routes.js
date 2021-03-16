@@ -7,4 +7,5 @@ export const PROJECT = '/projects/:projectID';
 export const DONATE = '/project/:projectID/fund';
 export const MESSAGES = '/messages';
 export const CONTACT = '/contact';
+export const ALPHA = '/joinAlpha';
 // export const FUNDING_DAO = '/funding_dao/:projectID';

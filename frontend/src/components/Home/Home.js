@@ -67,7 +67,7 @@ const Home = props => {
                 </Link>
                 <div className={classes.NewProjects}>
                     {otherProjects.map( project => (
-                        <Link className={classes.ProjectSmall}>
+                        <Link to={ROUTES.ALPHA} className={classes.ProjectSmall}>
                             <div className={classes.SmallImg} style={{backgroundImage: `url(${testImage})`}}/>
                             <div className={classes.TextContainer}>
                                 <h3>{project.title}</h3>
@@ -112,7 +112,7 @@ const Home = props => {
 
                 <div className={classes.Buttons}>
                     <button><InlineIcon icon ={pathDuotone}/>Roadmap</button>
-                    <button>Join our Alpha</button>
+                    <button onClick={() => props.history.push(ROUTES.ALPHA)}>Join our Alpha</button>
                     <button onClick={() => props.history.push(ROUTES.CONTACT)}>Contact Us</button>
                 </div>
             </div>

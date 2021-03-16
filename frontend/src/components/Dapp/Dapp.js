@@ -23,6 +23,7 @@ import Messages from '../Messages/Messages';
 import Home from '../Home/Home';
 import Footer from '../Footer/Footer';
 import ContactPage from '../Contact/Contact';
+import AlphaPage from '../JoinAlpha/JoinAlpha';
 // import FundingDao from '../FundingDao/FundingDao';
 
 import onMobile from '../../util/detectMobile';
@@ -63,6 +64,7 @@ class Dapp extends React.Component {
                     <Route exact path={ROUTES.PROJECTS} component={ProjectBrowser}/>
                     <Route path={ROUTES.PROJECT} component={ProjectPage}/>
                     <Route path={ROUTES.CREATE} component = {CreateProject}/>
+                    <Route path={ROUTES.ALPHA} component = {AlphaPage}/>
                     <Route path={ROUTES.ACCOUNT} component = {AccountPage}/>
                     <Route path={ROUTES.CONTACT} component = {ContactPage}/>
                     <Route path={ROUTES.MESSAGES} component = {Messages}/>
