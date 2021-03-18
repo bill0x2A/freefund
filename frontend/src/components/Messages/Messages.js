@@ -5,6 +5,13 @@ import classes from './Messages.module.sass';
 import { DateTime } from 'luxon';
 import testpp from '../../assets/defaultpp.png';
 import { io } from 'socket.io-client'
+import { getChats } from '../../mongo/mongo';
+
+//props:
+// user -> address, firstName, lastName
+// token from cookies
+// other user address as userAddress
+// chat id as chatId, you can get list of chatIds and their names from "/getChats"
 
 const socket = io("https://floating-temple-50905.herokuapp.com")
 
@@ -14,128 +21,112 @@ class Messages extends React.Component {
        this.state = {
            loading : true,
            newMessage : "",
-           chatId: 1, //id of chat to help store the chat
-           _id: this.props.id || 2, // id of person chatting with,
-           messageSenders : [
-               {
-                   name : "Elon Musk",
-                   address : "0x8y219d7b1927dgh179u2dh",
-                   imgHash : "ajna[0pdw89hjap098hdjc0p9on20[9jc0oi2jmco[",
-                   chatId : "mcnoapwicj09awjcpioajwcpoimapcowk",
-               },
-               {
-                name : "Elon Musk",
-                address : "0x8y219d7b1927dgh179u2dh",
-                imgHash : "ajna[0pdw89hjap098hdjc0p9on20[9jc0oi2jmco[",
-                chatId : "iopajcsp9ajcw9mac-wp9ja-cwkj",
-            }
-           ],
-           openChat : [
-               {
-                   message : "This is a test message",
-                   sender : "0ksinfmaf0sh09290mn092j"
-               },
-               {
-                    message : "This is a test message",
-                    sender : "0ksinfmaf0sh09290mn092j"
-               },
-               {
-                    message : "This is a test message",
-                    sender : "0ksinfmaf0sh09290mn092j"
-               }
-           ]
+           chatId: this.props.chatId || null, //id of chat to help store the chat
+           _id: this.props.id || null, // id of person chatting with,
+           accepted: false,
+           name: this.props.user.firstName+" "+this.props.user.lastName || "Me",
+           chats: [{
+                name: "Elon Musk",
+                time: DateTime.fromISO("2021-05-15T08:30:00"),
+                message: "This is a test message"
+           },
+           {
+            name: "Elon Moosk",
+            time: DateTime.fromISO("2021-05-15T08:30:00"),
+            message: "This is a test message"
+            }]
        }
     }
 
-    componentDidMount(){
-        // If the user is not logged in, redirect them to the homepage
+async componentDidMount(){
         if(!this.props.user?.address){
             this.props.history.push('/home');
         }
-        
-        // Load the list of active chats
-        this.loadChats();
+        await this.loadData();
+        this.setState({loading: false});
+
+        socket.save("save", data=> { this.setState({chatId: data}) })
         
         socket.on("send", data=>{
-            const {chatId, message, temp, userId, userName} = data
+            const {chatId, message, userId, userName} = data
             //    This is an event listener for message received for first Time
             //    data composes of chatId, message, userId
-            this.setState({chatId, _id: userId, name:userName, messageSender: [...this.state.messageSenders,{name:userName, messages:[{timeSent: new Date(), message}] }] })
-            socket.emit("accept", {chatId, _id: userId})
+            this.setState({chatId, _id: userId, name:userName, chats: [...this.state.chats,{name: userName, time: DateTime.fromMillis(Date.now()), message}] })
+            socket.emit("accept", {chatId, _id: userId, userAddress: this.props.user.address})
         })
 
         socket.on("accepted", data=>{
             //    This is an event listener to notify the user that the recipient has accepted the chat request
             //    data composes of chatId
-            this.setState({chatId: data})
+            this.setState({chatId: data, accepted: true})
             //console.log("Chat Accepted")
         })
 
         socket.on("chatted", data=>{
             //    This is an event listener to notify the user that the recipient has accepted the chat request
-            //    data composes of chatId
-            this.setState({chatId: data.chatId, newMessage: data.message})
+            //    data composes of chatId and message
+            this.setState({chat: [...this.state.chats, data.message] })
             //console.log("Chat Accepted")
         })
     }
 
-    loadChat = chatID => {
-        // Use chatID to load messages and save them to state as openChat
-    }
-
-    loadChats = () => {
-        const userAddress = this.props.user.address;
-
-        // If this is a new chat, include the other user in the messageSenders array 
-        
-        // Creators also need an option to broadcast messages to all their project funders here (one -> many)
-
-        // Use userAddress to load messageSenders to state
-
-        this.setState({loading: false}); // Show the component
-    }
-
-    sendMessage(){
-        const {newMessage, selectedSender, chatId, messageSenders, _id} = this.state;
-        this.setState({newMessage : ""})
-        //console.log(newMessage)
-        // Send message here
-        if(messageSenders.length>0){
-            // continue chat with user
-            socket.emit("chat", {chatId, mesage:newMessage, _id})
-        }else{
-            // Initialise a chat with a user
-            socket.emit('createChat', {userAddress:this.props.user.address,
-                                  name:"Elon Musk", address: this.props.userAddress, message:newMessage })
-        }
-        
-    }
-
-    // Input handling functions
-
-    onChange = e => {
-        this.setState({[e.target.name] : e.target.value});
+    selectSender = (sender) => {
+        this.setState({selectedSender : sender})
     }
 
     handleKeyPress = e => {
-        // When the user presses enter, unless they are holding shift
         if(e.charCode === 13 && !e.shiftKey){
             e.preventDefault();
             this.sendMessage();
         }
     }
 
+    loadData = async () => {
+        // Load all required data here
+        if(this.state.chatId){
+            let {data, response} = await getChats({chatId: this.state.chatId, token: this.props.token})
+            if(data){
+                this.setState({chats: data.data})
+            }  
+        }
+        
+    }
+
+    sendMessage(){
+        const {newMessage, selectedSender, chatId, chats, _id} = this.state;
+        this.setState({newMessage : ""})
+        //console.log(newMessage)
+        // Send message here
+        if(chats.length>0 && this.state.chatId){
+            // continue chat with user
+            let newer = {name: this.state.name,  time: DateTime.fromMillis(Date.now()), message: newMessage}
+            let chats = [...this.state.chats, newer ]
+            
+            socket.emit("chat", {chatId, message:newer, _id})
+            this.setState({chats})
+        }else{
+            // Initialise a chat with a user
+            socket.emit('createChat', {address:this.props.user.address,
+                                  name:"Elon Musk", userAddress: this.props.userAddress, message:newMessage })
+        }
+        
+    }
+
+    onChange = e => {
+        this.setState({[e.target.name] : e.target.value});
+    }
+
     render(){
-        const {messageSenders, selectedSender} = this.state;
+        const {chats, selectedSender} = this.state;
         return(
             <div className={classes.messages}>
                 <sidebar>
                     <h2>Messages</h2>
-                    {messageSenders.map(messageSender => (
+                    {chats.map(messageSender => (
                         <div
                             style={(selectedSender?.name === messageSender.name) ? {border : "3px dashed var(--bold)"} : null}
                             className={classes.messageSender}
-                            onClick = {() => this.loadChat(messageSender.chatId)}
+                            onClick = {() => this.selectSender(messageSender)}
                         >
                             <img src={testpp}/>
                             {messageSender.name}
@@ -166,7 +157,7 @@ class Messages extends React.Component {
 
 
 const Message = ({message, user}) => {
-    const userSent = message.sender === "Me";
+    const userSent = message.sender === this.state.name;
     const now = DateTime.now();
     const diff = now.diff(message.timeSent, ["months", "days", "hours", "minutes"]);
     let timeString = [];
@@ -217,6 +208,7 @@ const Message = ({message, user}) => {
 
 const mapStateToProps = state =>({
     user : state.user,
+    token: state.token
 });
 
 export default connect(mapStateToProps)(withRouter(Messages));

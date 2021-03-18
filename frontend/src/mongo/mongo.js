@@ -157,3 +157,57 @@ export const loadUser = async address => {
   return data;
 }
 
+export const getChats = async datum => {
+  const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(datum)
+    };
+    const response = await fetch(`https://floating-temple-50905.herokuapp.com/getChats`, requestOptions)
+    const responseCode = response.status;
+    //console.dir(response);
+    if (!response.ok) {
+      // Not an OK reseponse
+      if (responseCode == 400) {
+          // Parse the body to see if we have the message
+          const data = await response.json();
+          //console.log(data.message);
+          if (data.message === "User not yet registered") {
+              return null;
+          }
+      }
+      throw new Error("HTTP error " + responseCode);
+  }
+
+  // OK response
+  const data = await response.json();
+  return {data, response};
+}
+
+export const getChat = async datum => {
+  const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(datum)
+    };
+    const response = await fetch(`https://floating-temple-50905.herokuapp.com/getChat`, requestOptions)
+    const responseCode = response.status;
+    //console.dir(response);
+    if (!response.ok) {
+      // Not an OK reseponse
+      if (responseCode == 400) {
+          // Parse the body to see if we have the message
+          const data = await response.json();
+          //console.log(data.message);
+          if (data.message === "Chat not found") {
+              return null;
+          }
+      }
+      throw new Error("HTTP error " + responseCode);
+  }
+
+  // OK response
+  const data = await response.json();
+  return {data, response};
+}
+
