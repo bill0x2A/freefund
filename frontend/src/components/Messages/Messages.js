@@ -4,7 +4,6 @@ import { withRouter } from 'react-router';
 import classes from './Messages.module.sass';
 import { DateTime } from 'luxon';
 import testpp from '../../assets/defaultpp.png';
-import { io } from 'socket.io-client'
 import { getChats } from '../../mongo/mongo';
 
 //props:
@@ -12,8 +11,6 @@ import { getChats } from '../../mongo/mongo';
 // token from cookies
 // other user address as userAddress
 // chat id as chatId, you can get list of chatIds and their names from "/getChats"
-
-const socket = io("https://floating-temple-50905.herokuapp.com")
 
 class Messages extends React.Component {
     constructor(props){
@@ -24,17 +21,8 @@ class Messages extends React.Component {
            chatId: this.props.chatId || null, //id of chat to help store the chat
            _id: this.props.id || null, // id of person chatting with,
            accepted: false,
-           name: this.props.user.firstName+" "+this.props.user.lastName || "Me",
-           chats: [{
-                name: "Elon Musk",
-                time: DateTime.fromISO("2021-05-15T08:30:00"),
-                message: "This is a test message"
-           },
-           {
-            name: "Elon Moosk",
-            time: DateTime.fromISO("2021-05-15T08:30:00"),
-            message: "This is a test message"
-            }]
+           name: this.props.user.firstName + " " + this.props.user.lastName || "Me",
+           chats: [],
        }
     }
 
@@ -43,26 +31,25 @@ async componentDidMount(){
             this.props.history.push('/home');
         }
         await this.loadData();
-        this.setState({loading: false});
 
-        socket.save("save", data=> { this.setState({chatId: data}) })
+        this.props.socket.on("save", data=> { this.setState({chatId: data}) })
         
-        socket.on("send", data=>{
+        this.props.socket.on("send", data=>{
             const {chatId, message, userId, userName} = data
             //    This is an event listener for message received for first Time
             //    data composes of chatId, message, userId
             this.setState({chatId, _id: userId, name:userName, chats: [...this.state.chats,{name: userName, time: DateTime.fromMillis(Date.now()), message}] })
-            socket.emit("accept", {chatId, _id: userId, userAddress: this.props.user.address})
+            this.props.socket.emit("accept", {chatId, _id: userId, userAddress: this.props.user.address})
         })
 
-        socket.on("accepted", data=>{
+        this.props.socket.on("accepted", data=>{
             //    This is an event listener to notify the user that the recipient has accepted the chat request
             //    data composes of chatId
             this.setState({chatId: data, accepted: true})
             //console.log("Chat Accepted")
         })
 
-        socket.on("chatted", data=>{
+        this.props.socket.on("chatted", data=>{
             //    This is an event listener to notify the user that the recipient has accepted the chat request
             //    data composes of chatId and message
             this.setState({chat: [...this.state.chats, data.message] })
@@ -84,12 +71,14 @@ async componentDidMount(){
     loadData = async () => {
         // Load all required data here
         if(this.state.chatId){
-            let {data, response} = await getChats({chatId: this.state.chatId, token: this.props.token})
+            let {data, response} = await getChats({address: this.props.user.address, token: this.props.token})
+            console.log("DATA: \n", data, "RESPONSE: \n", response);
             if(data){
+                console.log("DATA: ", data);
                 this.setState({chats: data.data})
             }  
         }
-        
+        this.setState({loading: false});
     }
 
     sendMessage(){
@@ -102,11 +91,11 @@ async componentDidMount(){
             let newer = {name: this.state.name,  time: DateTime.fromMillis(Date.now()), message: newMessage}
             let chats = [...this.state.chats, newer ]
             
-            socket.emit("chat", {chatId, message:newer, _id})
+            this.props.socket.emit("chat", {chatId, message:newer, _id})
             this.setState({chats})
         }else{
             // Initialise a chat with a user
-            socket.emit('createChat', {address:this.props.user.address,
+            this.props.socket.emit('createChat', {address:this.props.user.address,
                                   name:"Elon Musk", userAddress: this.props.userAddress, message:newMessage })
         }
         
@@ -208,7 +197,8 @@ const Message = ({message, user}) => {
 
 const mapStateToProps = state =>({
     user : state.user,
-    token: state.token
+    token: state.token,
+    socket : state.socket,
 });
 
 export default connect(mapStateToProps)(withRouter(Messages));

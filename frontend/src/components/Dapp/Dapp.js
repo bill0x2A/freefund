@@ -5,6 +5,7 @@ import * as actionTypes from '../../store/actionTypes';
 import { connect } from 'react-redux';
 import { login } from '../../mongo/mongo';
 import detectEthereumProvider from '@metamask/detect-provider';
+import { setCookie, getCookie } from '../../util/cookies';
 
 import { BrowserRouter as Router,
   Route,
@@ -30,6 +31,11 @@ import onMobile from '../../util/detectMobile';
 
 import { daiAbi, rinkebyDaiAddress } from '../../constants/contractData';
 import * as artifacts from '../../artifacts/contracts/FreeFund.sol/FreeFund.json';
+import { io } from 'socket.io-client'
+
+const socket = io("https://floating-temple-50905.herokuapp.com")
+
+socket.emit("joinToken", getCookie('state'))
 
 const HARDHAT_NETWORK_ID = '31337'
 const MAINNET_NETWORK_ID = '42'
@@ -83,6 +89,7 @@ class Dapp extends React.Component {
   componentDidMount(){
     this.props.setMobile( onMobile() );
     this.checkConnection();
+    this.props.setSocket(socket)
   }
 
   // ####### METAMASK API #######
@@ -250,6 +257,7 @@ const mapDispatchToProps = dispatch => ({
   setUser             : userData        => dispatch({type : actionTypes.setUser, user : userData}),
   connectFactory      : factory         => dispatch({type : actionTypes.connectFactory, factory : factory}),
   setMobile           : mobile          => dispatch({type : actionTypes.onMobile, mobile : mobile}),
+  setSocket           : socket          => dispatch({type : actionTypes.setSocket, socket : socket}),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dapp);

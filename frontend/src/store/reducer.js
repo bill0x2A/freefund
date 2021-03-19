@@ -11,7 +11,11 @@ const initialState = {
 
 const reducer = ( state = initialState, action ) => {
     switch(action.type){
-
+        case actionTypes.setSocket:
+            return {
+                ...state,
+                socket : action.socket,
+            }
         case actionTypes.onMobile:
             return {
                 ...state,

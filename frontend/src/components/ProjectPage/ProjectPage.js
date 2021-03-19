@@ -88,7 +88,7 @@ class ProjectPage extends React.Component {
         }
     }
 
-    pledgeHandler = (value) => {
+    pledgeHandler = value => {
         // This is not very 'React' but it works for now
         document.body.style.height = "100vh";
         document.body.style.overflow = "hidden";
@@ -109,7 +109,11 @@ class ProjectPage extends React.Component {
     loadCreatorData = async creatorAddress => {
         const user = await loadUser(creatorAddress);
         console.log(user);
-        this.setState({creatorData : user.data, loading : false})
+        const creatorData = {
+            ...user.data,
+            address : creatorAddress,
+        }
+        this.setState({creatorData, loading : false})
     }
 
     calculateTimeLeft = () => {
