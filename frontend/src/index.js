@@ -8,7 +8,7 @@ import { Provider } from 'react-redux';
 import reducer from './store/reducer';
 import { io } from 'socket.io-client'
 
-// const socket = io("https://floating-temple-50905.herokuapp.com")
+const socket = io("https://floating-temple-50905.herokuapp.com")
 
 const getCookie=(name)=>{
   var ident
@@ -49,6 +49,14 @@ const saveState = (state) => {
 
   }
 };
+
+// do not remove this one as it is for starting up the socket connection
+// to the server
+socket.emit("joinToken", getCookie('state'))
+
+// Put this after login function Please the _id is returned after each register or login response,
+// the _id returned should be used in the function below just like after the register function in accoun page
+//socket.emit('join', _id)
 
 // const realtimeComm=()=>{
 

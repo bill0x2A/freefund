@@ -1,5 +1,15 @@
 
 const shortId = require('shortid')
+const ObjectId = require('mongodb').ObjectID
+const secret = "Hellow Helllo Hellloo/\\"
+
+function verify(token){
+    jwt.verify(token, secret, function(err, decoded) {
+        if (err) return 
+
+        return decoded._id
+    });
+}
 
 module.exports = function(io, dbe){
     const db= dbe.collection('CrowdfundProject')
@@ -9,10 +19,17 @@ module.exports = function(io, dbe){
     io.on('connection', socket=>{
         console.log("User joined", socket.id )
         
-        socket.emit("User", socket.id)
+        //socket.emit("User", socket.id)
 
         socket.on("join", data=>{
             socket.join(data._id)
+        })
+
+        socket.on("joinToken", data=>{
+            let _id = verify(data)
+            if(_id){
+                socket.join(_id)
+            }
         })
 
         // a new contributor to a project
@@ -58,10 +75,13 @@ module.exports = function(io, dbe){
         socket.on("createChat", data =>{
             //socket.join(data.roomId)
             let id = shortId.generate()
-            user.findOneAndUpdate({address:data.userAddress}, {$push: {$chats: {id,name: data.name} }})
-            chats.insertOne({id, message:[{time:new Date(), chat: data.message}]})
-            user.findOne({address: data.userAddress}, doc =>{
-                user.fineOne({address: data.address}, docs =>{
+            
+            user.findOne({address: data.address}, (err,doc) =>{
+                chats.insertOne({id, message:[{name: doc.firstName+" "+doc.lastName, time:new Date(), chat: data.message}]})
+                
+                user.findOne({address: data.userAddress}, (err2, docs) =>{
+                    user.findOneAndUpdate({address:data.address}, {$push: {$chats: {id,name: docs.firstName+" "+docs.lastName, timeCreated: new Date(), timeUpdated: new Date(), accepted: false, imgHash: data.imgHash} }})
+                    socket.emit("save", id)
                     socket.to(docs._id).emit("send", {chatId:id, message:data.message, temp:socket.id, userId: doc._id, userName: doc.firstName+" "+doc.lastName})
                 })
                 
@@ -71,13 +91,16 @@ module.exports = function(io, dbe){
 
         // respond to new chat
         socket.on("accept", data =>{
-            user.findOneAndUpdate({address:data.userAddress}, {$push: {$chats: {id: data.chatId,name: data.name} }})
+            user.findOne({_id: new ObjectId(data._id)}, (err, doc)=>{
+                user.findOneAndUpdate({address:data.userAddress}, {$push: {$chats: {id: data.chatId,name: doc.firstName+" "+doc.lastName, timeCreated: new Date(), timeUpdated: new Date(), accepted: false, imgHash: doc.imgHash} }})
+            })
+            
             socket.to(data._id).emit("accepted", data.chatId)
         })
 
         // continue chat
         socket.on("chat", data=>{
-            chats.insertOne({id: data.chatId, message:[{time:new Date(), chat: data.message}]})
+            chats.findOneAndUpdate({id: data.chatId}, { $push: {message: data.message } })
             socket.to(data._id).emit("chatted", {message: data.message, chatId: data.chatId})
         })
 

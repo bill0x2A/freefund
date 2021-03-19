@@ -14,6 +14,7 @@ function verify(req, res, next){
 module.exports = function (app, dbe){
     const db= dbe.collection('CrowdfundProject')
     const user = dbe.collection('CrowdfundUsers')
+    const chats = dbe.collection("CrowdfundChats")
 
     app.get('/', (req,res)=>{
         res.send("Hello and Welcome to Freefund")
@@ -24,12 +25,12 @@ module.exports = function (app, dbe){
         if(address){
             user.findOne({address}, (err,doc)=>{
                 if(doc){
-                    var token = jwt.sign({email: doc.email, address, time: Date.now()} , secret, {
+                    var token = jwt.sign({_id: doc._id, email: doc.email, address, time: Date.now()} , secret, {
                         expiresIn: 86400 // expires in 24 hours
                     });
                     let dc = {...doc}
-                    delete dc._id
-                    res.json({message: "Login successful", data: dc, token})
+                    delete dc.password
+                    res.json({message: "Login successful", data: dc, token, _id: doc._id})
                 }else{
                     res.status(400).json({message:"User not yet registered"})
                 }
@@ -46,11 +47,12 @@ module.exports = function (app, dbe){
                 if(doc){
                     res.status(400).json({message:"User already registered"})
                 }else{
-                    var token = jwt.sign({email: email, address, time: Date.now()} , secret, {
-                        expiresIn: 86400 // expires in 24 hours
-                    });
-                    user.insertOne({address, email, firstName, lastName, countryCode, bio, imgHash, fundedProjects:[], createdProjects:[], balance:"0.00", createdAt: new Date(), updatedAt: new Date()}, (err, docs)=>{
-                        res.json({message:"registered successfully", token})
+                    
+                    user.insertOne({address, email, firstName, lastName, countryCode, bio, imgHash, fundedProjects:[], createdProjects:[], balance:"0.00", createdAt: new Date(), updatedAt: new Date(), chats:[]}, (err, docs)=>{
+                        var token = jwt.sign({_id: docs.ops[0]._id, email: email, address, time: Date.now()} , secret, {
+                            expiresIn: 86400 // expires in 24 hours
+                        });
+                        res.json({message:"registered successfully", token, _id:docs.ops[0]._id})
                     })
                 }
             })
@@ -172,6 +174,38 @@ module.exports = function (app, dbe){
                     res.json({message: "Balance Updated", data: doc})
                 }else{
                     res.status(400).json({message:"User not yet registered"})
+                }
+            })
+        }else{
+            res.status(400).json({message:"Address missing", error:true})
+        }
+    })
+    
+    app.post('/getChats', verify, async(req, res)=>{
+        const address = req.body.address
+        if(address){
+            user.findOne({address}, (err,doc)=>{
+                if(doc){
+                    let chats = doc.chats
+                    res.json({message: "Success", data: chats})
+                }else{
+                    res.status(400).json({message:"User not yet registered"})
+                }
+            })
+        }else{
+            res.status(400).json({message:"Address missing", error:true})
+        }
+    })
+
+    app.post('/getChat', async(req, res)=>{
+        const id = req.body.chatId
+        if(id){
+            chats.findOne({id}, (err, doc)=>{
+                if(doc){
+                    let chat = doc.message
+                    res.json({message: "Success", data: chat})
+                }else{
+                    res.status(400).json({message:"Chat not found"})
                 }
             })
         }else{
