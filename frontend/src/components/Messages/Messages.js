@@ -27,6 +27,7 @@ class Messages extends React.Component {
     }
 
 async componentDidMount(){
+    console.dir(this.props);
         if(!this.props.user?.address){
             this.props.history.push('/home');
         }

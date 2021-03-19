@@ -53,7 +53,7 @@ const reducer = ( state = initialState, action ) => {
             }
 
         case actionTypes.resetState:
-            return {networkID : state.networkID, ...initialState};
+            return {networkID : state.networkID, socket : state.socket , ...initialState};
 
         case actionTypes.setNetworkID:
             if(!window.ethereum.networkVersion){

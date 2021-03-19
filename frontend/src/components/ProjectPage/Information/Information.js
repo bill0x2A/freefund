@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import classes from './Information.module.css';
+import classes from './Information.module.sass';
 import { Carousel } from 'react-responsive-carousel';
 import styles from '../Carousel.css';
 import ReactHtmlParser, { processNodes, convertNodeToElement, htmlparser2 } from 'react-html-parser';
@@ -33,7 +33,7 @@ const Information = ({project, creatorData}) => {
                     <h4>{creatorData?.firstName} {creatorData?.lastName}</h4>
                     <img src={`https://ipfs.infura.io/ipfs/${creatorData?.imgHash}`}/>
                     <p>{creatorData?.bio}</p>
-                    <Link to={`/messages/${creatorData.address}`}>Send me a message</Link>
+                    <Link className={classes.Message} to={`/messages/${creatorData.address}`}>Send me a message</Link>
                 </div>
             )
             break;
