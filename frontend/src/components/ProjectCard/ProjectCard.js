@@ -1,5 +1,5 @@
 import React from 'react';
-import classes from './ProjectCard.module.css';
+import classes from './ProjectCard.module.sass';
 import DAI from '../../assets/DAI.png';
 import Flag from 'react-country-flag';
 import {Link} from 'react-router-dom';

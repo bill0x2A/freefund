@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM, { render } from 'react-dom';
 import {Link} from 'react-router-dom';
-import classes from './Navigation.module.css';
+import classes from './Navigation.module.sass';
 import * as ROUTES from '../../constants/routes';
 import { connect } from 'react-redux';
 import defaultpp from '../../assets/defaultpp.png';

@@ -1,5 +1,5 @@
 import React from 'react';
-import classes from './ProjectBrowser.module.css';
+import classes from './ProjectBrowser.module.sass';
 import ProjectCard from '../ProjectCard/ProjectCard';
 import Loading from '../Loading/Loading';
 

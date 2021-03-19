@@ -1,5 +1,5 @@
 import React from 'react';
-import classes from './TxInfo.module.css';
+import classes from './TxInfo.module.sass';
 import Loading from '../Loading/Loading';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';

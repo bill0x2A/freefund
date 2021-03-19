@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import classes from './ProjectPage.module.css';
+import classes from './ProjectPage.module.sass';
 
 import ReactPlayer from 'react-player/youtube';
 import { withRouter } from 'react-router-dom';
