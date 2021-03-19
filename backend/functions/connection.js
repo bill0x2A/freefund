@@ -22,10 +22,12 @@ module.exports = function(io, dbe){
         //socket.emit("User", socket.id)
 
         socket.on("join", data=>{
+            //console.log('this')
             socket.join(data._id)
         })
 
         socket.on("joinToken", data=>{
+            console.log('this!')
             let _id = verify(data)
             if(_id){
                 socket.join(_id)
@@ -74,6 +76,7 @@ module.exports = function(io, dbe){
         //new chat created
         socket.on("createChat", data =>{
             //socket.join(data.roomId)
+            console.log('help')
             let id = shortId.generate()
             
             user.findOne({address: data.address}, (err,doc) =>{

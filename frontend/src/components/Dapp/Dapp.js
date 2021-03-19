@@ -35,7 +35,7 @@ import { io } from 'socket.io-client'
 
 const socket = io("https://floating-temple-50905.herokuapp.com")
 
-socket.emit("joinToken", getCookie('state'))
+
 
 const HARDHAT_NETWORK_ID = '31337'
 const MAINNET_NETWORK_ID = '42'
@@ -89,6 +89,7 @@ class Dapp extends React.Component {
   componentDidMount(){
     this.props.setMobile( onMobile() );
     this.checkConnection();
+    socket.emit("joinToken", this.props.token)
     this.props.setSocket(socket)
   }
 
@@ -244,6 +245,7 @@ const mapStateToProps = state => ({
   user : state.user,
   mobile : state.mobile,
   provider : state.provider,
+  token: state.token
 });
 
 const mapDispatchToProps = dispatch => ({

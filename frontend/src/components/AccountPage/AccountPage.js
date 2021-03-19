@@ -16,9 +16,7 @@ import { withRouter } from 'react-router-dom';
 import { register } from '../../mongo/mongo';
 import { arrayBufferToBuffer, blobToURL, getCanvasBlob, createCanvas, fileToDataUri } from '../../util/imageProcessing';
 import ipfsClient from 'ipfs-http-client';
-import { io } from 'socket.io-client'
 
-const socket = io("https://floating-temple-50905.herokuapp.com")
 const ipfs = ipfsClient({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
 
 const Required = () => (
@@ -34,6 +32,7 @@ class AccountPage extends React.Component {
             submitting : false,
         }
     }
+    
 
     onChange = (e) => {
         this.setState({[e.target.name] : e.target.value});
@@ -94,7 +93,7 @@ class AccountPage extends React.Component {
 
         const data = await register(userData);
         this.props.setToken(data?.token)
-        socket.emit('join', data._id)
+        this.props.socket.emit('join', data._id)
         this.props.history.push('/')
     }
 
@@ -220,6 +219,7 @@ class AccountPage extends React.Component {
 const mapStateToProps = state => ({
     selectedAddress : state.selectedAddress,
     user : state.user,
+    socket: state.socket
 })
 
 const mapDispatchToProps = dispatch => ({
