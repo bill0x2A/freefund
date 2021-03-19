@@ -6,7 +6,7 @@ const socket = require('./functions/connection')
 const cors = require('cors')
 const app = express()
 const http = require('http').createServer(app);
-const io = require('socket.io')(http);
+const io = require('socket.io')(http, {cors: {origin: "*", methods:["GET", "POST"]} });
 
 app.use(express.json())
 app.use(cors())
