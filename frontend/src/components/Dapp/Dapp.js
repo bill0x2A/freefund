@@ -73,7 +73,8 @@ class Dapp extends React.Component {
                     <Route path={ROUTES.ALPHA} component = {AlphaPage}/>
                     <Route path={ROUTES.ACCOUNT} component = {AccountPage}/>
                     <Route path={ROUTES.CONTACT} component = {ContactPage}/>
-                    <Route path={ROUTES.MESSAGES} component = {Messages}/>
+                    <Route exact path={ROUTES.MESSAGES} component = {Messages}/>
+                    <Route path={ROUTES.NEWMESSAGE} component = {Messages}/>
                     <Route component = {MissingPage}/>
                   </Switch>
                 </div>

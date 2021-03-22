@@ -4,13 +4,13 @@ import { withRouter } from 'react-router';
 import classes from './Messages.module.sass';
 import { DateTime } from 'luxon';
 import testpp from '../../assets/defaultpp.png';
-import { getChats } from '../../mongo/mongo';
+import { getChats, loadUser } from '../../mongo/mongo';
+import { ethers } from 'ethers';
+import { useImperativeHandle } from 'react';
 
-//props:
-// user -> address, firstName, lastName
-// token from cookies
-// other user address as userAddress
-// chat id as chatId, you can get list of chatIds and their names from "/getChats"
+// The only external data source we have now is this.props.match.params.address, passed if we
+// wish to start a new chat, this is working + handler in the newChatHandler method.
+
 
 class Messages extends React.Component {
     constructor(props){
@@ -18,21 +18,23 @@ class Messages extends React.Component {
        this.state = {
            loading : true,
            newMessage : "",
-           chatId: this.props.chatId || null, //id of chat to help store the chat
-           _id: this.props.id || null, // id of person chatting with,
-           accepted: false,
-           name: this.props.user.firstName + " " + this.props.user.lastName || "Me",
            chats: [],
        }
     }
 
 async componentDidMount(){
-    console.dir(this.props);
+
+        // If the user has no connected wallet, redirect them to the homepage
         if(!this.props.user?.address){
             this.props.history.push('/home');
         }
-        await this.loadData();
+        // Load the active chats
+        await this.loadChats();
 
+        // Check if a new chat is being initialised (see newChatHandler for more information)
+        this.newChatHandler();
+
+        // Activate listeners
         this.props.socket.on("save", data=> { this.setState({chatId: data}) })
         
         this.props.socket.on("send", data=>{
@@ -58,8 +60,11 @@ async componentDidMount(){
         })
     }
 
-    selectSender = (sender) => {
-        this.setState({selectedSender : sender})
+    selectChat = chat => {
+        this.setState({selectedChat : chat})
+        if(chat.chatId){
+            // Load the chat messages to state here
+        }
     }
 
     handleKeyPress = e => {
@@ -69,37 +74,76 @@ async componentDidMount(){
         }
     }
 
-    loadData = async () => {
-        // Load all required data here
-        if(this.state.chatId){
+    loadChats = async () => {
+            // Leaving this up to you
             let {data, response} = await getChats({address: this.props.user.address, token: this.props.token})
-            console.log("DATA: \n", data, "RESPONSE: \n", response);
-            if(data){
-                console.log("DATA: ", data);
-                this.setState({chats: data.data})
+            if(data?.data){
             }  
-        }
         this.setState({loading: false});
     }
 
-    sendMessage(){
-        const {newMessage, selectedSender, chatId, chats, _id} = this.state;
-        this.setState({newMessage : ""})
-        //console.log(newMessage)
-        // Send message here
-        if(chats.length>0 && this.state.chatId){
-            // continue chat with user
+    newChatHandler = async () => {
+        // This method places a new chat object in the user's list so they can send the first message.
+
+        const address = this.props.match.params.address
+
+        // Check to see if the address passed in the url params is valid (if one is present at all)
+        if(!ethers.utils.isAddress(address)){
+            return
+        }
+
+        // ADD ANOTHER CHECK TO SEE IF THERE IS AN ALREADY AN ACTIVE CHAT WITH THIS ADDRESS
+
+        const user = await loadUser(address);
+        const name = user.data?.firstName ? user.data?.firstName + " " + user.data?.lastName : address;
+
+        const newChat = {
+            name,
+            imgHash : user.data?.imgHash,
+            address,
+        }
+
+        const chats  = [...this.state.chats]
+        chats.push(newChat);
+        this.setState({chats});
+    }
+
+    sendMessage =  async () => {
+        const {newMessage, selectedChat, chats, _id} = this.state;
+        
+        // If there is no associated chatId, create a new chat + handle subsequent logic.
+        if(!selectedChat.chatId){
+
+            console.log("Creating new chat");
+            this.props.socket.emit(
+                'createChat', 
+                {
+                    address : this.props.user.address,
+                    userAddress : selectedChat.address,
+                    message : newMessage 
+                }
+            )
+
+            // After the new chat has been created and given an ID on the server, we want to reload the chats
+            // so the new chat also has its associated chatId loaded and useable
+
+            // Unless there is a quick way of getting the chat id, in which case we could update the loaded
+            // chat objects in state, up to you as to how you want to handle this.
+
+            await this.loadChats()
+        
+            // Here we might want to consider reselecting the new chat, but with its new chat ID, so that the
+            // chat is not deselected after the first message has been sent
+
+        } else {
+            // V confused by this, leaving it up to you
             let newer = {name: this.state.name,  time: DateTime.fromMillis(Date.now()), message: newMessage}
             let chats = [...this.state.chats, newer ]
             
-            this.props.socket.emit("chat", {chatId, message:newer, _id})
+            this.props.socket.emit("chat", {chatId : selectedChat.chatId, message:newer, _id})
             this.setState({chats})
-        }else{
-            // Initialise a chat with a user
-            this.props.socket.emit('createChat', {address:this.props.user.address,
-                                  name:"Elon Musk", userAddress: this.props.userAddress, message:newMessage })
         }
-        
+        this.setState({newMessage : ""})
     }
 
     onChange = e => {
@@ -107,30 +151,33 @@ async componentDidMount(){
     }
 
     render(){
-        const {chats, selectedSender} = this.state;
+        const {chats, selectedChat} = this.state;
+        console.log(this.state.chats)
         return(
             <div className={classes.messages}>
-                <sidebar>
+                <div className={classes.sidebar}>
                     <h2>Messages</h2>
-                    {chats.map(messageSender => (
+                    {chats.map(chat => (
                         <div
-                            style={(selectedSender?.name === messageSender.name) ? {border : "3px dashed var(--bold)"} : null}
+                            style={(selectedChat?.address === chat.address) ? {border : "3px dashed var(--bold)"} : null}
                             className={classes.messageSender}
-                            onClick = {() => this.selectSender(messageSender)}
+                            onClick = {() => this.selectChat(chat)}
                         >
-                            <img src={testpp}/>
-                            {messageSender.name}
+                            <img src={`https://ipfs.infura.io/ipfs/${chat?.imgHash}`}/>
+
+                            {chat.name}
+
                         </div>
                     ))}
-                </sidebar>
+                </div>
                 <div className={classes.wrapper}>
                     <div className={classes.main}>
                         <div className={classes.messageContainer}>
-                            {selectedSender?.messages.map(message => <Message message={message} user={this.props.user}/>)}
+                            {selectedChat?.messages?.map(message => <Message message={message} user={this.props.user}/>)}
                         </div>
                     </div>
                     {
-                        selectedSender &&
+                        selectedChat &&
                             <textarea
                                 placeholder ="Send a new message"
                                 value={this.state.newMessage}
