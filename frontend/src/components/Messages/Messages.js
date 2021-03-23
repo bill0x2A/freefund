@@ -193,7 +193,7 @@ async componentDidMount(){
 }
 
 
-const Message = ({message, user}) => {
+const Message = ({message}) => {
     const userSent = message.sender === this.state.name;
     const now = DateTime.now();
     const diff = now.diff(message.timeSent, ["months", "days", "hours", "minutes"]);

@@ -151,8 +151,10 @@ class Dapp extends React.Component {
       this._initialize(accounts[0]);
     } else {
       console.log("STATE = METAMASK, ALL GOOD!")
+      // Grab remaining user data from database
+      this.loginUser(accounts[0]);
       if(!this.props.provider){
-        this._initialize(accounts[0]);
+        this._intializeEthers();
       }
     }
     // Check login token here
@@ -173,11 +175,16 @@ class Dapp extends React.Component {
   }
 
   _initialize = async userAddress => {
-    console.log("RUNNING  _initialize")
+    console.log("Running  _initialize")
     this.props.resetState();
     this.props.connectWallet(userAddress);
 
-    // FETCH USER INFORMATION HERE
+    this.loginUser();
+
+    this._intializeEthers();
+  }
+
+  loginUser = async userAddress => {
     console.log("Running login");
     const data = await login(userAddress);
       if(!data.token){
@@ -189,9 +196,6 @@ class Dapp extends React.Component {
         this.props.setToken(data?.token)
         this.props.setUser(data?.data)
       }
-
-    
-    this._intializeEthers();
   }
 
   // ####### ETHERS #######

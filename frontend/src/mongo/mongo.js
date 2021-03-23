@@ -1,34 +1,41 @@
 import data from "@iconify-icons/simple-line-icons/wallet";
 
- 
-export const login = async address => {
-    const requestOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ address })
-      };
-      console.log(requestOptions.body)
-      const response = await fetch(`https://floating-temple-50905.herokuapp.com/login`, requestOptions)
-      const responseCode = response.status;
-      if (!response.ok) {
-        // Not an OK reseponse
-        if (responseCode == 400) {
-            // Parse the body to see if we have the message
-            const data = await response.json();
-            if (data.message === "User not yet registered") {
-                console.log(data);
-                return data;
-            }
-            console.log(data.message);
-        }
-        throw new Error("HTTP error " + responseCode);
-    }
+export const checkToken = async (token) => {
+  const requestOptions = {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token })
+  };
+} 
 
-    // OK response, read the data from the body, this is also async
-    const data = await response.json();
-    console.log(data)
-    console.log("TOKEN FROM LOGIN: ", data.token);
-    return data;
+export const login = async address => {
+  const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ address })
+    };
+    console.log(requestOptions.body)
+    const response = await fetch(`https://floating-temple-50905.herokuapp.com/login`, requestOptions)
+    const responseCode = response.status;
+    if (!response.ok) {
+      // Not an OK reseponse
+      if (responseCode == 400) {
+          // Parse the body to see if we have the message
+          const data = await response.json();
+          if (data.message === "User not yet registered") {
+              console.log(data);
+              return data;
+          }
+          console.log(data.message);
+      }
+      throw new Error("HTTP error " + responseCode);
+  }
+
+  // OK response, read the data from the body, this is also async
+  const data = await response.json();
+  console.log(data)
+  console.log("TOKEN FROM LOGIN: ", data.token);
+  return data;
 };
 
 export const register = async userData => {

@@ -10,23 +10,43 @@ import { setCookie, getCookie } from './util/cookies';
 
 
 const loadState = () => {
+  console.log("Running loadState()");
   try {
     const serializedState = getCookie('state');
     if(serializedState === null) {
       return undefined;
     }
-    return JSON.parse(serializedState);
+    const state = JSON.parse(serializedState);
+    const loadedState = {
+      user : {
+        address : state.address,
+        imgHash : state.imgHash,
+      },
+      selectedAddress : state.selectedAddress,
+      token : state.token,
+    }
+    console.log(loadedState);
+    return loadedState;
   } catch (e) {
+    console.log(e)
     return undefined;
   }
 };
 
 const saveState = (state) => {
+  console.log("Running saveState()");
+  const saveState = {
+    address : state.user?.address,
+    imgHash : state.user?.imgHash,
+    selectedAddress : state.selectedAddress,
+    token : state.token,
+  }
+  console.dir(saveState)
   try {
-    const serializedState = JSON.stringify(state);
+    const serializedState = JSON.stringify(saveState);
     setCookie(serializedState);
   } catch (e) {
-
+    console.log(e)
   }
 };
 
